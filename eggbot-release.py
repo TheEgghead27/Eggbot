@@ -61,4 +61,7 @@ async def on_message(message):
             await message.channel.send(embed=embed)
 
 
-client.run('NjgxMjk1NzI0MTg4Nzk0ODkw.Xlcceg.Pf604EQfdw0nevgxZQ-DKkXpNPE')
+with open('token.txt', 'r') as file:
+    token = file.read()
+    print(token)
+client.run(token)

@@ -190,5 +190,7 @@ async def on_message(message):
         else:
             return
 
-
-client.run('NjgxMjk1NzI0MTg4Nzk0ODkw.Xlcceg.Pf604EQfdw0nevgxZQ-DKkXpNPE')
+with open('token.txt', 'r') as file:
+    token = file.read()
+    print(token)
+client.run(token)
