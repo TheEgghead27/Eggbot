@@ -12,3 +12,5 @@ e!args {arguments} : list of args
 e!song : song (WIP)
 
 e!help : help
+
+## Self-Host
