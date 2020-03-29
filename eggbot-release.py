@@ -1,11 +1,10 @@
-import discord
-import logging
-
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+try:
+    import discord
+except ModuleNotFoundError:
+    import subprocess
+    import sys
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
+    import discord
 
 client = discord.Client()
 
@@ -63,5 +62,4 @@ async def on_message(message):
 
 with open('token.txt', 'r') as file:
     token = file.read()
-    print(token)
 client.run(token)

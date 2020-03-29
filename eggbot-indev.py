@@ -1,4 +1,13 @@
-import discord
+try:
+    import discord
+except ModuleNotFoundError:
+    import subprocess
+    import sys
+
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
+    import discord
+
+# remove logging in release
 import logging
 
 logger = logging.getLogger('discord')
@@ -190,7 +199,7 @@ async def on_message(message):
         else:
             return
 
+
 with open('token.txt', 'r') as file:
     token = file.read()
-    print(token)
 client.run(token)
