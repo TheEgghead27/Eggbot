@@ -17,6 +17,8 @@ e!help : help
 https://discordapp.com/oauth2/authorize?client_id=681295724188794890&permissions=384064&scope=bot
 
 ## Self-Host
+(GitHub Pages messed up the step numbers)
+
 1. To host a bot, you'll need a bot account from https://discordapp.com/developers/applications/
 
 2. Click New Application 
