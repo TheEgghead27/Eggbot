@@ -13,6 +13,9 @@ e!song : song (WIP)
 
 e!help : help
 
+## Official Tester Host (Only on when testing the bot)
+https://discordapp.com/oauth2/authorize?client_id=681295724188794890&permissions=384064&scope=bot
+
 ## Self-Host
 1. To host a bot, you'll need a bot account from https://discordapp.com/developers/applications/
 
