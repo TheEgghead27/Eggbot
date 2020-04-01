@@ -30,9 +30,7 @@ prefix = "e!"
 
 @client.event
 async def on_message(message):
-    if message.author.bot:
-        return
-    else:
+    if str(message.author) != "TheEggbot27#2234":
         mess = message.content.lower()
         if mess.startswith(prefix) is True:
             prefixlen = len(prefix)
@@ -41,12 +39,15 @@ async def on_message(message):
             mess = mess
         else:
             return
+        author = message.author
+        print(author)
         args = mess.split()
         if args[0] == "help":
             embed = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
             embed.add_field(name="e!help", value="Displays this manual", inline=False)
             embed.add_field(name="e!bee", value="Recites the Bee Movie Script (WIP)", inline=False)
-            embed.add_field(name="e!args", value="test args", inline=False)
+            embed.add_field(name="e!args", value="Test arguments", inline=False)
+            embed.add_field(name="e!aboutme", value="Reveals basically everything (legal) I can get on you", inline=False)
             embed.add_field(name="egg", value="egg", inline=False)
             await message.channel.send(embed=embed)
         elif args[0] == "bee":
@@ -165,7 +166,7 @@ async def on_message(message):
             await message.channel.send(embed=embed)
         elif args[0] == "song":
             try:
-                channel = message.author.voice.channel
+                channel = author.voice.channel
                 print(channel)
                 await channel.connect(timeout=7.0, reconnect=True)
                 print("Connected!")
@@ -173,7 +174,7 @@ async def on_message(message):
             except AttributeError:
                 print("error time")
                 embed = discord.Embed(title="Error",
-                                      description="You are not in a voice channel, " + message.author.name,
+                                      description="You are not in a voice channel, " + author.name,
                                       color=0xff0000)
                 await message.channel.send(embed=embed)
             finally:
@@ -195,6 +196,28 @@ async def on_message(message):
                     argnumber = 1 + argnumber
                 argnotext = str(len(args) - 1)
                 embed.add_field(name="Total Arguments", value=argnotext, inline=False)
+            await message.channel.send(embed=embed)
+        elif args[0] == "aboutme":
+            embed = discord.Embed(title="About " + str(author), description="All about " + author.name,
+                                  color=0x03f4fc)
+            if author.display_name != str(author.name):
+                embed.add_field(name="User Nickname", value=author.display_name, inline=False)
+            embed.add_field(name="User Creation Date", value=author.created_at, inline=False)
+            embed.add_field(name="User ID", value=str(author.id), inline=False)
+            embed.add_field(name="User Discriminator", value=author.discriminator, inline=False)
+            embed.add_field(name="User Avatar Hash", value=author.avatar, inline=False)
+            if author.bot:
+                embed.add_field(name="User is", value="a bot", inline=False)
+            else:
+                embed.add_field(name="User is", value="not a bot", inline=False)
+            if author.system:
+                embed.add_field(name="User is", value="a Discord VIP", inline=False)
+            else:
+                embed.add_field(name="User is", value="not a Discord VIP", inline=False)
+            embed.add_field(name="User Avatar URL", value=author.avatar_url, inline=False)
+            embed.add_field(name="User Color", value=author.color, inline=False)
+            avatar = str(author.avatar_url)
+            embed.set_image(url=avatar)
             await message.channel.send(embed=embed)
         else:
             return
