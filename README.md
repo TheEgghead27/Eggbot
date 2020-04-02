@@ -2,16 +2,17 @@
 Basic text pusher with embed message functionality
 
 ## Commands
+e!help : help
 
-e!bee : prints bee movie script (WIP)
-
-egg : egg
+e!aboutme : About the speaking user
 
 e!args {arguments} : list of args
 
+e!bee : prints bee movie script (WIP)
+
 e!song : song (WIP)
 
-e!help : help
+egg : egg
 
 ## Official Tester Host (Only on when testing the bot)
 https://discordapp.com/oauth2/authorize?client_id=681295724188794890&permissions=384064&scope=bot
