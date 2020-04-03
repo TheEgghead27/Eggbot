@@ -154,7 +154,7 @@ async def on_message(message):
             embed.add_field(name="Barry", value="Not enough.", inline=False)
             embed.add_field(name="Tour Guide", value="Here we have our latest advancement, the Krelman.", inline=False)
             embed.add_field(name="Krelman Testers", value="[a wheel turns with bees on pegs, each of them wearing a "
-                                                          "finger-shaped hat.", inline=False)
+                                                          "finger-shaped hat.]", inline=False)
             embed.add_field(name="Barry", value="Wow, what does that do?", inline=False)
             embed.add_field(name="Tour Guide", value="Catches that little strand of honey that hangs after you pour "
                                                      "it. Saves us millions.", inline=False)
