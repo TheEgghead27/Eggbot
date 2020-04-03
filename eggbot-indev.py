@@ -48,6 +48,7 @@ async def on_message(message):
             embed.add_field(name="e!args", value="Test arguments", inline=False)
             embed.add_field(name="e!aboutme", value="Reveals basically everything (legal) I can get on you",
                             inline=False)
+            embed.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
             embed.add_field(name="egg", value="egg", inline=False)
             await message.channel.send(embed=embed)
         elif args[0] == "bee":
@@ -218,6 +219,10 @@ async def on_message(message):
             embed.add_field(name="User Color", value=author.color, inline=False)
             avatar = str(author.avatar_url)
             embed.set_image(url=avatar)
+            await message.channel.send(embed=embed)
+        elif args[0] == "github":
+            embed = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
+                                  color=0x26a343)
             await message.channel.send(embed=embed)
         else:
             return
