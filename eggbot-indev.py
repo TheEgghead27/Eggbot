@@ -40,7 +40,6 @@ async def on_message(message):
         else:
             return
         author = message.author
-        print(author)
         args = mess.split()
         if args[0] == "help":
             embed = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
@@ -88,8 +87,8 @@ async def on_message(message):
             embed.add_field(name="Barry", value="A little. Special day, graduation.", inline=False)
             embed.add_field(name="Adam", value="Never thought I'd make it.", inline=False)
             embed.add_field(name="Barry", value="Three days grade school, three days grade school...", inline=False)
-            embed.add_field(name="Adam", value="THose were awkward.", inline=False)
-            embed.add_field(name="Barry", value="Three days college. I'm glad I took a day and hitchhicked around the "
+            embed.add_field(name="Adam", value="Those were awkward.", inline=False)
+            embed.add_field(name="Barry", value="Three days college. I'm glad I took a day and hitchhiked around the "
                                                 "hive.", inline=False)
             await message.channel.send(embed=embed)
             embed = discord.Embed(title="The Bee Movie Script (2)", color=0x000000)
