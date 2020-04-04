@@ -165,6 +165,50 @@ async def on_message(message):
             embed.add_field(name="Everyone but Barry", value="[claps]", inline=False)
             embed.add_field(name="Barry", value="The same job the rest of your life? I didn't know that.", inline=False)
             await message.channel.send(embed=embed)
+            embed = discord.Embed(title="The Bee Movie Script (4)", color=0x000000)
+            embed.add_field(name="Adam", value="What's the difference?", inline=False)
+            embed.add_field(name="Tour Guide", value="You'll be happy to know that bees, as a species, haven't had "
+                                                     "one day off in 27 million years.", inline=False)
+            embed.add_field(name="Barry", value="[upset] So you'll just work us to death?", inline=False)
+            embed.add_field(name="Tour Guide", value="We'll sure try.", inline=False)
+            embed.add_field(name="Everyone but Barry", value="[laughs]", inline=False)
+            embed.add_field(name="[end scene]", value="[Barry and Adam are walking home together]", inline=False)
+            embed.add_field(name="Adam", value="Wow! That blew my mind!", inline=False)
+            embed.add_field(name="Barry", value='"Whats the difference?" How can you say that? One job forever? ' +
+                                                "That's an insane choice to have to make.", inline=False)
+            embed.add_field(name="Adam", value="I'm relieved. Now we only have to make one decision in life.",
+                            inline=False)
+            embed.add_field(name="Barry", value="But, Adam, how could they never have told us that?", inline=False)
+            embed.add_field(name="Adam", value="Why would you question anything? We're bees. We're the most perfectly "
+                                               "functioning society on Earth.", inline=False)
+            embed.add_field(name="Barry", value="You ever think maybe things work a little too well here?",
+                            inline=False)
+            embed.add_field(name="Adam", value="Like what? Give me one example.", inline=False)
+            embed.add_field(name="[Barry and Adam stop walking]", value="[Hundreds of cars are speeding by and narrowly"
+                                                                        " missing them in perfect unison]",
+                            inline=False)
+            embed.add_field(name="Barry", value="I don't know. But you know what I'm talking about.", inline=False)
+            embed.add_field(name="Announcer", value="Please clear the gate. Royal Nectar Force on approach.",
+                            inline=False)
+            embed.add_field(name="Barry", value="Wait a second. Check it out.", inline=False)
+            embed.add_field(name="Pollen Jocks", value="[fly in, circle around, land, and stand in line]", inline=False)
+            embed.add_field(name="Barry", value="Hey, those are Pollen Jocks!", inline=False)
+            embed.add_field(name="Adam", value="Wow. I've never seen them this close.", inline=False)
+            embed.add_field(name="Barry", value="They know what it's like outside the hive.", inline=False)
+            embed.add_field(name="Adam", value="Yeah, but some don't come back.", inline=False)
+            embed.add_field(name="Girl Bees", value="Hey, Jocks! Hi, Jocks!", inline=False)
+            embed.add_field(name="Pollen Jock", value="[hook up their backpacks to pumps that transport nectar]",
+                            inline=False)
+            embed.add_field(name="Lou Lo Duva", value="You guys did great! You're monsters! You're sky freaks! I love "
+                                                      "it! [punching the pollen jocks in joy] I love it!", inline=False)
+            await message.channel.send(embed=embed)
+            embed = discord.Embed(title="The Bee Movie Script (5)", color=0xffff00)
+            embed.add_field(name="Adam", value="I wonder where they were.", inline=False)
+            embed.add_field(name="Barry", value="I don't know. Their day's not planned. Outside the hive, flying who "
+                                                "knows where, doing who knows what. You can't just decide to be a "
+                                                "Pollen Jock. You have to be bred for that.", inline=False)
+            embed.add_field(name="Adam", value="Right.", inline=False)
+            await message.channel.send(embed=embed)
         elif args[0] == "song":
             try:
                 channel = author.voice.channel
