@@ -70,6 +70,36 @@ https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permiss
 
 12. Download and run eggbot-release.py, with token.txt in the same folder as the main script
 
+![](tutorial/setup1.png)
+
+13. Right click your Discord account in chat
+
+![](tutorial/rclickOwner.png)
+
+14. Copy ID 
+
+![](tutorial/copyOwner.png)
+
+15. Paste it in a host.txt
+
+![](tutorial/hostpaste.png)
+
+16. Right click your Bot account in chat
+
+![](tutorial/rclickBot.png)
+
+17. Copy ID 
+
+![](tutorial/copyBot.png)
+
+18. Paste it in a bot.txt
+
+![](tutorial/botpaste.png)
+
+19. Setup the release.py and .txt files like so.
+
 ![](tutorial/setup.png)
+
+20. Run the Python script.
 
 Enjoy!
