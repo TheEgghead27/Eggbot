@@ -4,7 +4,7 @@ Basic text pusher with embed message functionality
 ## Commands
 e!help : help
 
-e!aboutme : About the speaking user
+e!aboutme : about the speaking user
 
 e!args {arguments} : list of args
 
@@ -14,8 +14,14 @@ e!song : song (WIP)
 
 egg : egg
 
+# Whitelisted User-Only Commands
+
+e!say: says whatever you tell it to say
+
+e!shutdown: shuts the bot down without needing to manually stop the script
+
 ## Official Tester Host (Only on when testing the bot)
-https://discordapp.com/oauth2/authorize?client_id=681295724188794890&permissions=384064&scope=bot
+https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
 
 ## Self-Host
 (GitHub Pages messed up the step numbers)
@@ -54,7 +60,7 @@ https://discordapp.com/oauth2/authorize?client_id=681295724188794890&permissions
 
 ![](tutorial/botlink.png)
 
-10. Click these permissions
+10. Click these permissions (these have changed recently, so if you are getting exceptions, kick the bot and make a new link with these permissions)
 
 ![](tutorial/perms.png)
 
