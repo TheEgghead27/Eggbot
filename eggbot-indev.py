@@ -30,6 +30,7 @@ prefix = "e!"
 
 @client.event
 async def on_message(message):
+    if str(message.author) != "TheEggbot27#2234":
         mess = message.content.lower()
         if mess.startswith(prefix) is True:
             prefixlen = len(prefix)
