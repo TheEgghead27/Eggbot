@@ -30,7 +30,6 @@ prefix = "e!"
 
 @client.event
 async def on_message(message):
-    if str(message.author) != "TheEggbot27#2234":
         mess = message.content.lower()
         if mess.startswith(prefix) is True:
             prefixlen = len(prefix)
@@ -268,6 +267,12 @@ async def on_message(message):
             embed = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                                   color=0x26a343)
             await message.channel.send(embed=embed)
+        elif args[0] == "shutdown":
+            embed = discord.Embed(title="Shutting down...", description="Please wait...",
+                                  color=0xff0000)
+            await message.channel.send(embed=embed)
+            await client.change_presence(activity=discord.Game(name='Shutting down...'))
+            exit(0)
         else:
             return
 
