@@ -1,3 +1,4 @@
+import time
 try:
     import discord
 except ModuleNotFoundError:
@@ -16,15 +17,22 @@ async def on_ready():
 
 
 prefix = "e!"
+prefix_length = len(prefix)
+# Change host and bot according to your accounts
+host = 474328006588891157
+bot = 681295724188794890
+# Set this to False if you feel like DDoSing Discord with the egg command
+safeguard = True
 
 
 @client.event
 async def on_message(message):
-    if str(message.author) != "TheEggbot27#2234":
+    if safeguard and message.author.id == bot:
+        return
+    else:
         mess = message.content.lower()
         if mess.startswith(prefix) is True:
-            prefixlen = len(prefix)
-            mess = mess[prefixlen:]
+            mess = mess[prefix_length:]
         elif mess.startswith("egg") is True:
             mess = mess
         else:
@@ -86,6 +94,31 @@ async def on_message(message):
             embed = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                                   color=0x26a343)
             await message.channel.send(embed=embed)
+        # Secret admin only commands
+        elif args[0] == "shutdown":
+            if host == author.id:
+                embed = discord.Embed(title="Shutting down...", description="Please wait...",
+                                      color=0xff0000)
+                await message.channel.send(embed=embed)
+                await client.change_presence(activity=discord.Game(name='Shutting down...'))
+                exit(0)
+            else:
+                embed = discord.Embed(title="Shutting down...", description="Please wait...",
+                                      color=0xff0000)
+                await message.channel.send(embed=embed)
+                time.sleep(5)
+                embed = discord.Embed(title="Sike, you thought!", description="You don't have permission to do "
+                                                                              "this!", color=0xff0000)
+                await message.channel.send(embed=embed)
+        elif args[0] == "say":
+            if host == author.id:
+                await message.delete()
+                echo = message.content
+                ech = prefix_length + 4
+                echo = echo[ech:]
+                await message.channel.send(echo)
+            else:
+                return
         else:
             return
 
