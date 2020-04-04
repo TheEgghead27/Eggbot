@@ -28,9 +28,10 @@ async def on_ready():
 
 prefix = "e!"
 prefix_length = len(prefix)
-# Change host and bot according to your accounts
-host = 474328006588891157
-bot = 681295724188794890
+with open('host.txt', 'r') as file:
+    host = int(file.read())
+with open('bot.txt', 'r') as file:
+    bot = int(file.read())
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
