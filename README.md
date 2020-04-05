@@ -4,7 +4,7 @@ Basic text pusher with embed message functionality
 ## Commands
 e!help : help
 
-e!aboutme : about the speaking user
+e!about : about the speaking/first mentioned user
 
 e!args {arguments} : list of args
 
