@@ -1,4 +1,5 @@
 import time
+
 try:
     import discord
 except ModuleNotFoundError:
@@ -55,8 +56,8 @@ async def on_message(message):
             embed.add_field(name="e!help", value="Displays this manual", inline=False)
             embed.add_field(name="e!bee", value="Recites the Bee Movie Script (WIP)", inline=False)
             embed.add_field(name="e!args [words go here]", value="Test arguments", inline=False)
-            embed.add_field(name="e!aboutme", value="Reveals basically everything (legal) I can get on you",
-                            inline=False)
+            embed.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
+                            value="Reveals basically everything (legal) I can get on you", inline=False)
             embed.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
             embed.add_field(name="egg", value="egg", inline=False)
             await message.channel.send(embed=embed)
@@ -263,28 +264,34 @@ async def on_message(message):
                 argnotext = str(len(args) - 1)
                 embed.add_field(name="Total Arguments", value=argnotext, inline=False)
             await message.channel.send(embed=embed)
-        elif args[0] == "aboutme":
-            embed = discord.Embed(title="About " + str(author), description="All about " + author.name,
+        elif args[0] == "about":
+            if not message.mentions:
+                user = author
+            else:
+                user = message.mentions
+                user = user[0]
+            embed = discord.Embed(title="About " + str(user), description="All about " + user.name,
                                   color=0x03f4fc)
-            if author.display_name != str(author.name):
-                embed.add_field(name="User Nickname", value=author.display_name, inline=False)
-            embed.add_field(name="User Creation Date", value=author.created_at, inline=False)
-            embed.add_field(name="User ID", value=str(author.id), inline=False)
-            embed.add_field(name="User Discriminator", value=author.discriminator, inline=False)
-            embed.add_field(name="User Avatar Hash", value=author.avatar, inline=False)
-            if author.bot:
-                embed.add_field(name="User is", value="a bot", inline=False)
+            if user.display_name != str(user.name):
+                embed.add_field(name="User Nickname", value=user.display_name, inline=True)
+            embed.add_field(name="User ID", value=str(user.id), inline=True)
+            embed.add_field(name="User Creation Date", value=user.created_at, inline=False)
+            embed.add_field(name="User Discriminator", value=user.discriminator, inline=True)
+            embed.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
+            if user.bot:
+                embed.add_field(name="User is", value="a bot", inline=True)
             else:
-                embed.add_field(name="User is", value="not a bot", inline=False)
-            if author.system:
-                embed.add_field(name="User is", value="a Discord VIP", inline=False)
+                embed.add_field(name="User is", value="not a bot", inline=True)
+            if user.system:
+                embed.add_field(name="User is", value="a Discord VIP", inline=True)
             else:
-                embed.add_field(name="User is", value="not a Discord VIP", inline=False)
-            embed.add_field(name="User Avatar URL", value=author.avatar_url, inline=False)
-            embed.add_field(name="User Color", value=author.color, inline=False)
-            avatar = str(author.avatar_url)
+                embed.add_field(name="User is", value="not a Discord VIP", inline=True)
+            embed.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
+            embed.add_field(name="User Color", value=user.color, inline=True)
+            avatar = str(user.avatar_url)
             embed.set_image(url=avatar)
             await message.channel.send(embed=embed)
+
         elif args[0] == "github":
             embed = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                                   color=0x26a343)
