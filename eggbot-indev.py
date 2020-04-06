@@ -1,4 +1,5 @@
 import time
+import random
 
 try:
     import discord
@@ -33,6 +34,10 @@ with open('host.txt', 'r') as file:
     host = int(file.read())
 with open('bot.txt', 'r') as file:
     bot = int(file.read())
+with open('bee.txt', 'r') as bee:
+    bee = bee.read().replace('\n', '🥚')
+with open('kiri.txt', 'r') as kiri:
+    kirindex = kiri.read().replace('\n', ' ')
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
@@ -55,6 +60,8 @@ async def on_message(message):
             emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
             emb.add_field(name="e!help", value="Displays this manual", inline=False)
             emb.add_field(name="e!bee", value="Recites the Bee Movie Script (WIP)", inline=False)
+            emb.add_field(name="e!kiri", value="Displays an image of Eijiro Kirishima from My Hero Academia [request "
+                                               "from Eijiro Kirishima#6669", inline=False)
             emb.add_field(name="e!args [words go here]", value="Test arguments", inline=False)
             emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
                           value="Reveals basically everything (legal) I can get on you", inline=False)
@@ -64,10 +71,8 @@ async def on_message(message):
         elif args[0] == "bee":
             if author.id == host:
                 beetime = False
-                with open('bee.txt', 'r') as bee:
-                    bee = bee.read().replace('\n', '🥚')
-                    script = bee.split('🥚')
-                    beelen = len(script) // 2
+                script = bee.split('🥚')
+                beelen = len(script) // 2
                 int(beelen)
                 print(beelen)
                 print(type(beelen))
@@ -84,7 +89,8 @@ async def on_message(message):
                             if beetime:
                                 await message.channel.send(embed=emb)
                             emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-                            emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_313")
+                            emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                                                "313")
                             color_list.append(color_list[0])
                             del color_list[0]
                             messno = messno + 1
@@ -93,8 +99,17 @@ async def on_message(message):
                         del script[0], script[0]
                         limitcheck = limitcheck + 1
                     await message.channel.send(embed=emb)
+
             else:
                 await message.channel.send("The command is disabled coz y'all can't behave")
+        elif args[0] == "kiri":
+            kirilist = kirindex.split(" ")
+            klen = len(kirilist) - 1
+            kno = random.randrange(0, klen)
+            emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
+            k = kirilist[kno]
+            emb.set_image(url=k)
+            await message.channel.send(embed=emb)
         elif args[0] == "song":
             try:
                 channel = author.voice.channel
@@ -155,7 +170,6 @@ async def on_message(message):
             avatar = str(user.avatar_url)
             emb.set_image(url=avatar)
             await message.channel.send(embed=emb)
-
         elif args[0] == "github":
             emb = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                                 color=0x26a343)

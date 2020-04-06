@@ -1,4 +1,5 @@
 import time
+import random
 try:
     import discord
 except ModuleNotFoundError:
@@ -18,9 +19,14 @@ async def on_ready():
 
 prefix = "e!"
 prefix_length = len(prefix)
-# Change host and bot according to your accounts
-host = 474328006588891157
-bot = 681295724188794890
+with open('host.txt', 'r') as file:
+    host = int(file.read())
+with open('bot.txt', 'r') as file:
+    bot = int(file.read())
+with open('bee.txt', 'r') as bee:
+    bee = bee.read().replace('\n', '🥚')
+with open('kiri.txt', 'r') as kiri:
+    kirindex = kiri.read().replace('\n', ' ')
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
@@ -33,25 +39,26 @@ async def on_message(message):
         mess = message.content.lower()
         if mess.startswith(prefix) is True:
             mess = mess[prefix_length:]
-        elif mess.startswith("egg") is True:
+        elif mess.startswith("egg") is True or mess.startswith("eeg"):
             mess = mess
         else:
             return
         author = message.author
         args = mess.split()
         if args[0] == "help":
-            embed = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
-            embed.add_field(name="e!help", value="Displays this manual", inline=False)
-            embed.add_field(name="e!bee", value="Recites the Bee Movie Script (WIP)", inline=False)
-            embed.add_field(name="e!args", value="Test arguments", inline=False)
-            embed.add_field(name="e!aboutme", value="Reveals basically everything (legal) I can get on you",
-                            inline=False)
-            embed.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
-            embed.add_field(name="egg", value="egg", inline=False)
-            await message.channel.send(embed=embed)
+            emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
+            emb.add_field(name="e!help", value="Displays this manual", inline=False)
+            emb.add_field(name="e!bee", value="Recites the Bee Movie Script (WIP)", inline=False)
+            emb.add_field(name="e!kiri", value="Displays an image of Eijiro Kirishima from My Hero Academia [request "
+                                               "from Eijiro Kirishima#6669", inline=False)
+            emb.add_field(name="e!args [words go here]", value="Test arguments", inline=False)
+            emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
+                          value="Reveals basically everything (legal) I can get on you", inline=False)
+            emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
+            emb.add_field(name="egg", value="egg", inline=False)
         elif args[0] == "bee":
             await message.channel.send("Work In Progress T_Ts")
-        elif args[0] == "egg":
+        elif args[0] == "egg" or args[0] == "eeg":
             await message.channel.send("egg")
         elif args[0] == "args":
             argsleft = len(args)
@@ -68,28 +75,41 @@ async def on_message(message):
                 argnotext = str(len(args) - 1)
                 embed.add_field(name="Total Arguments", value=argnotext, inline=False)
             await message.channel.send(embed=embed)
-        elif args[0] == "aboutme":
-            embed = discord.Embed(title="About " + str(author), description="All about " + author.name,
-                                  color=0x03f4fc)
-            if author.display_name != str(author.name):
-                embed.add_field(name="User Nickname", value=author.display_name, inline=False)
-            embed.add_field(name="User Creation Date", value=author.created_at, inline=False)
-            embed.add_field(name="User ID", value=str(author.id), inline=False)
-            embed.add_field(name="User Discriminator", value=author.discriminator, inline=False)
-            embed.add_field(name="User Avatar Hash", value=author.avatar, inline=False)
-            if author.bot:
-                embed.add_field(name="User is", value="a bot", inline=False)
+        elif args[0] == "kiri":
+            kirilist = kirindex.split(" ")
+            klen = len(kirilist) - 1
+            kno = random.randrange(0, klen)
+            emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
+            k = kirilist[kno]
+            emb.set_image(url=k)
+            await message.channel.send(embed=emb)
+        elif args[0] == "about":
+            if not message.mentions:
+                user = author
             else:
-                embed.add_field(name="User is", value="not a bot", inline=False)
-            if author.system:
-                embed.add_field(name="User is", value="a Discord VIP", inline=False)
+                user = message.mentions
+                user = user[0]
+            emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
+                                color=0x03f4fc)
+            if user.display_name != str(user.name):
+                emb.add_field(name="User Nickname", value=user.display_name, inline=True)
+            emb.add_field(name="User ID", value=str(user.id), inline=True)
+            emb.add_field(name="User Creation Date", value=user.created_at, inline=False)
+            emb.add_field(name="User Discriminator", value=user.discriminator, inline=True)
+            emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
+            if user.bot:
+                emb.add_field(name="User is", value="a bot", inline=True)
             else:
-                embed.add_field(name="User is", value="not a Discord VIP", inline=False)
-            embed.add_field(name="User Avatar URL", value=author.avatar_url, inline=False)
-            embed.add_field(name="User Color", value=author.color, inline=False)
-            avatar = str(author.avatar_url)
-            embed.set_image(url=avatar)
-            await message.channel.send(embed=embed)
+                emb.add_field(name="User is", value="not a bot", inline=True)
+            if user.system:
+                emb.add_field(name="User is", value="a Discord VIP", inline=True)
+            else:
+                emb.add_field(name="User is", value="not a Discord VIP", inline=True)
+            emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
+            emb.add_field(name="User Color", value=user.color, inline=True)
+            avatar = str(user.avatar_url)
+            emb.set_image(url=avatar)
+            await message.channel.send(embed=emb)
         elif args[0] == "github":
             embed = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                                   color=0x26a343)
