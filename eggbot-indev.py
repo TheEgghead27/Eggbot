@@ -45,7 +45,7 @@ async def on_message(message):
         mess = message.content.lower()
         if mess.startswith(prefix) is True:
             mess = mess[prefix_length:]
-        elif mess.startswith("egg") is True:
+        elif mess.startswith("egg") is True or mess.startswith("eeg"):
             mess = mess
         else:
             return
