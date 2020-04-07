@@ -69,39 +69,33 @@ async def on_message(message):
             emb.add_field(name="egg", value="egg", inline=False)
             await message.channel.send(embed=emb)
         elif args[0] == "bee":
-            if author.id == host:
-                beetime = False
-                script = bee.split('🥚')
-                beelen = len(script) // 2
-                int(beelen)
-                print(beelen)
-                print(type(beelen))
-                limitcheck = 25
-                messno = 1
-                color_list = [0xffff00, 0x000000]
-                await message.channel.send("Work In Progress T_Ts")
-                await message.channel.send("hey dev man, you gotta remember to format the newlines")
-                emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
-                async with message.channel.typing():
-                    for i in range(beelen):
-                        if limitcheck == 25:
-                            limitcheck = 0
-                            if beetime:
-                                await message.channel.send(embed=emb)
-                            emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-                            emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
-                                                "313")
-                            color_list.append(color_list[0])
-                            del color_list[0]
-                            messno = messno + 1
-                            beetime = True
-                        emb.add_field(name=script[0], value=script[1], inline=False)
-                        del script[0], script[0]
-                        limitcheck = limitcheck + 1
-                    await message.channel.send(embed=emb)
-
-            else:
-                await message.channel.send("The command is disabled coz y'all can't behave")
+            beetime = False
+            script = bee.split('🥚')
+            beelen = len(script) // 2
+            int(beelen)
+            limitcheck = 25
+            messno = 1
+            color_list = [0xffff00, 0x000000]
+            await message.channel.send("Work In Progress T_Ts")
+            await message.channel.send("hey dev man, you gotta remember to format the newlines")
+            emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
+            async with message.channel.typing():
+                for i in range(beelen):
+                    if limitcheck == 25:
+                        limitcheck = 0
+                        if beetime:
+                            await message.channel.send(embed=emb)
+                        emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
+                        emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                                            "313")
+                        color_list.append(color_list[0])
+                        del color_list[0]
+                        messno = messno + 1
+                        beetime = True
+                    emb.add_field(name=script[0], value=script[1], inline=False)
+                    del script[0], script[0]
+                    limitcheck = limitcheck + 1
+                await message.channel.send(embed=emb)
         elif args[0] == "kiri":
             kirilist = kirindex.split(" ")
             klen = len(kirilist) - 1
