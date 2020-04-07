@@ -98,9 +98,10 @@ https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permiss
 
 ![](tutorial/botpaste.png)
 
-19. Setup the release.py and .txt files like so.
+19. Setup the release.py, kiri.txt, bee.txt, and prerequisite txt files like so.
 
 ![](tutorial/setup.png)
+(not updated yet)
 
 20. Run the Python script.
 
