@@ -38,6 +38,10 @@ with open('bee.txt', 'r') as bee:
     bee = bee.read().replace('\n', '🥚')
 with open('kiri.txt', 'r') as kiri:
     kirindex = kiri.read().replace('\n', ' ')
+with open('egg.txt', 'r') as egg:
+    egglist = egg.read().replace('\n', ' ')
+with open('spice.txt', 'r') as md:
+    hotsauce = md.read().replace('\n', ' ')
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
@@ -48,6 +52,14 @@ async def on_message(message):
         return
     else:
         mess = message.content.lower()
+        if mess.startswith("'") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
+            mess = mess[1:-1]
+        elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("> ") or \
+                mess.startswith("~~"):
+            mess = mess[2:-2]
+        elif mess.startswith("***e") or mess.startswith("'''"):
+            mess = mess[3:-3]
+        print(mess)
         if mess.startswith(prefix) is True:
             mess = mess[prefix_length:]
         elif mess.startswith("egg") is True or mess.startswith("eeg"):
@@ -71,6 +83,7 @@ async def on_message(message):
         elif args[0] == "bee":
             beetime = False
             script = bee.split('🥚')
+
             beelen = len(script) // 2
             int(beelen)
             limitcheck = 25
@@ -98,11 +111,8 @@ async def on_message(message):
                 await message.channel.send(embed=emb)
         elif args[0] == "kiri":
             kirilist = kirindex.split(" ")
-            klen = len(kirilist) - 1
-            kno = random.randrange(0, klen)
             emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
-            k = kirilist[kno]
-            emb.set_image(url=k)
+            emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])
             await message.channel.send(embed=emb)
         elif args[0] == "song":
             try:
@@ -121,7 +131,10 @@ async def on_message(message):
                 return
 
         elif args[0] == "egg" or args[0] == "eeg":
-            await message.channel.send("egg")
+            eggs = egglist.split(" ")
+            spic = hotsauce.split(" ")
+            sno = random.randrange(0, len(spic))
+            await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
         elif args[0] == "args":
             argsleft = len(args)
             emb = discord.Embed(title="Arguments", description="Arguments", color=0x0f88f0)
