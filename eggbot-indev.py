@@ -59,7 +59,6 @@ async def on_message(message):
             mess = mess[2:-2]
         elif mess.startswith("***e") or mess.startswith("'''"):
             mess = mess[3:-3]
-        print(mess)
         if mess.startswith(prefix) is True:
             mess = mess[prefix_length:]
         elif mess.startswith("egg") is True or mess.startswith("eeg"):
@@ -83,7 +82,6 @@ async def on_message(message):
         elif args[0] == "bee":
             beetime = False
             script = bee.split('🥚')
-
             beelen = len(script) // 2
             int(beelen)
             limitcheck = 25
@@ -130,7 +128,7 @@ async def on_message(message):
             finally:
                 return
 
-        elif args[0] == "egg" or args[0] == "eeg":
+        elif args[0] == "egg" or args[0] == "eeg" or args[0] == "eg":
             eggs = egglist.split(" ")
             spic = hotsauce.split(" ")
             sno = random.randrange(0, len(spic))
