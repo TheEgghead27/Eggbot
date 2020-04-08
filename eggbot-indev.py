@@ -127,7 +127,6 @@ async def on_message(message):
                 await message.channel.send(embed=emb)
             finally:
                 return
-
         elif args[0] == "egg" or args[0] == "eeg" or args[0] == "eg":
             eggs = egglist.split(" ")
             spic = hotsauce.split(" ")

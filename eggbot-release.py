@@ -27,6 +27,10 @@ with open('bee.txt', 'r') as bee:
     bee = bee.read().replace('\n', '🥚')
 with open('kiri.txt', 'r') as kiri:
     kirindex = kiri.read().replace('\n', ' ')
+with open('egg.txt', 'r') as egg:
+    egglist = egg.read().replace('\n', ' ')
+with open('spice.txt', 'r') as md:
+    hotsauce = md.read().replace('\n', ' ')
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
@@ -37,6 +41,13 @@ async def on_message(message):
         return
     else:
         mess = message.content.lower()
+        if mess.startswith("'") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
+            mess = mess[1:-1]
+        elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("> ") or \
+                mess.startswith("~~"):
+            mess = mess[2:-2]
+        elif mess.startswith("***e") or mess.startswith("'''"):
+            mess = mess[3:-3]
         if mess.startswith(prefix) is True:
             mess = mess[prefix_length:]
         elif mess.startswith("egg") is True or mess.startswith("eeg"):
@@ -57,9 +68,38 @@ async def on_message(message):
             emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
             emb.add_field(name="egg", value="egg", inline=False)
         elif args[0] == "bee":
+            beetime = False
+            script = bee.split('🥚')
+            beelen = len(script) // 2
+            int(beelen)
+            limitcheck = 25
+            messno = 1
+            color_list = [0xffff00, 0x000000]
             await message.channel.send("Work In Progress T_Ts")
-        elif args[0] == "egg" or args[0] == "eeg":
-            await message.channel.send("egg")
+            await message.channel.send("hey dev man, you gotta remember to format the newlines")
+            emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
+            async with message.channel.typing():
+                for i in range(beelen):
+                    if limitcheck == 25:
+                        limitcheck = 0
+                        if beetime:
+                            await message.channel.send(embed=emb)
+                        emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
+                        emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                                            "313")
+                        color_list.append(color_list[0])
+                        del color_list[0]
+                        messno = messno + 1
+                        beetime = True
+                    emb.add_field(name=script[0], value=script[1], inline=False)
+                    del script[0], script[0]
+                    limitcheck = limitcheck + 1
+                await message.channel.send(embed=emb)
+        elif args[0] == "egg" or args[0] == "eeg" or args[0] == "eg":
+            eggs = egglist.split(" ")
+            spic = hotsauce.split(" ")
+            sno = random.randrange(0, len(spic))
+            await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
         elif args[0] == "args":
             argsleft = len(args)
             embed = discord.Embed(title="Arguments", description="Arguments", color=0x0f88f0)
@@ -77,7 +117,7 @@ async def on_message(message):
             await message.channel.send(embed=embed)
         elif args[0] == "kiri":
             kirilist = kirindex.split(" ")
-            klen = len(kirilist) - 1
+            klen = len(kirilist)
             kno = random.randrange(0, klen)
             emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
             k = kirilist[kno]
