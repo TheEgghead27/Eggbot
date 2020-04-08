@@ -1,5 +1,6 @@
 import time
 import random
+import datetime
 
 try:
     import discord
@@ -42,12 +43,16 @@ with open('egg.txt', 'r') as egg:
     egglist = egg.read().replace('\n', ' ')
 with open('spice.txt', 'r') as md:
     hotsauce = md.read().replace('\n', ' ')
+checkout = open("receipt.txt", "a+")
+eggcount = 0
+
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
 
 @client.event
 async def on_message(message):
+    global eggcount
     if safeguard and message.author.id == bot:
         return
     else:
@@ -132,6 +137,11 @@ async def on_message(message):
             spic = hotsauce.split(" ")
             sno = random.randrange(0, len(spic))
             await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
+            eggcount = eggcount + 1
+        elif args[0] == "eggcount":
+            emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
+            emb.add_field(name="Egg count:", value=str(eggcount), inline=False)
+            await message.channel.send(embed=emb)
         elif args[0] == "args":
             argsleft = len(args)
             emb = discord.Embed(title="Arguments", description="Arguments", color=0x0f88f0)
@@ -185,6 +195,7 @@ async def on_message(message):
                                     color=0xff0000)
                 await message.channel.send(embed=emb)
                 await client.change_presence(activity=discord.Game(name='Shutting down...'))
+                checkout.writelines(str(datetime.datetime.now()) + "\n" + str(eggcount))
                 exit(0)
             else:
                 emb = discord.Embed(title="Shutting down...", description="Please wait...",
