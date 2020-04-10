@@ -1,8 +1,7 @@
 # Eggbot
 Basic text pusher with embed message functionality
 
-##Discord
-
+## Discord
 [![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
 
 ## Commands
