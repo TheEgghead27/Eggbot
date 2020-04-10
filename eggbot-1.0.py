@@ -48,13 +48,44 @@ with open('egg.txt', 'r') as egg:
 with open('spice.txt', 'r') as md:
     hotsauce = md.read().replace('\n', ' ')
 checkout = open("receipt.txt", "a+")
-eggcount = 0
+eggc = 0
 
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
 
-
+@bot.event
+async def on_message(message):
+    global eggc
+    print(str(message.author.id))
+    if safeguard and message.author.id == botid:
+        print("cancelled!")
+        return
+    else:
+        print("processing!")
+        mess = message.content.lower()
+        if mess.startswith("'") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
+            mess = mess[1:-1]
+        elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("> ") or \
+                mess.startswith("~~"):
+            mess = mess[2:-2]
+        elif mess.startswith("***e") or mess.startswith("'''"):
+            mess = mess[3:-3]
+        if mess.startswith(prefix) is True:
+            mess = mess[prefix_length:]
+        elif mess.startswith("egg") is True or mess.startswith("eeg"):
+            mess = mess
+        else:
+            return
+        a = mess.split()
+        print(a)
+        if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
+            eggs = egglist.split(" ")
+            spic = hotsauce.split(" ")
+            sno = random.randrange(0, len(spic))
+            await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
+            eggc = eggc + 1
+        await bot.process_commands(message)
 
 
 @bot.command()
@@ -174,7 +205,7 @@ async def github(ctx):
 @bot.command()
 async def eggcount(ctx):
     emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-    emb.add_field(name="Egg count:", value=str(eggcount), inline=False)
+    emb.add_field(name="Egg count:", value=str(eggc), inline=False)
     await ctx.send(embed=emb)
 
 
