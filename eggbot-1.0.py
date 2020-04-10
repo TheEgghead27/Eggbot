@@ -27,7 +27,7 @@ bot.remove_command("help")
 
 @bot.event
 async def on_ready():
-    print('We have logged in as ' + bot.user.name + " as ID# " + str(bot.user.id))
+    print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
     await bot.change_presence(activity=discord.Game(name="e!help"))
 
 
