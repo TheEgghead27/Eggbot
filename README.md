@@ -1,6 +1,9 @@
 # Eggbot
 Basic text pusher with embed message functionality
 
+##Discord
+[![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
+
 ## Commands
 e!help: help
 
@@ -106,6 +109,12 @@ https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permiss
 
 ![](tutorial/setup.png)
 
-20. Run the Python script.
+20. Go to 
+
+[![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
+
+and have a moderator add your bot with the bot invite link.
+
+21. Run the Python script.
 
 Enjoy!
