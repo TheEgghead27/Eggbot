@@ -1,6 +1,5 @@
 import time
 import random
-import datetime
 
 try:
     import discord
@@ -45,26 +44,34 @@ with open('kiri.txt', 'r') as kiri:
     kirindex = kiri.read().replace('\n', ' ')
 with open('egg.txt', 'r') as egg:
     egglist = egg.read().replace('\n', ' ')
+    eggs = egglist.split(" ")
 with open('spice.txt', 'r') as md:
     hotsauce = md.read().replace('\n', ' ')
-checkout = open("receipt.txt", "a+")
+    spic = hotsauce.split(" ")
+with open("simp.txt", "r") as sim:
+    simp = sim.read().replace('\n', ' ')
+    simp = simp.split(' ')
 eggc = 0
+EGGCHECK = True
 
 # Set this to False if you feel like DDoSing Discord with the egg command
 safeguard = True
 
 
+# Egg and Simp command due to special parsing
 @bot.event
 async def on_message(message):
-    global eggc
-    print(str(message.author.id))
+    global eggc, EGGCHECK
+    if message.content.lower() in (':egghead:', '*:egghead:*', '**:egghead:**', '***:egghead:***', '`:egghead:`',
+                                   '||:egghead:||'):
+        if EGGCHECK:
+            await message.channel.send("Woah! Looks like I don't have access"
+                                       " to my emotes! Did <@" + str(host) + "> add me to the Eggbot Discord Server?")
     if safeguard and message.author.id == botid:
-        print("cancelled!")
         return
     else:
-        print("processing!")
         mess = message.content.lower()
-        if mess.startswith("'") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
+        if mess.startswith("`e") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
             mess = mess[1:-1]
         elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("> ") or \
                 mess.startswith("~~"):
@@ -75,17 +82,22 @@ async def on_message(message):
             mess = mess[prefix_length:]
         elif mess.startswith("egg") is True or mess.startswith("eeg"):
             mess = mess
+        elif mess.startswith("simp"):
+            mess = mess
         else:
             return
         a = mess.split()
         print(a)
         if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
-            eggs = egglist.split(" ")
-            spic = hotsauce.split(" ")
             sno = random.randrange(0, len(spic))
             await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
             eggc = eggc + 1
-        await bot.process_commands(message)
+            EGGCHECK = True
+        elif a[0] == "simp":
+            sno = random.randrange(0, len(spic))
+            await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+        else:
+            await bot.process_commands(message)
 
 
 @bot.command()
@@ -100,6 +112,8 @@ async def help(ctx):
                   value="Reveals basically everything (legal) I can get on you", inline=False)
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
+    emb.add_field(name="e!eggcount", value="Counts the day's eggs!", inline=False)
+    emb.add_field(name="simp", value="SIMP", inline=False)
     await ctx.send(embed=emb)
 
 
@@ -209,9 +223,6 @@ async def eggcount(ctx):
     await ctx.send(embed=emb)
 
 
-# Egg and Simp command due to special parsing
-
-
 # Secret Admin-Only Commands
 
 
@@ -223,7 +234,6 @@ async def shutdown(ctx):
                             color=0xff0000)
         await message.channel.send(embed=emb)
         await client.change_presence(activity=discord.Game(name='Shutting down...'))
-        checkout.writelines(str(datetime.datetime.now()) + "\n" + str(eggcount))
         exit(0)
     else:
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
@@ -250,4 +260,6 @@ async def say(ctx):
 
 with open('token.txt', 'r') as file:
     token = file.read()
-bot.run(token)
+
+while True:
+    bot.loop.run_until_complete(bot.run(token))

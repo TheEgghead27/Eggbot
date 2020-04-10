@@ -2,19 +2,23 @@
 Basic text pusher with embed message functionality
 
 ## Commands
-e!help : help
+e!help: help
 
-e!about : about the speaking/first mentioned user
+e!about: about the speaking/first mentioned user
 
-e!args {arguments} : list of args
+e!args {arguments}: list of args
 
-e!bee : prints bee movie script (WIP)
+e!bee: prints bee movie script (WIP)
 
-e!kiri : displays an image of Eijiro Kirishima from My Hero Academia [request from Eijiro Kirishima#6669]
+e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Eijiro Kirishima#6669]
 
-e!song : song (WIP)
+e!song: song (WIP)
 
-egg : egg
+egg: egg
+
+e!eggcount: counts the day's eggs
+
+simp: SIMP
 
 ### Owner-Only Commands
 
