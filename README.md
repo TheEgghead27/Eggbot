@@ -2,6 +2,7 @@
 Basic text pusher with embed message functionality
 
 ##Discord
+
 [![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
 
 ## Commands
