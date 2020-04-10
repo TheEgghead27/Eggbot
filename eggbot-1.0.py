@@ -233,7 +233,7 @@ async def shutdown(ctx):
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
         await message.channel.send(embed=emb)
-        await client.change_presence(activity=discord.Game(name='Shutting down...'))
+        await bot.change_presence(activity=discord.Game(name='Shutting down...'))
         exit(0)
     else:
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
