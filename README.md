@@ -17,6 +17,10 @@ e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request fro
 
 e!song: song (WIP)
 
+e!github: Links to this Github Repo
+
+e!invite: DMs you an invite to the official Discord Server
+
 egg: egg
 
 e!eggcount: counts the day's eggs

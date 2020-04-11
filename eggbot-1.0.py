@@ -110,6 +110,7 @@ async def help(ctx):
     emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
                   value="Reveals basically everything (legal) I can get on you", inline=False)
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
+    emb.add_field(name="e!invite", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggcount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
@@ -213,6 +214,14 @@ async def github(ctx):
     emb = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                         color=0x26a343)
     await ctx.send(embed=emb)
+
+
+@bot.command()
+async def invite(ctx):
+    emb = discord.Embed(title="Official Eggbot Discord Server", description="https://discord.gg/rTfkdvX",
+                        color=0x000000)
+    await ctx.message.author.send(embed=emb)
+    await ctx.send("Sent server invite to your DMs!")
 
 
 @bot.command()
