@@ -84,17 +84,20 @@ async def on_message(message):
             mess = mess
         a = mess.split()
         print(a)
-        if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
-            sno = random.randrange(0, len(spic))
-            await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
-            eggc = eggc + 1
-            emotecheck = True
-        elif a[0] == "simp":
-            sno = random.randrange(0, len(spic))
-            await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-            emotecheck = True
-        else:
-            await bot.process_commands(message)
+        try:
+            if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
+                sno = random.randrange(0, len(spic))
+                await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
+                eggc = eggc + 1
+                emotecheck = True
+            elif a[0] == "simp":
+                sno = random.randrange(0, len(spic))
+                await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+                emotecheck = True
+            else:
+                await bot.process_commands(message)
+        except IndexError:
+            return
 
 
 @bot.command()
