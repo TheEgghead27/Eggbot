@@ -52,24 +52,22 @@ with open("simp.txt", "r") as sim:
     simp = sim.read().replace('\n', ' ')
     simp = simp.split(' ')
 eggc = 0
-EGGCHECK = True
-
-# Set this to False if you feel like DDoSing Discord with the egg command
-safeguard = True
+emotecheck = False
 
 
 # Egg and Simp command due to special parsing
 @bot.event
 async def on_message(message):
-    global eggc, EGGCHECK
+    global eggc, emotecheck
     if message.content.lower() in (':egghead:', '*:egghead:*', '**:egghead:**', '***:egghead:***', '`:egghead:`',
                                    '||:egghead:||'):
-        if EGGCHECK:
+        if emotecheck:
             await message.channel.send("Woah! Looks like I don't have access"
                                        " to my emotes! Did <@" + str(host) + "> add me to the Eggbot Discord Server?")
-    if safeguard and message.author.id == botid:
+    if message.author.id == botid:
         return
     else:
+        emotecheck = False
         mess = message.content.lower()
         if mess.startswith("`e") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
             mess = mess[1:-1]
@@ -84,18 +82,17 @@ async def on_message(message):
             mess = mess
         elif mess.startswith("simp"):
             mess = mess
-        else:
-            return
         a = mess.split()
         print(a)
         if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
             sno = random.randrange(0, len(spic))
             await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
             eggc = eggc + 1
-            EGGCHECK = True
+            emotecheck = True
         elif a[0] == "simp":
             sno = random.randrange(0, len(spic))
             await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+            emotecheck = True
         else:
             await bot.process_commands(message)
 
