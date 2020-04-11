@@ -83,7 +83,6 @@ async def on_message(message):
         elif mess.startswith("simp"):
             mess = mess
         a = mess.split()
-        print(a)
         try:
             if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
                 sno = random.randrange(0, len(spic))
@@ -136,7 +135,7 @@ async def bee(ctx):
                 if beetime:
                     await ctx.send(embed=emb)
                 emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-                emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                emb.set_author(name="TheEgghead27's conversion of https://wwwscripts.com/script/bee_movie_"
                                     "313")
                 color_list.append(color_list[0])
                 del color_list[0]
