@@ -1,4 +1,4 @@
-import time
+import asyncio
 import random
 
 try:
@@ -247,7 +247,7 @@ async def shutdown(ctx):
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
         await message.channel.send(embed=emb)
-        time.sleep(5)
+        await asyncio.sleep(5)
         emb = discord.Embed(title="Sike, you thought!", description="You don't have permission to do "
                                                                     "this!", color=0xff0000)
         await message.channel.send(embed=emb)
