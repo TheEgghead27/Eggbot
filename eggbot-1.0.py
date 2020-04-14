@@ -71,8 +71,9 @@ async def on_message(message):
         mess = message.content.lower()
         if mess.startswith("`e") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
             mess = mess[1:-1]
-        elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("> ") or \
-                mess.startswith("~~"):
+        elif mess.startswith("> "):
+            mess = mess[2:]
+        elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("~~"):
             mess = mess[2:-2]
         elif mess.startswith("***e") or mess.startswith("'''"):
             mess = mess[3:-3]
