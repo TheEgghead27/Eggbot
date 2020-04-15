@@ -1,5 +1,6 @@
 import asyncio
 import random
+import os
 
 try:
     import discord
@@ -7,7 +8,6 @@ try:
 except ModuleNotFoundError:
     import subprocess
     import sys
-
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
     import discord
     from discord.ext import commands
@@ -271,4 +271,4 @@ with open('token.txt', 'r') as file:
     token = file.read()
 
 while True:
-    bot.loop.run_until_complete(bot.run(token))
+    bot.run(token)
