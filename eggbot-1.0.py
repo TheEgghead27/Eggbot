@@ -41,6 +41,7 @@ with open('bee.txt', 'r') as bee:
     bee = bee.read().replace('\n', '🥚')
     bee = bee.replace('[n]', '\n')
     beesplit = bee.split('🥚')
+    beesplit = tuple(beesplit)
 with open('kiri.txt', 'r') as kiri:
     kirindex = kiri.read().replace('\n', ' ')
 with open('egg.txt', 'r') as egg:
@@ -118,7 +119,7 @@ async def help(ctx):
 @bot.command()
 async def bee(ctx):
     beetime = False
-    script = beesplit
+    script = list(beesplit)
     beelen = len(script) // 2
     int(beelen)
     limitcheck = 25
