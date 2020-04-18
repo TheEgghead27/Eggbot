@@ -39,6 +39,7 @@ with open('bot.txt', 'r') as file:
     botid = int(file.read())
 with open('bee.txt', 'r') as bee:
     bee = bee.read().replace('\n', '🥚')
+    bee = bee.replace('[n]', '\n')
     beesplit = bee.split('🥚')
 with open('kiri.txt', 'r') as kiri:
     kirindex = kiri.read().replace('\n', ' ')
@@ -79,10 +80,6 @@ async def on_message(message):
             mess = mess[3:-3]
         if mess.startswith(prefix) is True:
             mess = mess[prefix_length:]
-        elif mess.startswith("egg") is True or mess.startswith("eeg"):
-            mess = mess
-        elif mess.startswith("simp"):
-            mess = mess
         a = mess.split()
         try:
             if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
@@ -90,7 +87,7 @@ async def on_message(message):
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 eggc = eggc + 1
                 emotecheck = True
-            elif a[0] == "simp":
+            elif a[0] == "simp" or a[0] == "sɪᴍᴘ":
                 sno = random.randrange(0, len(spic))
                 await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
                 emotecheck = True

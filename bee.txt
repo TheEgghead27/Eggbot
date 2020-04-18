@@ -1,5 +1,5 @@
 Narrator
-According to all known laws of aviation, [newline here]there is no way a bee should be able to fly. [newline here][newline here]Its wings are too small to get its fat little body off the ground. [newline here]The bee, of course, flies anyway [newline here]because bees don't care what humans think is impossible.
+According to all known laws of aviation, [n]there is no way a bee should be able to fly. [n][n]Its wings are too small to get its fat little body off the ground. [n]The bee, of course, flies anyway [n]because bees don't care what humans think is impossible.
 Barry
 Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow! Let's shake it up a little.
 Mother
@@ -369,7 +369,7 @@ Oh, no!
 Barry
 I have to, before I go to work for the rest of my life.
 Adam
-You're gonna die! You're crazy! [newline here](Barry hangs up) [newline here]Hello?
+You're gonna die! You're crazy! [n](Barry hangs up) [n]Hello?
 Pollen Jock #2
 Another call coming in. If anyone's feeling brave, there's a Korean deli on 83rd that gets their roses today.
 Barry
@@ -396,3 +396,13 @@ Lou Lo Duva
 And a reminder for you rookies, bee law number one, absolutely no talking to humans!
 Lou Lo Duva
 All right, launch positions!
+Pollen Jocks
+(The Pollen Jocks run into formation)
+Pollen Jocks
+Buzz, buzz, buzz, buzz! Buzz, buzz, buzz, buzz! Buzz, buzz, buzz, buzz!
+Lou Lu Duva
+Black and yellow!
+Pollen Jocks
+Hello!
+Pollen Jock #1
+(To Barry) You ready for this, hot shot?

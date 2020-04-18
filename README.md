@@ -13,7 +13,7 @@ e!args {arguments}: list of args
 
 e!bee: prints bee movie script (WIP)
 
-e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Eijiro Kirishima#6669]
+e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Hanako-kun#6669]
 
 e!song: song (WIP)
 
