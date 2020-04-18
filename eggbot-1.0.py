@@ -1,6 +1,5 @@
 import asyncio
 import random
-import os
 
 try:
     import discord
