@@ -42,10 +42,10 @@ try:
     with open(file, 'r') as botid:
         botid = int(botid.read())
     file = 'bee.txt'
-    with open(file, 'r') as bee:
-        bee = bee.read().replace('\n', '🥚')
-        bee = bee.replace('[n]', '\n')
-        bee = tuple(bee.split('🥚'))
+    with open(file, 'r') as Bee:
+        Bee = Bee.read().replace('\n', '🥚')
+        Bee = Bee.replace('[n]', '\n')
+        Bee = tuple(Bee.split('🥚'))
     file = 'kiri.txt'
     with open(file, 'r') as kirindex:
         kirindex = kirindex.read().replace('\n', ' ')
@@ -140,7 +140,7 @@ async def help(ctx):
 @bot.command()
 async def bee(ctx):
     beetime = False
-    script = list(bee)
+    script = list(Bee)
     beelen = len(script) // 2
     int(beelen)
     limitcheck = 25
