@@ -18,7 +18,6 @@ logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
-
 client = discord.Client()
 bot = commands.Bot(command_prefix='e!', description="e!help")
 bot.remove_command("help")
@@ -32,65 +31,88 @@ async def on_ready():
 
 prefix = "e!"
 prefix_length = len(prefix)
-with open('host.txt', 'r') as file:
-    host = int(file.read())
-with open('bot.txt', 'r') as file:
-    botid = int(file.read())
-with open('bee.txt', 'r') as bee:
-    bee = bee.read().replace('\n', '🥚')
-    bee = bee.replace('[n]', '\n')
-    beesplit = bee.split('🥚')
-    beesplit = tuple(beesplit)
-with open('kiri.txt', 'r') as kiri:
-    kirindex = kiri.read().replace('\n', ' ')
-with open('egg.txt', 'r') as egg:
-    egglist = egg.read().replace('\n', ' ')
-    eggs = egglist.split(" ")
-with open('spice.txt', 'r') as md:
-    hotsauce = md.read().replace('\n', ' ')
-    spic = hotsauce.split(" ")
-with open("simp.txt", "r") as sim:
-    simp = sim.read().replace('\n', ' ')
-    simp = simp.split(' ')
+# set this to False to enable egg spamming (or you could just not setup bot.txt, but that's not a good solution)
+safeguard = True
+file = "No file"
+try:
+    file = "host.txt"
+    with open(file, 'r') as host:
+        host = int(host.read())
+    file = 'bot.txt'
+    with open(file, 'r') as botid:
+        botid = int(botid.read())
+    file = 'bee.txt'
+    with open(file, 'r') as bee:
+        bee = bee.read().replace('\n', '🥚')
+        bee = bee.replace('[n]', '\n')
+        bee = tuple(bee.split('🥚'))
+    file = 'kiri.txt'
+    with open(file, 'r') as kirindex:
+        kirindex = kirindex.read().replace('\n', ' ')
+    file = 'egg.txt'
+    with open(file, 'r') as eggs:
+        eggs = eggs.read().replace('\n', ' ')
+        eggs = eggs.split(" ")
+    file = 'spice.txt'
+    with open(file, 'r') as spic:
+        spic = spic.read().replace('\n', ' ')
+        spic = spic.split(" ")
+    file = "simp.txt"
+    with open(file, "r") as simp:
+        simp = simp.read().replace('\n', ' ')
+        simp = simp.split(' ')
+    file = "uhoh.txt"
+    with open(file, "r") as ohno:
+        ohno = ohno.read().replace('\n', ' ')
+        ohno = tuple(ohno.split(' '))
+    file = "eggtriggers.txt"
+    with open(file, "r") as eggtrigger:
+        eggtrigger = eggtrigger.read().replace('\n', ' ')
+        eggtrigger = tuple(eggtrigger.split(' '))
+except FileNotFoundError:
+    print(file + " is not setup or installed!!")
+    print("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
+          " :(")
 eggc = 0
-emotecheck = False
 
 
 # Egg and Simp command due to special parsing
 @bot.event
 async def on_message(message):
-    global eggc, emotecheck
-    if message.content.lower() in (':egghead:', '*:egghead:*', '**:egghead:**', '***:egghead:***', '`:egghead:`',
-                                   '||:egghead:||'):
-        if emotecheck:
+    global eggc
+    # allows for text formatting stuff to be parsed
+    mess = message.content.lower()
+    if mess[:-len(mess) + 2] in ("||", "~~"):
+        mess = mess[2:-2]
+    if mess.startswith("> "):
+        mess = mess[2:]
+    if mess[:-len(mess) + 2] in ("`e", "*e", "*<", "*:"):
+        mess = mess[1:-1]
+    elif mess[:-len(mess) + 3] in ("**e", "**<", "**:"):
+        mess = mess[2:-2]
+    elif mess[:-len(mess) + 4] in ("***e", "***<", "***:"):
+        mess = mess[3:-3]
+    if mess.startswith(prefix) is True:
+        mess = mess[prefix_length:]
+    a = mess.split()
+    if mess in ohno:
+        if message.author.id == botid:
             await message.channel.send("Woah! Looks like I don't have access"
                                        " to my emotes! Did <@" + str(host) + "> add me to the Eggbot Discord Server?")
-    if message.author.id == botid:
+    if message.author.id == botid and safeguard:
         return
     else:
-        emotecheck = False
-        mess = message.content.lower()
-        if mess.startswith("`e") or mess.startswith("*e") or mess.startswith("|e") or mess.startswith("~"):
-            mess = mess[1:-1]
-        elif mess.startswith("> "):
-            mess = mess[2:]
-        elif mess.startswith("**e") or mess.startswith("||e") or mess.startswith("''e") or mess.startswith("~~"):
-            mess = mess[2:-2]
-        elif mess.startswith("***e") or mess.startswith("'''"):
-            mess = mess[3:-3]
-        if mess.startswith(prefix) is True:
-            mess = mess[prefix_length:]
-        a = mess.split()
         try:
-            if a[0] == "egg" or a[0] == "eeg" or a[0] == "eg":
+            if a[0] in eggtrigger:
                 sno = random.randrange(0, len(spic))
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 eggc = eggc + 1
-                emotecheck = True
-            elif a[0] == "simp" or a[0] == "sɪᴍᴘ":
-                sno = random.randrange(0, len(spic))
-                await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-                emotecheck = True
+            elif a[0] in ("simp", "sɪᴍᴘ"):
+                if message.author.id == botid:
+                    return
+                else:
+                    sno = random.randrange(0, len(spic))
+                    await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
             else:
                 await bot.process_commands(message)
         except IndexError:
@@ -118,7 +140,7 @@ async def help(ctx):
 @bot.command()
 async def bee(ctx):
     beetime = False
-    script = list(beesplit)
+    script = list(bee)
     beelen = len(script) // 2
     int(beelen)
     limitcheck = 25
