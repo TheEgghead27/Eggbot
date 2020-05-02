@@ -286,8 +286,8 @@ async def say(ctx):
         return
 
 
-with open('token.txt', 'r') as file:
-    token = file.read()
+with open('token.txt', 'r') as token:
+    token = token.read()
 
 while True:
     bot.run(token)
