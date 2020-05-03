@@ -12,13 +12,12 @@ except ModuleNotFoundError:
     from discord.ext import commands
 # remove logging in release
 import logging
-
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
-client = discord.Client()
+
 bot = commands.Bot(command_prefix='e!', description="e!help")
 bot.remove_command("help")
 
@@ -69,11 +68,45 @@ try:
     with open(file, "r") as eggtrigger:
         eggtrigger = eggtrigger.read().replace('\n', ' ')
         eggtrigger = tuple(eggtrigger.split(' '))
+    file = "Cheap.txt"
+    with open(file, "r+") as cheapskate:
+        cheapskate = cheapskate.read().replace('\n', ' ')
+        cheapskate = int(cheapskate)
 except FileNotFoundError:
     print(file + " is not setup or installed!!")
     print("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
           " :(")
+except ValueError:
+    print("It looks like " + file + " is blank! Some features may not work!")
 eggc = 0
+
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    react_guild = bot.get_guild(payload.guild_id)
+    react_user = react_guild.get_member(payload.user_id)
+    if payload.message_id == cheapskate:
+        if str(payload.emoji) == '💰':
+            skate_role = discord.Object(id=706296742114754670)
+            await react_user.add_roles(skate_role)
+            emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major announcement "
+                                                                     "appears in <#705235263428886560>",
+                                color=0x1abc9c)
+            await react_user.send(embed=emb)
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    react_guild = bot.get_guild(payload.guild_id)
+    react_user = react_guild.get_member(payload.user_id)
+    skate_role = discord.Object(id=706296742114754670)
+    if payload.message_id == cheapskate:
+        if str(payload.emoji) == '💰':
+            await react_user.remove_roles(skate_role)
+            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
+                                                                     "announcement appears in <#705235263428886560>",
+                                color=0xbc1a00)
+            await react_user.send(embed=emb)
 
 
 # Egg and Simp command due to special parsing
@@ -284,6 +317,21 @@ async def say(ctx):
         await message.channel.send(echo)
     else:
         return
+
+
+@bot.command()
+async def cheap(ctx):
+    if host == ctx.message.author.id:
+        await ctx.message.delete()
+        emb = discord.Embed(title="Free Role", description="React with :moneybag: to get the <@&706296742114754670> role "
+                                                           "(only available when bot is online)",
+                            color=0x1abc9c)
+        emb.add_field(name="Note:", value="You will receive a confirmation DM for your role.", inline=False)
+        cheap_mess = await ctx.send(embed=emb)
+        await cheap_mess.add_reaction('💰')
+        print("Hey! Set Cheap.txt's data to the number " + '"' + str(cheap_mess.id) + '"!')
+        global cheapskate
+        cheapskate = cheap_mess.id
 
 
 with open('token.txt', 'r') as token:
