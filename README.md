@@ -38,43 +38,59 @@ e!shutdown: shuts the bot down without needing to manually stop the script
 
 1. To host a bot, you'll need a bot account from https://discordapp.com/developers/applications/
 
-2. Click New Application  ![](tutorial/newapp.png)
+2. Click New Application\
+  ![](tutorial/newapp.png)
 
-3. Name the application (We recommend setting Team to Personal) ![](tutorial/teamchoose.png)
+3. Name the application (We recommend setting Team to Personal)\
+ ![](tutorial/teamchoose.png)
 
-4. Click Bot ![](tutorial/clikbot.png)
+4. Click Bot \
+![](tutorial/clikbot.png)
 
-5. Add a bot (just click yes for the popup I guess) ![](tutorial/makebot.png)
+5. Add a bot (just click yes for the popup I guess) \
+![](tutorial/makebot.png)
 
-6. Get the token from your bot ![](tutorial/tokentime.png)
+6. Get the token from your bot \
+![](tutorial/tokentime.png)
 
-7. Make a token.txt out of the text you got ![](tutorial/tokentxt.png)
+7. Make a token.txt out of the text you got \
+![](tutorial/tokentxt.png)
 
-8. Go to Oauth section ![](tutorial/oauth.png)
+8. Go to Oauth section \
+![](tutorial/oauth.png)
 
-9. Click Bot Scope ![](tutorial/botlink.png)
+9. Click Bot Scope \
+![](tutorial/botlink.png)
 
-10. Click these permissions (these have changed recently, so if you are getting exceptions, kick the bot and make a new link with these permissions) ![](tutorial/perms.png)
+10. Click these permissions \
+![](tutorial/perms.png)
 
-11. Use this link to invite your bot to your server (like any other bot) ![](tutorial/getlink.png)
+11. Use this link to invite your bot to your server (like any other bot)\
+ ![](tutorial/getlink.png)
 
-12. Right click your Discord account in chat ![](tutorial/rclickOwner.png)
+12. Right click your Discord account in chat\
+ ![](tutorial/rclickOwner.png)
 
-13. Copy ID ![](tutorial/copyOwner.png)
+13. Copy ID \
+![](tutorial/copyOwner.png)
 
-14. Paste it in a host.txt![](tutorial/hostpaste.png)
+14. Paste it in a host.txt\
+![](tutorial/hostpaste.png)
 
-15. Right click your Bot account in the member list![](tutorial/rclickBot.png)
+15. Right click your Bot account in the member list\
+![](tutorial/rclickBot.png)
 
 16. Copy ID\
  ![](tutorial/copyBot.png)
 
-17. Paste it in a bot.txt![](tutorial/botpaste.png)
+17. Paste it in a bot.txt\
+![](tutorial/botpaste.png)
 
 18. Download and unzip the files from https://github.com/TheEgghead27/Eggbot/archive/self-host.zip \
 ![](tutorial/setup.png)
 
-19. Place your token, bot, and host.txt's in the folder
+19. Place your token, bot, and host.txt's in the folder\
+
 
 19. Go to\
  [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
