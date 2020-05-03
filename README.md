@@ -91,12 +91,11 @@ e!shutdown: shuts the bot down without needing to manually stop the script
 
 19. Place your token, bot, and host.txt's in the folder\
 
-
-19. Go to\
+20. Go to\
  [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
 \
 and have a moderator add your bot with the bot invite link.
 
-20. Run the Python script.
+21. Run the Python script.
 
 Enjoy!
