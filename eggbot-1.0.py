@@ -99,9 +99,9 @@ async def on_raw_reaction_add(payload):
 async def on_raw_reaction_remove(payload):
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
-    skate_role = discord.Object(id=706296742114754670)
     if payload.message_id == cheapskate:
         if str(payload.emoji) == '💰':
+            skate_role = discord.Object(id=706296742114754670)
             await react_user.remove_roles(skate_role)
             emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
                                                                      "announcement appears in <#705235263428886560>",
@@ -323,8 +323,8 @@ async def say(ctx):
 async def cheap(ctx):
     if host == ctx.message.author.id:
         await ctx.message.delete()
-        emb = discord.Embed(title="Free Role", description="React with :moneybag: to get the <@&706296742114754670> role "
-                                                           "(only available when bot is online)",
+        emb = discord.Embed(title="Free Role", description="React with :moneybag: to get the <@&706296742114754670> "
+                                                           "role (only available when bot is online)",
                             color=0x1abc9c)
         emb.add_field(name="Note:", value="You will receive a confirmation DM for your role.", inline=False)
         cheap_mess = await ctx.send(embed=emb)
