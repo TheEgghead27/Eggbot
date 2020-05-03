@@ -34,7 +34,6 @@ e!say: says whatever you tell it to say
 e!shutdown: shuts the bot down without needing to manually stop the script
 
 ## Self-Host
-(GitHub Pages messed up the step numbers)
 
 1. To host a bot, you'll need a bot account from https://discordapp.com/developers/applications/
 
@@ -90,6 +89,7 @@ e!shutdown: shuts the bot down without needing to manually stop the script
 ![](tutorial/setup.png)
 
 19. Place your token, bot, and host.txt's in the folder\
+![](tutorial/setup1.png)
 
 20. Go to\
  [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
