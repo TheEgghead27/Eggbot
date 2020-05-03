@@ -322,7 +322,7 @@ async def cheap(ctx):
                             color=0x000000)
         emb.add_field(name="Note:", value="You will receive a confirmation DM for your role.", inline=False)
         cheap_mess = await ctx.send(embed=emb)
-        await cheap_mess.add_reaction('🥚'):
+        await cheap_mess.add_reaction('🥚')
         print("Hey! Set text.txt's data to the number " + '"' + str(cheap_mess.id) + '"!')
         global cheapskate
         cheapskate = cheap_mess.id

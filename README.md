@@ -2,7 +2,7 @@
 Basic text pusher with embed message functionality
 
 ## Discord
-[![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
+[![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
 
 ## Commands
 e!help: help
@@ -33,92 +33,54 @@ e!say: says whatever you tell it to say
 
 e!shutdown: shuts the bot down without needing to manually stop the script
 
-## Official Host (Only on when TheEgghead27 is online)
-https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
-
 ## Self-Host
 (GitHub Pages messed up the step numbers)
 
 1. To host a bot, you'll need a bot account from https://discordapp.com/developers/applications/
 
-2. Click New Application 
+2. Click New Application  ![](tutorial/newapp.png)
 
-![](tutorial/newapp.png)
+3. Name the application (We recommend setting Team to Personal) ![](tutorial/teamchoose.png)
 
-3. Name the application (We recommend setting Team to Personal)
+4. Click Bot ![](tutorial/clikbot.png)
 
-![](tutorial/teamchoose.png)
+5. Add a bot (just click yes for the popup I guess) ![](tutorial/makebot.png)
 
-4. Click Bot
+6. Get the token from your bot ![](tutorial/tokentime.png)
 
-![](tutorial/clikbot.png)
+7. Make a token.txt out of the text you got ![](tutorial/tokentxt.png)
 
-5. Add a bot (just click yes for the popup I guess)
+8. Go to Oauth section ![](tutorial/oauth.png)
 
-![](tutorial/makebot.png)
+9. Click Bot Scope ![](tutorial/botlink.png)
 
-6. Get the token from your bot
+10. Click these permissions (these have changed recently, so if you are getting exceptions, kick the bot and make a new link with these permissions) ![](tutorial/perms.png)
 
-![](tutorial/tokentime.png)
+11. Use this link to invite your bot to your server (like any other bot) ![](tutorial/getlink.png)
 
-7. Make a token.txt out of the text you got
+12. Right click your Discord account in chat ![](tutorial/rclickOwner.png)
 
-![](tutorial/tokentxt.png)
+13. Copy ID ![](tutorial/copyOwner.png)
 
-8. Go to Oauth section
+14. Paste it in a host.txt![](tutorial/hostpaste.png)
 
-![](tutorial/oauth.png)
+15. Right click your Bot account in the member list![](tutorial/rclickBot.png)
 
-9. Click Bot Scope
+16. Copy ID\
+ ![](tutorial/copyBot.png)
 
-![](tutorial/botlink.png)
+17. Paste it in a bot.txt![](tutorial/botpaste.png)
 
-10. Click these permissions (these have changed recently, so if you are getting exceptions, kick the bot and make a new link with these permissions)
-
-![](tutorial/perms.png)
-
-11. Use this link to invite your bot to your server (like any other bot)
-
-![](tutorial/getlink.png)
-
-12. Download and run eggbot-release.py, with token.txt in the same folder as the main script
-
-![](tutorial/setup1.png)
-
-13. Right click your Discord account in chat
-
-![](tutorial/rclickOwner.png)
-
-14. Copy ID 
-
-![](tutorial/copyOwner.png)
-
-15. Paste it in a host.txt
-
-![](tutorial/hostpaste.png)
-
-16. Right click your Bot account in chat
-
-![](tutorial/rclickBot.png)
-
-17. Copy ID 
-
-![](tutorial/copyBot.png)
-
-18. Paste it in a bot.txt
-
-![](tutorial/botpaste.png)
-
-19. Setup the release.py, kiri.txt, bee.txt, and prerequisite txt files like so.
-
+18. Download and unzip the files from https://github.com/TheEgghead27/Eggbot/archive/self-host.zip \
 ![](tutorial/setup.png)
 
-20. Go to 
+19. Place your token, bot, and host.txt's in the folder
 
-[![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
-
+19. Go to\
+ [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
+\
 and have a moderator add your bot with the bot invite link.
 
-21. Run the Python script.
+20. Run the Python script.
 
 Enjoy!
