@@ -1,6 +1,9 @@
 # Eggbot
 Basic text pusher with embed message functionality
 
+## Branch Note
+This is the `master` branch, home of the raw code used by the developers.
+
 ## Discord
 [![Server Invite](invite.png)](https://discord.gg/rTfkdvX)
 
