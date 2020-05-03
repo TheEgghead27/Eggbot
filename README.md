@@ -33,7 +33,7 @@ e!say: says whatever you tell it to say
 
 e!shutdown: shuts the bot down without needing to manually stop the script
 
-## Official Tester Host (Only on when testing the bot)
+## Official Host (Only on when TheEgghead27 is online)
 https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
 
 ## Self-Host
