@@ -37,9 +37,6 @@ try:
     file = "host.txt"
     with open(file, 'r') as host:
         host = int(host.read())
-    file = 'bot.txt'
-    with open(file, 'r') as botid:
-        botid = int(botid.read())
     file = 'bee.txt'
     with open(file, 'r') as Bee:
         Bee = Bee.read().replace('\n', '🥚')
@@ -129,10 +126,10 @@ async def on_message(message):
         mess = mess[prefix_length:]
     a = mess.split()
     if mess in ohno:
-        if message.author.id == botid:
+        if message.author.id == bot.user.id:
             await message.channel.send("Woah! Looks like I don't have access"
                                        " to my emotes! Did <@" + str(host) + "> add me to the Eggbot Discord Server?")
-    if message.author.id == botid and safeguard:
+    if message.author.id == bot.user.id and safeguard:
         return
     else:
         try:
@@ -141,7 +138,7 @@ async def on_message(message):
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 eggc = eggc + 1
             elif a[0] in ("simp", "sɪᴍᴘ"):
-                if message.author.id == botid:
+                if message.author.id == bot.user.id:
                     return
                 else:
                     sno = random.randrange(0, len(spic))
