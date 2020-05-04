@@ -1,10 +1,10 @@
-import asyncio
-import random
+import asyncio # for asyncio.sleep
+import random # to randomize egg, simp, and e!kiri
 
-try:
+try: # in case discord.py isn't installed
     import discord
     from discord.ext import commands
-except ModuleNotFoundError:
+except ModuleNotFoundError: # install the discord modules
     import subprocess
     import sys
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
@@ -32,6 +32,7 @@ prefix = "e!"
 prefix_length = len(prefix)
 # set this to False to enable egg spamming (or you could just not setup bot.txt, but that's not a good solution)
 safeguard = True
+# read all the files for variables
 file = "No file"
 try:
     file = "host.txt"
@@ -77,7 +78,8 @@ except ValueError:
     print("It looks like " + file + " is blank! Some features may not work!")
 eggc = 0
 
-
+# Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
+# Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.event
 async def on_raw_reaction_add(payload):
     react_guild = bot.get_guild(payload.guild_id)
@@ -85,7 +87,7 @@ async def on_raw_reaction_add(payload):
     if payload.message_id == cheapskate:
         if str(payload.emoji) == '💰':
             skate_role = discord.Object(id=706296742114754670)
-            await react_user.add_roles(skate_role)
+            await react_user.add_roles(skate_role) # edit role
             emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major announcement "
                                                                      "appears in <#705235263428886560>",
                                 color=0x1abc9c)
@@ -98,7 +100,7 @@ async def on_raw_reaction_remove(payload):
     react_user = react_guild.get_member(payload.user_id)
     if payload.message_id == cheapskate:
         if str(payload.emoji) == '💰':
-            skate_role = discord.Object(id=706296742114754670)
+            skate_role = discord.Object(id=706296742114754670) # edit role
             await react_user.remove_roles(skate_role)
             emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
                                                                      "announcement appears in <#705235263428886560>",
@@ -109,7 +111,7 @@ async def on_raw_reaction_remove(payload):
 # Egg and Simp command due to special parsing
 @bot.event
 async def on_message(message):
-    global eggc
+    global eggc # make eggcount actually count
     # allows for text formatting stuff to be parsed
     mess = message.content.lower()
     if mess[:-len(mess) + 2] in ("||", "~~"):
@@ -122,10 +124,10 @@ async def on_message(message):
         mess = mess[2:-2]
     elif mess[:-len(mess) + 4] in ("***e", "***<", "***:"):
         mess = mess[3:-3]
-    if mess.startswith(prefix) is True:
+    if mess.startswith(prefix) is True: #remove prefix text
         mess = mess[prefix_length:]
     a = mess.split()
-    if mess in ohno:
+    if mess in ohno: # check if emotes are screwed up
         if message.author.id == bot.user.id:
             await message.channel.send("Woah! Looks like I don't have access"
                                        " to my emotes! Did <@" + str(host) + "> add me to the Eggbot Discord Server?")
@@ -134,7 +136,7 @@ async def on_message(message):
     else:
         try:
             if a[0] in eggtrigger:
-                sno = random.randrange(0, len(spic))
+                sno = random.randrange(0, len(spic)) # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 eggc = eggc + 1
             elif a[0] in ("simp", "sɪᴍᴘ"):
@@ -171,8 +173,7 @@ async def help(ctx):
 async def bee(ctx):
     beetime = False
     script = list(Bee)
-    beelen = len(script) // 2
-    int(beelen)
+    beelen = len(script) // 2 # know how many sets of text (name & dialogue) there are
     limitcheck = 25
     messno = 1
     color_list = [0xffff00, 0x000000]
@@ -181,19 +182,20 @@ async def bee(ctx):
     emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
     async with ctx.typing():
         for i in range(beelen):
-            if limitcheck == 25:
+            if limitcheck == 25: # make sure the embed limits don't cut off the dialogue
                 limitcheck = 0
-                if beetime:
+                if beetime: # don't send an empty embed
                     await ctx.send(embed=emb)
                 emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
                 emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
                                     "313")
+                #alternate colors
                 color_list.append(color_list[0])
                 del color_list[0]
-                messno = messno + 1
+                messno = messno + 1 #keep the message numbers rising
                 beetime = True
-            emb.add_field(name=script[0], value=script[1], inline=False)
-            del script[0], script[0]
+            emb.add_field(name=script[0], value=script[1], inline=False) # add the name and dialogue
+            del script[0], script[0] #delete the used dialogue (replace with increment read number, coz i wanna)
             limitcheck = limitcheck + 1
         await ctx.send(embed=emb)
 
@@ -202,16 +204,16 @@ async def bee(ctx):
 async def kiri(ctx):
     kirilist = kirindex.split(" ")
     emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
-    emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])
+    emb.set_image(url=kirilist[random.randrange(0, len(kirilist))]) # randomly uploads an image from the image index
     await ctx.send(embed=emb)
 
 
 @bot.command()
 async def args(ctx):
     message = ctx.message
-    arghpep = message.content[7:]
-    arghpep = str(arghpep)
-    arghs = arghpep.split(' ')
+    arghpep = message.content[7:] # remove the prefix and command
+    arghpep = str(arghpep) # i dont remember why i did this
+    arghs = arghpep.split(' ') #make a list of all the words/arguments
     argsleft = len(arghs)
     emb = discord.Embed(title="Arguments", description="Arguments", color=0x0f88f0)
     if argsleft == 1:
@@ -315,7 +317,8 @@ async def say(ctx):
     else:
         return
 
-
+# e!cheap is for a personal auto-role assigner, so the embed will mention an unaccessable role
+# Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.command()
 async def cheap(ctx):
     if host == ctx.message.author.id:
