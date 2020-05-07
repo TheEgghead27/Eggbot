@@ -178,11 +178,13 @@ async def on_message(message):
 
 @bot.command()
 async def help(ctx):
+    user = bot.get_user(255070100325924864)
     emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
     emb.add_field(name="e!help", value="Displays this manual", inline=False)
     emb.add_field(name="e!bee", value="Recites the Bee Movie Script (WIP)", inline=False)
-    emb.add_field(name="e!kiri", value="Displays an image of Eijiro Kirishima from My Hero Academia [request "
-                                       "from Eijiro Kirishima#6669]", inline=False)
+    emb.add_field(name="e!kiri [number]", value="Displays an image of Eijiro Kirishima from My Hero Academia. You can "
+                                                "specify the number of images you want to be sent. "
+                                                "[request from " + str(user) + "]", inline=False)
     emb.add_field(name="e!args [words go here]", value="Test arguments", inline=False)
     emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
                   value="Reveals basically everything (legal) I can get on you", inline=False)
