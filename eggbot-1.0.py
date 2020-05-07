@@ -253,7 +253,6 @@ async def kiri(ctx):
 async def args(ctx):
     message = ctx.message
     arghpep = message.content[7:]  # remove the prefix and command
-    arghpep = str(arghpep)  # i dont remember why i did this
     arghs = arghpep.split(' ')  # make a list of all the words/arguments
     argsleft = len(arghs)
     emb = discord.Embed(title="Arguments", description="Arguments", color=0x0f88f0)
@@ -351,10 +350,26 @@ async def say(ctx):
     message = ctx.message
     if host == message.author.id:
         await message.delete()
-        echo = message.content
-        ech = len(prefix) + 4
-        echo = echo[ech:]
-        await message.channel.send(echo)
+        message = ctx.message
+        arghs = message.content[5:]  # remove the prefix and command
+        arghs = arghs.split(' ')  # make a list of all the words/arguments
+        del arghs[0]
+        channel = None
+        try:
+            channel = int(arghs[0][2:-1])
+            channel = bot.get_channel(channel)
+            del arghs[0]
+        except ValueError:
+            channel = message.channel
+        finally:
+            echo = " "
+            while arghs:
+                echo = echo + " " + arghs[0]
+                del arghs[0]
+            if echo is None or echo == " ":
+                await ctx.send(message.content[len(prefix) + 4:])
+            else:
+                await channel.send(echo)
     else:
         return
 
