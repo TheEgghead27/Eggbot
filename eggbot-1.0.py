@@ -46,8 +46,9 @@ try:
         Bee = Bee.replace('[n]', '\n')
         Bee = tuple(Bee.split('🥚'))
     file = 'kiri.txt'
-    with open(file, 'r') as kirindex:
-        kirindex = kirindex.read().replace('\n', ' ')
+    with open(file, 'r') as kirilist:
+        kirilist = kirilist.read().replace('\n', ' ')
+        kirilist = kirilist.split(" ")
     file = 'egg.txt'
     with open(file, 'r') as eggs:
         eggs = eggs.read().replace('\n', ' ')
@@ -68,10 +69,10 @@ try:
     with open(file, "r") as eggtrigger:
         eggtrigger = eggtrigger.read().replace('\n', ' ')
         eggtrigger = tuple(eggtrigger.split(' '))
-    file = "Cheap.txt"
-    with open(file, "r+") as cheapskate:
-        cheapskate = cheapskate.read().replace('\n', ' ')
-        cheapskate = int(cheapskate)
+    file = "earth_roles.txt"
+    with open(file, "r+") as earth_roles:
+        earth_roles = earth_roles.read().replace('\n', ' ')
+        earth_roles = int(earth_roles)
 except FileNotFoundError:
     print(file + " is not setup or installed!!")
     print("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
@@ -85,28 +86,49 @@ eggc = 0
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.event
 async def on_raw_reaction_add(payload):
+    # get user and guild data
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
-    if payload.message_id == cheapskate:
-        if str(payload.emoji) == '💰':
+    if react_user.id == bot.user.id:  # dont let the bot count its own reactions
+        return
+    else:
+        if payload.message_id == earth_roles:
+            # set role data
             skate_role = discord.Object(id=706296742114754670)
-            await react_user.add_roles(skate_role)  # edit role
-            emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major announcement "
-                                                                     "appears in <#705235263428886560>",
-                                color=0x1abc9c)
-            await react_user.send(embed=emb)
+            ping_role = discord.Object(id=708042351037120512)
+            if str(payload.emoji) == '💰':
+                await react_user.add_roles(skate_role)  # role
+                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major "
+                                                                         "announcement appears in "
+                                                                         "<#705235263428886560>", color=0x1abc9c)
+                await react_user.send(embed=emb)
+            elif str(payload.emoji) == '<:earth:708046023750320179>':
+                await react_user.add_roles(ping_role)  # edit role
+                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when there is an "
+                                                                         "announcement in " + react_guild.name + '.',
+                                    color=0x0ac845)
+                await react_user.send(embed=emb)
 
 
 @bot.event
 async def on_raw_reaction_remove(payload):
+    # get user and guild data
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
-    if payload.message_id == cheapskate:
+    if payload.message_id == earth_roles:
+        # set role data
+        skate_role = discord.Object(id=706296742114754670)
+        ping_role = discord.Object(id=708042351037120512)
         if str(payload.emoji) == '💰':
-            skate_role = discord.Object(id=706296742114754670)  # edit role
-            await react_user.remove_roles(skate_role)
+            await react_user.remove_roles(skate_role)  # edit role
             emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
                                                                      "announcement appears in <#705235263428886560>",
+                                color=0xbc1a00)
+            await react_user.send(embed=emb)
+        elif str(payload.emoji) == '<:earth:708046023750320179>':
+            await react_user.remove_roles(ping_role)  # edit role
+            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when there is an "
+                                                                     "announcement in " + react_guild.name + '.',
                                 color=0xbc1a00)
             await react_user.send(embed=emb)
 
@@ -205,10 +227,20 @@ async def bee(ctx):
 
 @bot.command()
 async def kiri(ctx):
-    kirilist = kirindex.split(" ")
-    emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
-    emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the image index
-    await ctx.send(embed=emb)
+    send_amount = ctx.message.content
+    send_amount = send_amount[7:]
+    try:
+        send_amount = int(send_amount)
+        while send_amount > 0:
+            emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
+            emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
+            await ctx.send(embed=emb)
+            await asyncio.sleep(1)
+            send_amount = send_amount - 1
+    except ValueError:
+        emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
+        emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
+        await ctx.send(embed=emb)
 
 
 @bot.command()
@@ -321,21 +353,32 @@ async def say(ctx):
         return
 
 
-# e!cheap is for a personal auto-role assigner, so the embed will mention an unaccessable role
+# e!earth_role is for a personal auto-role assigner, so the embed will mention an unaccessable role
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.command()
-async def cheap(ctx):
+async def earth_role(ctx):
     if host == ctx.message.author.id:
         await ctx.message.delete()
-        emb = discord.Embed(title="Free Role", description="React with :moneybag: to get the <@&706296742114754670> "
-                                                           "role (only available when bot is online)",
-                            color=0x1abc9c)
-        emb.add_field(name="Note:", value="You will receive a confirmation DM for your role.", inline=False)
+        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x1abc9c)
+        emb.add_field(name="Ping Me Role", value="React with <:earth:708046023750320179> to get pinged for general "
+                                                 "announcements in " + ctx.guild.name + '.', inline=False)
+        emb.add_field(name="Cheapskate Role", value="React with 💰 to get pinged for announcements in "
+                                                    "<#705235263428886560>.", inline=False)
+        emb.add_field(name="Note:", value="You will receive a confirmation DM for your role, as the bot is not always "
+                                          "online to give out the role", inline=False)
         cheap_mess = await ctx.send(embed=emb)
         await cheap_mess.add_reaction('💰')
-        print("Hey! Set Cheap.txt's data to the number " + '"' + str(cheap_mess.id) + '"!')
-        global cheapskate
-        cheapskate = cheap_mess.id
+        earth = bot.get_emoji(708046023750320179)
+        await cheap_mess.add_reaction(earth)
+        print("Hey! Set earth_roles.txt's data to the number " + '"' + str(cheap_mess.id) + '"!')
+        global earth_roles
+        earth_roles = cheap_mess.id
+
+
+@bot.command()
+async def get_icon(ctx):
+    if host == ctx.message.author.id:
+        await ctx.send(ctx.guild.icon_url)
 
 
 with open('token.txt', 'r') as token:
