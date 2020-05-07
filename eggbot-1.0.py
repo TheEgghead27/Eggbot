@@ -163,7 +163,11 @@ async def on_message(message):
             if a[0] in eggtrigger:
                 sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
-                eggc = eggc + 1
+                if not safeguard:
+                    async with message.channel.typing():
+                        eggc = eggc + 1
+                else:
+                    eggc = eggc + 1
             elif a[0] in ("simp", "sɪᴍᴘ"):
                 if message.author.id == bot.user.id:
                     return
@@ -207,24 +211,24 @@ async def bee(ctx):
     await ctx.send("Work In Progress T_Ts")
     await ctx.send("hey dev man, you gotta remember to format the newlines")
     emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
-    async with ctx.typing():
-        for i in range(beelen):
-            if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
-                limitcheck = 0
-                if beetime:  # don't send an empty embed
-                    await ctx.send(embed=emb)
-                emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-                emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
-                                    "313")
-                # alternate colors
-                color_list.append(color_list[0])
-                del color_list[0]
-                messno = messno + 1  # keep the message numbers rising
+    for i in range(beelen):
+        if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
+            limitcheck = 0
+            if beetime:  # don't send an empty embed
+                await ctx.send(embed=emb)
+            emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
+            emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                                "313")
+            # alternate colors
+            color_list.append(color_list[0])
+            del color_list[0]
+            messno = messno + 1  # keep the message numbers rising
+            async with ctx.typing():
                 beetime = True
-            emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
-            del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
-            limitcheck = limitcheck + 1
-        await ctx.send(embed=emb)
+        emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
+        del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
+        limitcheck = limitcheck + 1
+    await ctx.send(embed=emb)
 
 
 @bot.command()
