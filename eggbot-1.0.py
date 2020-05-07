@@ -38,8 +38,8 @@ safeguard = True
 file = "No file"
 try:
     file = "host.txt"
-    with open(file, 'r') as host:
-        host = int(host.read())
+    with open(file, 'r') as hosts:
+        hosts = hosts.read().split("\n")
     file = 'bee.txt'
     with open(file, 'r') as Bee:
         Bee = Bee.read().replace('\n', '🥚')
@@ -82,6 +82,13 @@ except ValueError:
 eggc = 0
 
 
+def host_check(user: discord.User = None):
+    if str(user.id) in hosts:
+        return True
+    else:
+        return False
+
+
 # Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.event
@@ -89,7 +96,7 @@ async def on_raw_reaction_add(payload):
     # get user and guild data
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
-    if react_user.id == bot.user.id:  # dont let the bot count its own reactions
+    if react_user.id == bot.user.id:  # don't let the bot count its own reactions
         return
     else:
         if payload.message_id == earth_roles:
@@ -154,8 +161,8 @@ async def on_message(message):
     a = mess.split()
     if mess in ohno:  # check if emotes are screwed up
         if message.author.id == bot.user.id:
-            await message.channel.send("Woah! Looks like I don't have access"
-                                       " to my emotes! Did <@" + str(host) + "> add me to the Eggbot Discord Server?")
+            await message.channel.send("Woah! Looks like I don't have access to my emotes! "
+                                       "Did <@" + str(hosts[0]) + "> add me to the Eggbot Discord Server?")
     if message.author.id == bot.user.id and safeguard:
         return
     else:
@@ -329,7 +336,7 @@ async def eggcount(ctx):
 @bot.command()
 async def shutdown(ctx):
     message = ctx.message
-    if host == message.author.id:
+    if host_check(message.author):
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
         await message.channel.send(embed=emb)
@@ -347,11 +354,9 @@ async def shutdown(ctx):
 
 @bot.command()
 async def say(ctx):
-    message = ctx.message
-    if host == message.author.id:
-        await message.delete()
-        message = ctx.message
-        arghs = message.content[5:]  # remove the prefix and command
+    if host_check(ctx.message.author):
+        await ctx.message.delete()
+        arghs = ctx.message.content[5:]  # remove the prefix and command
         arghs = arghs.split(' ')  # make a list of all the words/arguments
         del arghs[0]
         channel = None
@@ -360,14 +365,14 @@ async def say(ctx):
             channel = bot.get_channel(channel)
             del arghs[0]
         except ValueError:
-            channel = message.channel
+            channel = ctx.channel
         finally:
             echo = " "
             while arghs:
                 echo = echo + " " + arghs[0]
                 del arghs[0]
             if echo is None or echo == " ":
-                await ctx.send(message.content[len(prefix) + 4:])
+                await ctx.send(ctx.message.content[len(prefix) + 4:])
             else:
                 await channel.send(echo)
     else:
@@ -378,7 +383,7 @@ async def say(ctx):
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.command()
 async def earth_role(ctx):
-    if host == ctx.message.author.id:
+    if host_check(ctx.message.author):
         await ctx.message.delete()
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x1abc9c)
         emb.add_field(name="Ping Me Role", value="React with <:earth:708046023750320179> to get pinged for general "
@@ -398,7 +403,7 @@ async def earth_role(ctx):
 
 @bot.command()
 async def get_icon(ctx):
-    if host == ctx.message.author.id:
+    if host_check(ctx.message.author):
         await ctx.send(ctx.guild.icon_url)
 
 
