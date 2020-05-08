@@ -40,6 +40,9 @@ try:
     file = "host.txt"
     with open(file, 'r') as hosts:
         hosts = hosts.read().split("\n")
+    file = 'token.txt'
+    with open(file, 'r') as token:
+        token = token.read()
     file = 'bee.txt'
     with open(file, 'r') as Bee:
         Bee = Bee.read().replace('\n', '🥚')
@@ -74,9 +77,9 @@ try:
         earth_roles = earth_roles.read().replace('\n', ' ')
         earth_roles = int(earth_roles)
 except FileNotFoundError:
-    print(file + " is not setup or installed!!")
-    print("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
-          " :(")
+    print(file + " and possibly other files are not setup or installed!!")
+    input("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
+          " :( \n(Press enter to continue operation)")
 except ValueError:
     print("It looks like " + file + " is blank! Some features may not work!")
 eggc = 0
@@ -316,11 +319,24 @@ async def github(ctx):
 
 
 @bot.command()
+@commands.cooldown(1, 30, commands.BucketType.user)
 async def invite(ctx):
-    emb = discord.Embed(title="Official Eggbot Discord Server", description="https://discord.gg/rTfkdvX",
-                        color=0x000000)
-    await ctx.message.author.send(embed=emb)
-    await ctx.send("Sent server invite to your DMs!")
+    egg_guild = bot.get_guild(675750662058934324)
+    if ctx.guild != egg_guild:
+        emb = discord.Embed(title="Official Eggbot Discord Server", description="https://discord.gg/rTfkdvX",
+                            color=0x000000)
+        await ctx.message.author.send(embed=emb)
+        await ctx.send("Sent server invite to your DMs!")
+    else:
+        await ctx.send("You're already in the Eggbot Server!")
+
+
+@invite.error
+async def invite_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("Bro, you don't need that many invite links. Ask again later.")
+    else:
+        raise error
 
 
 @bot.command()
@@ -407,8 +423,8 @@ async def get_icon(ctx):
         await ctx.send(ctx.guild.icon_url)
 
 
-with open('token.txt', 'r') as token:
-    token = token.read()
-
-while True:
-    bot.run(token)
+try:
+    while True:
+        bot.run(token)
+except (FileNotFoundError, NameError):
+    input("The bot token was not found! Press enter to exit...")
