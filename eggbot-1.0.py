@@ -76,6 +76,10 @@ try:
     with open(file, "r+") as earth_roles:
         earth_roles = earth_roles.read().replace('\n', ' ')
         earth_roles = int(earth_roles)
+    file = "florida.txt"
+    with open(file, "r+") as florida_roles:
+        florida_roles = florida_roles.read().replace('\n', ' ')
+        florida_roles = int(florida_roles)
 except FileNotFoundError:
     print(file + " and possibly other files are not setup or installed!!")
     input("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
@@ -90,57 +94,6 @@ def host_check(user: discord.User = None):
         return True
     else:
         return False
-
-
-# Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
-# Ask for help on the Eggbot Discord Server if you want to set it up for your own server
-@bot.event
-async def on_raw_reaction_add(payload):
-    # get user and guild data
-    react_guild = bot.get_guild(payload.guild_id)
-    react_user = react_guild.get_member(payload.user_id)
-    if react_user.id == bot.user.id:  # don't let the bot count its own reactions
-        return
-    else:
-        if payload.message_id == earth_roles:
-            # set role data
-            skate_role = discord.Object(id=706296742114754670)
-            ping_role = discord.Object(id=708042351037120512)
-            if str(payload.emoji) == '💰':
-                await react_user.add_roles(skate_role)  # role
-                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major "
-                                                                         "announcement appears in "
-                                                                         "<#705235263428886560>", color=0x1abc9c)
-                await react_user.send(embed=emb)
-            elif str(payload.emoji) == '<:earth:708046023750320179>':
-                await react_user.add_roles(ping_role)  # edit role
-                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when there is an "
-                                                                         "announcement in " + react_guild.name + '.',
-                                    color=0x0ac845)
-                await react_user.send(embed=emb)
-
-
-@bot.event
-async def on_raw_reaction_remove(payload):
-    # get user and guild data
-    react_guild = bot.get_guild(payload.guild_id)
-    react_user = react_guild.get_member(payload.user_id)
-    if payload.message_id == earth_roles:
-        # set role data
-        skate_role = discord.Object(id=706296742114754670)
-        ping_role = discord.Object(id=708042351037120512)
-        if str(payload.emoji) == '💰':
-            await react_user.remove_roles(skate_role)  # edit role
-            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
-                                                                     "announcement appears in <#705235263428886560>",
-                                color=0xbc1a00)
-            await react_user.send(embed=emb)
-        elif str(payload.emoji) == '<:earth:708046023750320179>':
-            await react_user.remove_roles(ping_role)  # edit role
-            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when there is an "
-                                                                     "announcement in " + react_guild.name + '.',
-                                color=0xbc1a00)
-            await react_user.send(embed=emb)
 
 
 # Egg and Simp command due to special parsing
@@ -395,7 +348,7 @@ async def say(ctx):
         return
 
 
-# e!earth_role is for a personal auto-role assigner, so the embed will mention an unaccessable role
+# e!earth_role and e!florida are for personal auto-role assigners, so the embed will mention unaccessable roles
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.command()
 async def earth_role(ctx):
@@ -418,10 +371,103 @@ async def earth_role(ctx):
 
 
 @bot.command()
+async def florida(ctx):
+    if host_check(ctx.message.author):
+        await ctx.message.delete()
+        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x576268)
+        emb.add_field(name="sneak peek ping role", value="React with <:ooo:704401624289771611> to get pinged for "
+                                                         "general announcements in " + ctx.guild.name + '.',
+                      inline=False)
+        emb.add_field(name="Note:", value="You will receive a confirmation DM for your role, as the bot is not always "
+                                          "online to give out the role", inline=False)
+        FL_mess = await ctx.send(embed=emb)
+        knight = bot.get_emoji(704401624289771611)
+        await FL_mess.add_reaction(knight)
+        print("Hey! Set florida.txt's data to the number " + '"' + str(FL_mess.id) + '"!')
+        global florida_roles
+        florida_roles = FL_mess.id
+
+
+@bot.command()
 async def get_icon(ctx):
     if host_check(ctx.message.author):
         await ctx.send(ctx.guild.icon_url)
 
+
+@bot.command()
+async def print_emoji(ctx):
+    if host_check(ctx.message.author):
+        print(ctx.message.content[15:-1])
+        await ctx.send('Check the console!')
+
+
+# Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
+# Ask for help on the Eggbot Discord Server if you want to set it up for your own server
+@bot.event
+async def on_raw_reaction_add(payload):
+    # get user and guild data
+    react_guild = bot.get_guild(payload.guild_id)
+    react_user = react_guild.get_member(payload.user_id)
+    if react_user.id == bot.user.id:  # don't let the bot count its own reactions
+        return
+    else:
+        if payload.message_id == earth_roles:
+            # set role data
+            skate_role = discord.Object(id=706296742114754670)
+            ping_role = discord.Object(id=708042351037120512)
+            if str(payload.emoji) == '💰':
+                await react_user.add_roles(skate_role)  # edit role
+                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major "
+                                                                         "announcement appears in "
+                                                                         "<#705235263428886560>", color=0x1abc9c)
+                await react_user.send(embed=emb)
+            elif str(payload.emoji) == '<:earth:708046023750320179>':
+                await react_user.add_roles(ping_role)  # edit role
+                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when there is an "
+                                                                         "announcement in " + react_guild.name + '.',
+                                    color=0x0ac845)
+                await react_user.send(embed=emb)
+        elif payload.message_id == florida_roles:
+            # set role data
+            peek_role = discord.Object(id=708421333888794644)
+            if str(payload.emoji) == '<:ooo:704401624289771611>':
+                await react_user.add_roles(peek_role)  # edit role
+                emb = discord.Embed(title="Role Confirmed!", description="You will now be pinged when a major "
+                                                                         "announcement appears in "
+                                                                         "<#706645368678645831>", color=0x0ac845)
+                await react_user.send(embed=emb)
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    # get user and guild data
+    react_guild = bot.get_guild(payload.guild_id)
+    react_user = react_guild.get_member(payload.user_id)
+    if payload.message_id == earth_roles:
+        # set role data
+        skate_role = discord.Object(id=706296742114754670)
+        ping_role = discord.Object(id=708042351037120512)
+        if str(payload.emoji) == '💰':
+            await react_user.remove_roles(skate_role)  # edit role
+            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
+                                                                     "announcement appears in <#705235263428886560>",
+                                color=0xbc1a00)
+            await react_user.send(embed=emb)
+        elif str(payload.emoji) == '<:earth:708046023750320179>':
+            await react_user.remove_roles(ping_role)  # edit role
+            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when there is an "
+                                                                     "announcement in " + react_guild.name + '.',
+                                color=0xbc1a00)
+            await react_user.send(embed=emb)
+    elif payload.message_id == florida_roles:
+        # set role data
+        peek_role = discord.Object(id=708421333888794644)
+        if str(payload.emoji) == '<:ooo:704401624289771611>':
+            await react_user.remove_roles(peek_role)  # edit role
+            emb = discord.Embed(title="Role removed :(", description="You will no longer be pinged when a major "
+                                                                     "announcement appears in <#706645368678645831>",
+                                color=0xbc1a00)
+            await react_user.send(embed=emb)
 
 try:
     while True:
