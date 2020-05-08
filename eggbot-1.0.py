@@ -319,12 +319,10 @@ async def shutdown(ctx):
 
 
 @bot.command()
-async def say(ctx):
+async def say(ctx, *args):
     if host_check(ctx.message.author):
         await ctx.message.delete()
-        arghs = ctx.message.content[5:]  # remove the prefix and command
-        arghs = arghs.split(' ')  # make a list of all the words/arguments
-        del arghs[0]
+        arghs = list(args)
         channel = None
         try:
             channel = int(arghs[0][2:-1])
@@ -352,9 +350,9 @@ async def get_icon(ctx):
 
 
 @bot.command()
-async def print_emoji(ctx):
+async def print_emoji(ctx, *args):
     if host_check(ctx.message.author):
-        print(ctx.message.content[14:])
+        print(args[1])
         await ctx.send('Check the console!')
 
 
