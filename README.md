@@ -12,7 +12,7 @@ e!help: help
 
 e!about: about the speaking/first mentioned user
 
-e!args {arguments}: list of args
+e!test_args {arguments}: list of args
 
 e!bee: prints bee movie script (WIP)
 
@@ -35,6 +35,10 @@ simp: SIMP
 e!say: says whatever you tell it to say
 
 e!shutdown: shuts the bot down without needing to manually stop the script
+
+e!get_icon: posts a link to the current server icon
+
+e!print_emoji {emoji}: prints the emoji code in terminal
 
 ## Official Host (Only on when TheEgghead27 is online)
 https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot

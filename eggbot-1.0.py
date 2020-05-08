@@ -152,7 +152,7 @@ async def help(ctx):
     emb.add_field(name="e!kiri [number]", value="Displays an image of Eijiro Kirishima from My Hero Academia. You can "
                                                 "specify the number of images you want to be sent. "
                                                 "[request from " + str(user) + "]", inline=False)
-    emb.add_field(name="e!args [words go here]", value="Test arguments", inline=False)
+    emb.add_field(name="e!test_args [words go here]", value="Test arguments", inline=False)
     emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
                   value="Reveals basically everything (legal) I can get on you", inline=False)
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
@@ -195,10 +195,9 @@ async def bee(ctx):
 
 
 @bot.command()
-async def kiri(ctx):
-    send_amount = ctx.message.content
-    send_amount = send_amount[7:]
+async def kiri(ctx, *args):
     try:
+        send_amount = args[0]
         send_amount = int(send_amount)
         while send_amount > 0:
             emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
@@ -206,20 +205,18 @@ async def kiri(ctx):
             await ctx.send(embed=emb)
             await asyncio.sleep(1)
             send_amount = send_amount - 1
-    except ValueError:
+    except (ValueError, IndexError):
         emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
         emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
         await ctx.send(embed=emb)
 
 
 @bot.command()
-async def args(ctx):
-    message = ctx.message
-    arghpep = message.content[7:]  # remove the prefix and command
-    arghs = arghpep.split(' ')  # make a list of all the words/arguments
+async def test_args(ctx, *args):
+    arghs = args
     argsleft = len(arghs)
     emb = discord.Embed(title="Arguments", description="Arguments", color=0x0f88f0)
-    if argsleft == 1:
+    if argsleft == 0:
         emb.add_field(name="Error", value="No arguments detected", inline=False)
     else:
         argnumber = 0
@@ -230,7 +227,7 @@ async def args(ctx):
             argnumber = 1 + argnumber
         argnotext = str(len(arghs))
         emb.add_field(name="Total Arguments", value=argnotext, inline=False)
-    await message.channel.send(embed=emb)
+    await ctx.send(embed=emb)
 
 
 @bot.command()
@@ -348,6 +345,19 @@ async def say(ctx):
         return
 
 
+@bot.command()
+async def get_icon(ctx):
+    if host_check(ctx.message.author):
+        await ctx.send(ctx.guild.icon_url)
+
+
+@bot.command()
+async def print_emoji(ctx):
+    if host_check(ctx.message.author):
+        print(ctx.message.content[14:])
+        await ctx.send('Check the console!')
+
+
 # e!earth_role and e!florida are for personal auto-role assigners, so the embed will mention unaccessable roles
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.command()
@@ -386,19 +396,6 @@ async def florida(ctx):
         print("Hey! Set florida.txt's data to the number " + '"' + str(FL_mess.id) + '"!')
         global florida_roles
         florida_roles = FL_mess.id
-
-
-@bot.command()
-async def get_icon(ctx):
-    if host_check(ctx.message.author):
-        await ctx.send(ctx.guild.icon_url)
-
-
-@bot.command()
-async def print_emoji(ctx):
-    if host_check(ctx.message.author):
-        print(ctx.message.content[15:-1])
-        await ctx.send('Check the console!')
 
 
 # Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
