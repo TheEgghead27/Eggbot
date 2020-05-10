@@ -315,11 +315,10 @@ async def eggcount(ctx):
 
 @bot.command()
 async def vacuum(ctx, *args):
-    def is_me(m):
-        return m.author == client.user
-
-    await ctx.message.channel.purge(limit=int(args[0]), check=ctx.message.author.permissions_in(ctx.message.channel))
-    await channel.send('Deleted {} message(s)'.format(len(deleted)))
+    if ctx.message.author.permissions_in(ctx.message.channel).manage_messages:
+        kirby = int(args[0])
+        await ctx.message.channel.purge(limit=kirby)
+        await ctx.send('Succed ' + str(kirby) + ' message(s).')
 
 
 # Secret Admin-Only Commands
