@@ -240,12 +240,31 @@ async def about(ctx):
         user = user[0]
     emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
                         color=0x03f4fc)
-    if user.display_name != str(user.name):
+    if user.display_name != str(user.name):  # doesn't need to use the member/user check
         emb.add_field(name="User Nickname", value=user.display_name, inline=True)
     emb.add_field(name="User ID", value=str(user.id), inline=True)
     emb.add_field(name="User Creation Date", value=user.created_at, inline=False)
     emb.add_field(name="User Discriminator", value=user.discriminator, inline=True)
     emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
+    if type(message.author) == discord.member.Member:
+        emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
+        name_roles = user.roles[0].name
+        try:
+            for discord.role in user.roles:
+                del user.roles[0]
+                name_roles = name_roles + ', ' + user.roles[0].name
+            name_roles = name_roles + ', ' + user.roles[1].name
+        except IndexError:
+            name_roles = name_roles
+        emb.add_field(name="User's Roles", value=name_roles, inline=False)
+        # print(user.permissions_in(ctx.message.channel)) use this later
+        if name_roles != "@everyone":
+            emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
+        if user.guild_permissions.administrator:
+            admin_state = "an admin."
+        else:
+            admin_state = "not an admin."
+        emb.add_field(name="User is", value=admin_state, inline=False)
     if user.bot:
         emb.add_field(name="User is", value="a bot", inline=True)
     else:
@@ -256,8 +275,7 @@ async def about(ctx):
         emb.add_field(name="User is", value="not a Discord VIP", inline=True)
     emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
     emb.add_field(name="User Color", value=user.color, inline=True)
-    avatar = str(user.avatar_url)
-    emb.set_image(url=avatar)
+    emb.set_image(url=user.avatar_url)
     await message.channel.send(embed=emb)
 
 
@@ -463,6 +481,7 @@ async def on_raw_reaction_remove(payload):
                                                                      "announcement appears in <#706645368678645831>",
                                 color=0xbc1a00)
             await react_user.send(embed=emb)
+
 
 try:
     while True:
