@@ -24,6 +24,8 @@ e!github: Links to this Github Repo
 
 e!invite: DMs you an invite to the official Discord Server
 
+e!vacuum {number}: Mass deletes {number} messages. 
+
 egg: egg
 
 e!eggcount: counts the day's eggs
