@@ -1,6 +1,6 @@
 egg
 eeg
-eg"
+eg
 <:egghead:698281894441123990>
 egghead
 :egg:
