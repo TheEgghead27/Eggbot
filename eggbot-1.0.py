@@ -157,6 +157,7 @@ async def help(ctx):
                   value="Reveals basically everything (legal) I can get on you", inline=False)
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
     emb.add_field(name="e!invite", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
+    emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggcount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
@@ -316,9 +317,9 @@ async def eggcount(ctx):
 @bot.command()
 async def vacuum(ctx, *args):
     if ctx.message.author.permissions_in(ctx.message.channel).manage_messages:
-        kirby = int(args[0])
+        kirby = int(args[0]) + 1
         await ctx.message.channel.purge(limit=kirby)
-        await ctx.send('Succed ' + str(kirby) + ' message(s).')
+        await ctx.send('Succed ' + str(kirby) + ' messages.')
 
 
 # Secret Admin-Only Commands
