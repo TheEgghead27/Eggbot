@@ -257,7 +257,6 @@ async def about(ctx):
         except IndexError:
             name_roles = name_roles
         emb.add_field(name="User's Roles", value=name_roles, inline=False)
-        # print(user.permissions_in(ctx.message.channel)) use this later
         if name_roles != "@everyone":
             emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
         if user.guild_permissions.administrator:
@@ -312,6 +311,15 @@ async def eggcount(ctx):
     emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
     emb.add_field(name="Egg count:", value=str(eggc), inline=False)
     await ctx.send(embed=emb)
+
+
+@bot.command()
+async def vacuum(ctx, *args):
+    def is_me(m):
+        return m.author == client.user
+
+    await ctx.message.channel.purge(limit=int(args[0]), check=ctx.message.author.permissions_in(ctx.message.channel))
+    await channel.send('Deleted {} message(s)'.format(len(deleted)))
 
 
 # Secret Admin-Only Commands
@@ -370,7 +378,7 @@ async def get_icon(ctx):
 @bot.command()
 async def print_emoji(ctx, *args):
     if host_check(ctx.message.author):
-        print(args[1])
+        print(args[0])
         await ctx.send('Check the console!')
 
 
