@@ -175,7 +175,7 @@ async def bee(ctx):
     await ctx.send("Work In Progress T_Ts")
     await ctx.send("hey dev man, you gotta remember to format the newlines")
     emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
-    for i in range(beelen):
+    for _ in range(beelen):  # why did i do this?!?!
         if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
             limitcheck = 0
             if beetime:  # don't send an empty embed
