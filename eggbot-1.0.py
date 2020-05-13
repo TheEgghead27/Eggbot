@@ -99,6 +99,9 @@ def host_check(user: discord.User = None):
 # Egg and Simp command due to special parsing
 @bot.event
 async def on_message(message):
+    if str(message.channel.type) == "private":
+        if not message.author.id == bot.user.id:  # don't let the bot echo its own dms
+            print(str(message.author) + ' says:\n' + message.content)
     global eggc  # make eggcount actually count
     # allows for text formatting stuff to be parsed
     mess = message.content.lower()
@@ -234,48 +237,52 @@ async def test_args(ctx, *args):
 @bot.command()
 async def about(ctx):
     message = ctx.message
-    if not message.mentions:
-        user = message.author
-    else:
-        user = message.mentions
-        user = user[0]
-    emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
-                        color=0x03f4fc)
-    if user.display_name != str(user.name):  # doesn't need to use the member/user check
-        emb.add_field(name="User Nickname", value=user.display_name, inline=True)
-    emb.add_field(name="User ID", value=str(user.id), inline=True)
-    emb.add_field(name="User Creation Date", value=user.created_at, inline=False)
-    emb.add_field(name="User Discriminator", value=user.discriminator, inline=True)
-    emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
-    if type(message.author) == discord.member.Member:
-        emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
-        name_roles = user.roles[0].name
-        try:
-            for discord.role in user.roles:
-                del user.roles[0]
-                name_roles = name_roles + ', ' + user.roles[0].name
-            name_roles = name_roles + ', ' + user.roles[1].name
-        except IndexError:
-            name_roles = name_roles
-        emb.add_field(name="User's Roles", value=name_roles, inline=False)
-        if name_roles != "@everyone":
-            emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
-        if user.guild_permissions.administrator:
-            admin_state = "an admin."
+    async with ctx.typing():
+        if not message.mentions:
+            user = message.author
         else:
-            admin_state = "not an admin."
-        emb.add_field(name="User is", value=admin_state, inline=False)
-    if user.bot:
-        emb.add_field(name="User is", value="a bot", inline=True)
-    else:
-        emb.add_field(name="User is", value="not a bot", inline=True)
-    if user.system:
-        emb.add_field(name="User is", value="a Discord VIP", inline=True)
-    else:
-        emb.add_field(name="User is", value="not a Discord VIP", inline=True)
-    emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
-    emb.add_field(name="User Color", value=user.color, inline=True)
-    emb.set_image(url=user.avatar_url)
+            user = message.mentions
+            user = user[0]
+        emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
+                            color=0x03f4fc)
+        if user.display_name != str(user.name):  # doesn't need to use the member/user check
+            emb.add_field(name="User Nickname", value=user.display_name, inline=True)
+        emb.add_field(name="User ID", value=str(user.id), inline=True)
+        emb.add_field(name="User Creation Date", value=user.created_at, inline=False)
+        emb.add_field(name="User Discriminator", value=user.discriminator, inline=True)
+        emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
+        if type(message.author) == discord.member.Member:
+            emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
+            name_roles = user.roles[0].name
+            try:
+                for discord.role in user.roles:
+                    del user.roles[0]
+                    name_roles = name_roles + ', ' + user.roles[0].name
+                    name_roles = name_roles + ', ' + user.roles[1].name
+                    del user.roles[0]
+                name_roles = name_roles + ', ' + user.roles[1].name
+                name_roles = name_roles + ', ' + user.roles[2].name
+            except IndexError:
+                name_roles = name_roles
+            emb.add_field(name="User's Roles", value=name_roles, inline=False)
+            if name_roles != "@everyone":
+                emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
+            if user.guild_permissions.administrator:
+                admin_state = "an admin."
+            else:
+                admin_state = "not an admin."
+            emb.add_field(name="User is", value=admin_state, inline=False)
+        if user.bot:
+            emb.add_field(name="User is", value="a bot", inline=True)
+        else:
+            emb.add_field(name="User is", value="not a bot", inline=True)
+        if user.system:
+            emb.add_field(name="User is", value="a Discord VIP", inline=True)
+        else:
+            emb.add_field(name="User is", value="not a Discord VIP", inline=True)
+        emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
+        emb.add_field(name="User Color", value=user.color, inline=True)
+        emb.set_image(url=user.avatar_url)
     await message.channel.send(embed=emb)
 
 
@@ -347,14 +354,26 @@ async def shutdown(ctx):
 @bot.command()
 async def say(ctx, *args):
     if host_check(ctx.message.author):
-        await ctx.message.delete()
+        try:
+            await ctx.message.delete()
+        except discord.Forbidden:
+            print("I was unable to delete the message!")
         arghs = list(args)
         channel = None
+        print(arghs)
         try:
-            channel = int(arghs[0][2:-1])
-            channel = bot.get_channel(channel)
+            if ctx.message.mentions:
+                channel = int(arghs[0][3:-1])
+                print(channel)
+                channel = bot.get_user(channel)
+                if not channel == ctx.message.mentions[0]:
+                    channel = ctx.channel
+            else:
+                channel = int(arghs[0][2:-1])
+                channel = bot.get_channel(channel)
             del arghs[0]
         except ValueError:
+            print('uhoh')
             channel = ctx.channel
         finally:
             echo = " "
