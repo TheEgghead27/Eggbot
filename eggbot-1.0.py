@@ -255,13 +255,13 @@ async def about(ctx):
             emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
             name_roles = user.roles[0].name
             try:
-                for discord.role in user.roles:
+                for discord.role in user.roles:  # i dont know why but even with the for loop, it does not log all roles
                     del user.roles[0]
                     name_roles = name_roles + ', ' + user.roles[0].name
                     name_roles = name_roles + ', ' + user.roles[1].name
                     del user.roles[0]
-                name_roles = name_roles + ', ' + user.roles[1].name
-                name_roles = name_roles + ', ' + user.roles[2].name
+                name_roles = name_roles + ', ' + user.roles[1].name  # these were the best solutions i could come up
+                name_roles = name_roles + ', ' + user.roles[2].name  # with
             except IndexError:
                 name_roles = name_roles
             emb.add_field(name="User's Roles", value=name_roles, inline=False)
