@@ -324,9 +324,14 @@ async def eggcount(ctx):
 @bot.command()
 async def vacuum(ctx, *args):
     if ctx.message.author.permissions_in(ctx.message.channel).manage_messages:
-        kirby = int(args[0]) + 1
-        await ctx.message.channel.purge(limit=kirby)
-        await ctx.send('Succed ' + str(kirby) + ' messages.')
+        try:
+            kirby = int(args[0]) + 1
+            await ctx.message.channel.purge(limit=kirby)
+            await ctx.send('Succed ' + str(kirby) + ' messages.')
+        except discord.Forbidden:
+            await ctx.send("I was unable to delete the message!")
+    else:
+        await ctx.send("You don't have permission to do that!")
 
 
 # Secret Admin-Only Commands
@@ -360,11 +365,9 @@ async def say(ctx, *args):
             print("I was unable to delete the message!")
         arghs = list(args)
         channel = None
-        print(arghs)
         try:
             if ctx.message.mentions:
                 channel = int(arghs[0][3:-1])
-                print(channel)
                 channel = bot.get_user(channel)
                 if not channel == ctx.message.mentions[0]:
                     channel = ctx.channel
@@ -373,7 +376,6 @@ async def say(ctx, *args):
                 channel = bot.get_channel(channel)
             del arghs[0]
         except ValueError:
-            print('uhoh')
             channel = ctx.channel
         finally:
             echo = " "
