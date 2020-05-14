@@ -161,6 +161,8 @@ async def help(ctx):
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
     emb.add_field(name="e!invite", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
     emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
+    emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
+                                                             "specified time.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggcount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
@@ -255,7 +257,7 @@ async def about(ctx):
             emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
             name_roles = user.roles[0].name
             try:
-                for discord.role in user.roles:  # i dont know why but even with the for loop, it does not log all roles
+                for discord.role in user.roles:  # i don't know why, but the for loop does not log all roles
                     del user.roles[0]
                     name_roles = name_roles + ', ' + user.roles[0].name
                     name_roles = name_roles + ', ' + user.roles[1].name

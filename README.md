@@ -26,6 +26,8 @@ e!invite: DMs you an invite to the official Discord Server
 
 e!vacuum {number}: Mass deletes {number} messages. 
 
+e!timer {number} {time unit}: Creates a timer that pings the requesting user after a specified time.
+
 egg: egg
 
 e!eggcount: counts the day's eggs
