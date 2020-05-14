@@ -336,25 +336,41 @@ async def vacuum(ctx, *args):
 
 @bot.command()
 async def timer(ctx, *args):
+    maybe_uh_oh = False
     try:
+        unit = args[1].lower()
+        if unit in ['minute', 'minutes']:
+            unit = 60
+        elif unit in ['hour', 'hours']:
+            maybe_uh_oh = True
+            unit = 3600
+        elif unit in ['day', 'days', 'week', 'weeks', 'month', 'year', 'months', 'years', 'decade', 'decades',
+                      'century', 'centuries', 'millennia', 'millennium']:
+            await ctx.send('No.')
+            return
+        elif unit in ['seconds', 'second']:
+            maybe_uh_oh = True
+            unit = 1
+        elif unit[-7:] in ['seconds', 'isecond']:
+            await ctx.send('No.')
+            return
+        else:
+            await ctx.send('You did not provide a valid unit of time. The available units of time are `seconds` '
+                           '(likely inaccurate), `minutes`, and `hours`.')
+            return
         try:
             number = int(args[0])
         except ValueError:
-            await ctx.send('You did not input a valid number! The number of ' + args[1] + 'your timer will be set to is '
-                                                                                          'meant to be the first argument!')
-        if args[1].lower in ['minute', 'minutes']:
-            unit = 60
-        elif args[1].lower in ['hour', 'hours']:
-            maybe_uh_oh = True
-            unit = 3600
-        elif args[1].lower in ['day', 'days', 'week', 'weeks', 'month', 'year', 'months', 'years', 'decade', 'decades',
-                               'century', 'centuries', 'millennia', 'millennium']:
-            await ctx.send('No.')
+            await ctx.send('You did not input a valid number! The number of ' + args[1] + ' your timer '
+                                                                                          'will be set to is '
+                                                                                          'meant to be '
+                                                                                          'the first argument!')
             return
-        elif args[1].lower in ['seconds', 'second']:
-            unit = 1
-        elif args[1].lower[-7:] in ['seconds', 'isecond']:
-            print('not yet')
+        if maybe_uh_oh:
+            await ctx.send('The timer may be inaccurate or be unable to alert you due to the unit of time '
+                           'the timer is set to.')
+        await asyncio.sleep(number * unit)
+        await ctx.send(ctx.message.author.mention + ', your ' + str(number) + ' ' + args[1] + ' timer is up!')
     except IndexError:
         await ctx.send('You did not provide all the arguments. The format for e!timer is `e!timer [number] '
                        '[time unit]`.')
