@@ -334,6 +334,32 @@ async def vacuum(ctx, *args):
         await ctx.send("You don't have permission to do that!")
 
 
+@bot.command()
+async def timer(ctx, *args):
+    try:
+        try:
+            number = int(args[0])
+        except ValueError:
+            await ctx.send('You did not input a valid number! The number of ' + args[1] + 'your timer will be set to is '
+                                                                                          'meant to be the first argument!')
+        if args[1].lower in ['minute', 'minutes']:
+            unit = 60
+        elif args[1].lower in ['hour', 'hours']:
+            maybe_uh_oh = True
+            unit = 3600
+        elif args[1].lower in ['day', 'days', 'week', 'weeks', 'month', 'year', 'months', 'years', 'decade', 'decades',
+                               'century', 'centuries', 'millennia', 'millennium']:
+            await ctx.send('No.')
+            return
+        elif args[1].lower in ['seconds', 'second']:
+            unit = 1
+        elif args[1].lower[-7:] in ['seconds', 'isecond']:
+            print('not yet')
+    except IndexError:
+        await ctx.send('You did not provide all the arguments. The format for e!timer is `e!timer [number] '
+                       '[time unit]`.')
+
+
 # Secret Admin-Only Commands
 
 
