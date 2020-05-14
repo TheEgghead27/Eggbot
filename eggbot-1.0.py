@@ -371,8 +371,9 @@ async def timer(ctx, *args):
         if maybe_uh_oh:
             await ctx.send('The timer may be inaccurate or be unable to alert you due to the unit of time '
                            'the timer is set to.')
+        await ctx.send("Timer set for " + args[0] + ' ' + args[1] + '.')
         await asyncio.sleep(number * unit)
-        await ctx.send(ctx.message.author.mention + ', your ' + str(number) + ' ' + args[1] + ' timer is up!')
+        await ctx.send(ctx.message.author.mention + ', your ' + args[0] + ' ' + args[1] + ' timer is up!')
     except IndexError:
         await ctx.send('You did not provide all the arguments. The format for e!timer is `e!timer [number] '
                        '[time unit]`.')
