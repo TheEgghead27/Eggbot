@@ -369,7 +369,7 @@ async def timer(ctx, *args):
                                                                                           'the first argument!')
             return
         if maybe_uh_oh:
-            await ctx.send('The timer may be inaccurate or be unable to alert you due to the unit of time '
+            await ctx.send('The timer may be inaccurate or unable to alert you due to the unit of time '
                            'the timer is set to.')
         await ctx.send("Timer set for " + args[0] + ' ' + args[1] + '.')
         await asyncio.sleep(number * unit)
