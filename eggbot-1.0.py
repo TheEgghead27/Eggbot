@@ -89,8 +89,10 @@ except ValueError:
 eggc = 0
 
 
-def host_check(user: discord.User = None):
-    if str(user.id) in hosts:
+def host_check(ctx):
+    if str(ctx.message.author.id) in hosts:
+        mess = ctx.message.content.split(' ')
+        print(str(ctx.message.author) + ' used ' + mess[0] + '!')
         return True
     else:
         return False
@@ -385,7 +387,7 @@ async def timer(ctx, *args):
 @bot.command()
 async def shutdown(ctx):
     message = ctx.message
-    if host_check(message.author):
+    if host_check(ctx):
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
         await message.channel.send(embed=emb)
@@ -403,7 +405,7 @@ async def shutdown(ctx):
 
 @bot.command()
 async def say(ctx, *args):
-    if host_check(ctx.message.author):
+    if host_check(ctx):
         try:
             await ctx.message.delete()
         except discord.Forbidden:
@@ -411,16 +413,18 @@ async def say(ctx, *args):
         arghs = list(args)
         channel = None
         try:
-            if ctx.message.mentions:
+            if len(args[0]) == 22:
                 channel = int(arghs[0][3:-1])
                 channel = bot.get_user(channel)
-                if not channel == ctx.message.mentions[0]:
-                    channel = ctx.channel
-            else:
+            elif len(args[0]) == 21:
                 channel = int(arghs[0][2:-1])
                 channel = bot.get_channel(channel)
+            elif len(args[0]) == 18:
+                channel = bot.get_channel(int(args[0]))
+                if not channel:
+                    channel = bot.get_user(int(args[0]))
             del arghs[0]
-        except ValueError:
+        except (ValueError, AttributeError):
             channel = ctx.channel
         finally:
             echo = " "
@@ -430,20 +434,23 @@ async def say(ctx, *args):
             if echo is None or echo == " ":
                 await ctx.send(ctx.message.content[len(prefix) + 4:])
             else:
-                await channel.send(echo)
+                try:
+                    await channel.send(echo)
+                except AttributeError:
+                    await ctx.send(echo)
     else:
         return
 
 
 @bot.command()
 async def get_icon(ctx):
-    if host_check(ctx.message.author):
+    if host_check(ctx):
         await ctx.send(ctx.guild.icon_url)
 
 
 @bot.command()
 async def print_emoji(ctx, *args):
-    if host_check(ctx.message.author):
+    if host_check(ctx):
         print(args[0])
         await ctx.send('Check the console!')
 
@@ -452,7 +459,7 @@ async def print_emoji(ctx, *args):
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 @bot.command()
 async def earth_role(ctx):
-    if host_check(ctx.message.author):
+    if host_check(ctx):
         await ctx.message.delete()
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x1abc9c)
         emb.add_field(name="Ping Me Role", value="React with <:earth:708046023750320179> to get pinged for general "
@@ -472,7 +479,7 @@ async def earth_role(ctx):
 
 @bot.command()
 async def florida(ctx):
-    if host_check(ctx.message.author):
+    if host_check(ctx):
         await ctx.message.delete()
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x576268)
         emb.add_field(name="sneak peek ping role", value="React with <:ooo:704401624289771611> to get pinged for "
