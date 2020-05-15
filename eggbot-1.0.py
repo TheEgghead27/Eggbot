@@ -32,7 +32,7 @@ async def on_ready():
 
 prefix = "e!"
 prefix_length = len(prefix)
-# set this to False to enable egg spamming (or you could just not setup bot.txt, but that's not a good solution)
+# set this to False to enable egg spamming (please no)
 safeguard = True
 # read all the files for variables
 file = "No file"
