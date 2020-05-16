@@ -172,37 +172,6 @@ async def help(ctx):
 
 
 @bot.command()
-async def bee(ctx):
-    beetime = False
-    script = list(Bee)
-    beelen = len(script) // 2  # know how many sets of text (name & dialogue) there are
-    limitcheck = 25
-    messno = 1
-    color_list = [0xffff00, 0x000000]
-    await ctx.send("Work In Progress T_Ts")
-    await ctx.send("hey dev man, you gotta remember to format the newlines")
-    emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
-    for _ in range(beelen):  # why did i do this?!?!
-        if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
-            limitcheck = 0
-            if beetime:  # don't send an empty embed
-                await ctx.send(embed=emb)
-            emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-            emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
-                                "313")
-            # alternate colors
-            color_list.append(color_list[0])
-            del color_list[0]
-            messno = messno + 1  # keep the message numbers rising
-            async with ctx.typing():
-                beetime = True
-        emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
-        del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
-        limitcheck = limitcheck + 1
-    await ctx.send(embed=emb)
-
-
-@bot.command()
 async def kiri(ctx, *args):
     try:
         send_amount = args[0]
@@ -423,7 +392,7 @@ async def say(ctx, *args):
                 channel = bot.get_channel(int(args[0]))
                 if not channel:
                     channel = bot.get_user(int(args[0]))
-            del arghs[0]
+            del arghs[0]  # why are you broken ?!?!?!
         except (ValueError, AttributeError):
             channel = ctx.channel
         finally:
@@ -453,6 +422,38 @@ async def print_emoji(ctx, *args):
     if host_check(ctx):
         print(args[0])
         await ctx.send('Check the console!')
+        
+        
+@bot.command()
+async def bee(ctx):
+    if host_check(ctx):
+        beetime = False
+        script = list(Bee)
+        beelen = len(script) // 2  # know how many sets of text (name & dialogue) there are
+        limitcheck = 25
+        messno = 1
+        color_list = [0xffff00, 0x000000]
+        await ctx.send("Work In Progress T_Ts")
+        await ctx.send("hey dev man, you gotta remember to format the newlines")
+        emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
+        for _ in range(beelen):  # why did i do this?!?!
+            if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
+                limitcheck = 0
+                if beetime:  # don't send an empty embed
+                    await ctx.send(embed=emb)
+                emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
+                emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                                    "313")
+                # alternate colors
+                color_list.append(color_list[0])
+                del color_list[0]
+                messno = messno + 1  # keep the message numbers rising
+                async with ctx.typing():
+                    beetime = True
+            emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
+            del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
+            limitcheck = limitcheck + 1
+        await ctx.send(embed=emb)
 
 
 # e!earth_role and e!florida are for personal auto-role assigners, so the embed will mention unaccessable roles
