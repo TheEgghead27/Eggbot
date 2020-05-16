@@ -14,8 +14,6 @@ e!about: about the speaking/first mentioned user
 
 e!test_args {arguments}: list of args
 
-e!bee: prints bee movie script (WIP)
-
 e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Hanako-kun#6669]
 
 e!song: song (WIP)
@@ -43,6 +41,8 @@ e!shutdown: shuts the bot down without needing to manually stop the script
 e!get_icon: posts a link to the current server icon
 
 e!print_emoji {emoji}: prints the emoji code in terminal
+
+e!bee: prints bee movie script (WIP)
 
 ## Official Host (Only on when TheEgghead27 is online)
 https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
