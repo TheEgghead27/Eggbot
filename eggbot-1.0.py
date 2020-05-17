@@ -99,7 +99,7 @@ def host_check(ctx):
         return False
 
 
-# Egg and Simp command due to special parsing
+# DM leaking & Egg and Simp commands due to special parsing
 @bot.event
 async def on_message(message):
     if str(message.channel.type) == "private":
