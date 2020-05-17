@@ -22,6 +22,7 @@ logger.addHandler(handler)
 
 bot = commands.Bot(command_prefix='e!', case_insensitive=True, description="e!help")
 bot.remove_command("help")
+on = True
 
 
 @bot.event
@@ -356,10 +357,12 @@ async def timer(ctx, *args):
 async def shutdown(ctx):
     message = ctx.message
     if host_check(ctx):
+        global on
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
         await message.channel.send(embed=emb)
         await bot.change_presence(activity=discord.Game(name='Shutting down...'))
+        on = False
         exit(0)
     else:
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
