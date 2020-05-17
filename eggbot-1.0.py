@@ -384,15 +384,19 @@ async def say(ctx, *args):
             if len(args[0]) == 22:
                 channel = int(arghs[0][3:-1])
                 channel = bot.get_user(channel)
+                del arghs[0]
             elif len(args[0]) == 21:
                 channel = int(arghs[0][2:-1])
                 channel = bot.get_channel(channel)
+                del arghs[0]
             elif len(args[0]) == 18:
                 channel = bot.get_channel(int(args[0]))
                 if not channel:
                     channel = bot.get_user(int(args[0]))
-            del arghs[0]  # why are you broken ?!?!?!
-        except (ValueError, AttributeError):
+                del arghs[0]
+            else:
+                raise ValueError
+        except ValueError:
             channel = ctx.channel
         finally:
             echo = " "
