@@ -4,5 +4,3 @@ eg
 <:egghead:698281894441123990>
 egghead
 :egg:
-`<:egghead:698281894441123990>`
-`:egg:`

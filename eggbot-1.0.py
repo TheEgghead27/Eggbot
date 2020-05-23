@@ -112,7 +112,7 @@ async def on_message(message):
         mess = mess[2:-2]
     if mess.startswith("> "):
         mess = mess[2:]
-    if mess[:-len(mess) + 2] in ("`e", "*e", "*<", "*:"):
+    if mess[:-len(mess) + 2] in ("`e", "*e", "*<", "*:", "`:", "`<"):
         mess = mess[1:-1]
     elif mess[:-len(mess) + 3] in ("**e", "**<", "**:"):
         mess = mess[2:-2]
