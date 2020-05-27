@@ -149,6 +149,12 @@ async def on_message(message):
             return
 
 
+# @bot.event
+# async def on_member_join(member):
+    # if member.bot:
+        # await member.add_roles(bot_role)
+
+
 @bot.command()
 async def help(ctx):
     user = bot.get_user(255070100325924864)
@@ -165,6 +171,7 @@ async def help(ctx):
     emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
     emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
                                                              "specified time.", inline=False)
+    emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggcount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
@@ -350,6 +357,11 @@ async def timer(ctx, *args):
                        '[time unit]`.')
 
 
+@bot.command()
+async def get_icon(ctx):
+    await ctx.send("This server's icon can be found at " + ctx.guild.icon_url)
+
+
 # Secret Admin-Only Commands
 
 
@@ -415,12 +427,6 @@ async def say(ctx, *args):
                     await ctx.send(echo)
     else:
         return
-
-
-@bot.command()
-async def get_icon(ctx):
-    if host_check(ctx):
-        await ctx.send(ctx.guild.icon_url)
 
 
 @bot.command()

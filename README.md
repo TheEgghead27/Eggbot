@@ -16,7 +16,7 @@ e!test_args {arguments}: list of args
 
 e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Hanako-kun#6669]
 
-e!song: song (WIP)
+e!song: The screams of the damned (WIP)
 
 e!github: Links to this Github Repo
 
@@ -25,6 +25,8 @@ e!invite: DMs you an invite to the official Discord Server
 e!vacuum {number}: Mass deletes {number} messages. 
 
 e!timer {number} {time unit}: Creates a timer that pings the requesting user after a specified time.
+
+e!get_icon: Links to a copy of the current server's icon.
 
 egg: egg
 
