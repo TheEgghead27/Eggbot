@@ -202,6 +202,24 @@ async def kiri(ctx, *args):
 
 
 @bot.command()
+async def song(ctx):
+    micheal = await ctx.message.author.voice.channel.connect(timeout=60.0, reconnect=True)
+    await asyncio.sleep(5)
+    await micheal.disconnect()
+
+
+@song.error
+# @commands.cooldown(1, 30, commands.BucketType.user)
+async def song_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("The damned have a limited amount of bandwidth. Ask again later.")
+    elif isinstance(error, commands.CommandInvokeError):
+        await ctx.send("The damned get only one vessel per server. Try again when this one expires.")
+    else:
+        raise error
+
+
+@bot.command()
 async def test_args(ctx, *args):
     arghs = args
     argsleft = len(arghs)
