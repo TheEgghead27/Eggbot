@@ -310,8 +310,24 @@ async def vacuum(ctx, *args):
             await ctx.send('Succed ' + str(kirby) + ' messages.')
         except discord.Forbidden:
             await ctx.send("I was unable to delete the message!")
+        except IndexError:
+            await ctx.send("You didn't use the correct syntax!")
+            async with ctx.typing():
+                await asyncio.sleep(0.5)
+                await ctx.send("The syntax for the e!vacuum command is e!vacuum [number]")
     else:
         await ctx.send("You don't have permission to do that!")
+
+
+@bot.command()
+async def vaccum(ctx):
+    async with ctx.typing():
+        await asyncio.sleep(1)
+        await ctx.send("ha")
+        await asyncio.sleep(0.3)
+        await ctx.send("idiot")
+        await asyncio.sleep(0.7)
+        await ctx.send("you cant spell")
 
 
 @bot.command()
