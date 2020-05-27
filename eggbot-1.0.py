@@ -223,6 +223,7 @@ async def about(ctx):
         else:
             user = message.mentions
             user = user[0]
+        userColor = user.color
         emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
                             color=0x03f4fc)
         if user.display_name != str(user.name):  # doesn't need to use the member/user check
@@ -261,7 +262,7 @@ async def about(ctx):
         else:
             emb.add_field(name="User is", value="not a Discord VIP", inline=True)
         emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
-        emb.add_field(name="User Color", value=user.color, inline=True)
+        emb.add_field(name="User Color", value=userColor, inline=True)
         emb.set_image(url=user.avatar_url)
     await message.channel.send(embed=emb)
 
