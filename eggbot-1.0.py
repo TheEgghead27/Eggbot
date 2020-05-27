@@ -57,6 +57,16 @@ try:
     with open(file, 'r') as eggs:
         eggs = eggs.read().replace('\n', ' ')
         eggs = eggs.split(" ")
+    file = "eggtriggers.txt"
+    with open(file, "r") as eggTrigger:
+        eggTrigger = eggTrigger.read().replace('\n', ' ')
+        eggTrigger = eggTrigger.split(' ')
+        c = len(eggs)
+        d = 0
+        while c > 0:
+            eggTrigger.append(eggs[d])
+            d += 1
+            c -= 1
     file = 'spice.txt'
     with open(file, 'r') as spic:
         spic = spic.read().replace('\n', ' ')
@@ -69,10 +79,6 @@ try:
     with open(file, "r") as ohno:
         ohno = ohno.read().replace('\n', ' ')
         ohno = tuple(ohno.split(' '))
-    file = "eggtriggers.txt"
-    with open(file, "r") as eggtrigger:
-        eggtrigger = eggtrigger.read().replace('\n', ' ')
-        eggtrigger = tuple(eggtrigger.split(' '))
     file = "earth_roles.txt"
     with open(file, "r+") as earth_roles:
         earth_roles = earth_roles.read().replace('\n', ' ')
@@ -129,7 +135,7 @@ async def on_message(message):
         return
     else:
         try:
-            if a[0] in eggtrigger:
+            if a[0] in eggTrigger:
                 sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 if not safeguard:
