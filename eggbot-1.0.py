@@ -32,7 +32,7 @@ async def on_ready():
 
 
 prefix = "e!"
-prefix_length = len(prefix)
+prefixLen = len(prefix)
 # set this to False to enable egg spamming (please no)
 safeguard = True
 # read all the files for variables
@@ -87,7 +87,7 @@ except FileNotFoundError:
           " :( \n(Press enter to continue operation)")
 except ValueError:
     print("It looks like " + file + " is blank! Some features may not work!")
-eggc = 0
+eggC = 0
 
 
 def host_check(ctx):
@@ -105,7 +105,7 @@ async def on_message(message):
     if str(message.channel.type) == "private":
         if not message.author.id == bot.user.id:  # don't let the bot echo its own dms
             print(str(message.author) + ' says:\n' + message.content)
-    global eggc  # make eggcount actually count
+    global eggC  # make eggcount actually count
     # allows for text formatting stuff to be parsed
     mess = message.content.lower()
     if mess[:-len(mess) + 2] in ("||", "~~"):
@@ -119,7 +119,7 @@ async def on_message(message):
     elif mess[:-len(mess) + 4] in ("***e", "***<", "***:"):
         mess = mess[3:-3]
     if mess.startswith(prefix) is True:  # remove prefix text
-        mess = mess[prefix_length:]
+        mess = mess[prefixLen:]
     a = mess.split()
     if mess in ohno:  # check if emotes are screwed up
         if message.author.id == bot.user.id:
@@ -134,9 +134,9 @@ async def on_message(message):
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 if not safeguard:
                     async with message.channel.typing():
-                        eggc = eggc + 1
+                        eggC = eggC + 1
                 else:
-                    eggc = eggc + 1
+                    eggC = eggC + 1
             elif a[0] in ("simp", "sɪᴍᴘ"):
                 if message.author.id == bot.user.id:
                     return
@@ -173,7 +173,7 @@ async def help(ctx):
                                                              "specified time.", inline=False)
     emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
-    emb.add_field(name="e!eggcount", value="Counts the day's eggs!", inline=False)
+    emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
     await ctx.send(embed=emb)
 
@@ -295,9 +295,9 @@ async def invite_error(ctx, error):
 
 
 @bot.command()
-async def eggcount(ctx):
+async def eggCount(ctx):
     emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-    emb.add_field(name="Egg count:", value=str(eggc), inline=False)
+    emb.add_field(name="Egg count:", value=str(eggC), inline=False)
     await ctx.send(embed=emb)
 
 
@@ -316,20 +316,17 @@ async def vacuum(ctx, *args):
 
 @bot.command()
 async def timer(ctx, *args):
-    maybe_uh_oh = False
     try:
         unit = args[1].lower()
         if unit in ['minute', 'minutes']:
             unit = 60
         elif unit in ['hour', 'hours']:
-            maybe_uh_oh = True
             unit = 3600
         elif unit in ['day', 'days', 'week', 'weeks', 'month', 'year', 'months', 'years', 'decade', 'decades',
                       'century', 'centuries', 'millennia', 'millennium']:
             await ctx.send('No.')
             return
         elif unit in ['seconds', 'second']:
-            maybe_uh_oh = True
             unit = 1
         elif unit[-7:] in ['seconds', 'isecond']:
             await ctx.send('No.')
@@ -346,11 +343,17 @@ async def timer(ctx, *args):
                                                                                           'meant to be '
                                                                                           'the first argument!')
             return
-        if maybe_uh_oh:
+        time = number * unit
+        if time == 0:
+            await ctx.send('bruh')
+            await asyncio.sleep(0.5)
+            await ctx.send('no')
+            return
+        if 30 >= time or time >= 1800:
             await ctx.send('The timer may be inaccurate or unable to alert you due to the unit of time '
                            'the timer is set to.')
         await ctx.send("Timer set for " + args[0] + ' ' + args[1] + '.')
-        await asyncio.sleep(number * unit)
+        await asyncio.sleep(time)
         await ctx.send(ctx.message.author.mention + ', your ' + args[0] + ' ' + args[1] + ' timer is up!')
     except IndexError:
         await ctx.send('You did not provide all the arguments. The format for e!timer is `e!timer [number] '

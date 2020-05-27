@@ -30,7 +30,7 @@ e!get_icon: Links to a copy of the current server's icon.
 
 egg: egg
 
-e!eggcount: counts the day's eggs
+e!eggCount: counts the day's eggs
 
 simp: SIMP
 
