@@ -71,6 +71,7 @@ try:
             eggTrigger.append(eggs[d])
             d += 1
             c -= 1
+        eggTrigger.append('🥚')  # workaround for user messages with ":egg:" not triggering it
     file = 'spice.txt'
     with open(file, 'r') as spic:
         spic = spic.read().replace('\n', ' ')
@@ -571,6 +572,7 @@ async def spam(ctx):
 
 @bot.command()
 async def debug(ctx):
+    print(eggTrigger)
     if host_check(ctx):
         global debugMode
         if debugMode:
