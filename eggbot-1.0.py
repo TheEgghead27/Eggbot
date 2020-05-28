@@ -33,8 +33,12 @@ async def on_ready():
 
 prefix = "e!"
 prefixLen = len(prefix)
-# set this to False to enable egg spamming (please no)
+# set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
+# set this to True (with e!debug) to enable debug mode (it just prints the messages)
+debugMode = False
+# set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
+audit = True
 # read all the files for variables
 file = "No file"
 try:
@@ -98,8 +102,9 @@ eggC = 0
 
 def host_check(ctx):
     if str(ctx.message.author.id) in hosts:
-        mess = ctx.message.content.split(' ')
-        print(str(ctx.message.author) + ' used ' + mess[0] + '!')
+        if audit:
+            mess = ctx.message.content.split(' ')
+            print(str(ctx.message.author) + ' used ' + mess[0] + '!')
         return True
     else:
         return False
@@ -108,7 +113,7 @@ def host_check(ctx):
 # DM leaking & Egg and Simp commands due to special parsing
 @bot.event
 async def on_message(message):
-    if str(message.channel.type) == "private":
+    if str(message.channel.type) == "private" or debugMode:
         if not message.author.id == bot.user.id:  # don't let the bot echo its own dms
             print(str(message.author) + ' says:\n' + message.content)
     global eggC  # make eggcount actually count
@@ -550,6 +555,40 @@ async def florida(ctx):
         print("Hey! Set florida.txt's data to the number " + '"' + str(FL_mess.id) + '"!')
         global florida_roles
         florida_roles = FL_mess.id
+
+
+@bot.command()
+async def spam(ctx):
+    if host_check(ctx):
+        global safeguard
+        if safeguard:
+            safeguard = False
+            await ctx.send("Set spam mode to ON.")
+        else:
+            safeguard = True
+            await ctx.send("Set spam mode to OFF.")
+
+
+@bot.command()
+async def debug(ctx):
+    if host_check(ctx):
+        global debugMode
+        if debugMode:
+            debugMode = False
+        else:
+            debugMode = True
+        await ctx.send("Set debug mode to " + str(debugMode) + '.')
+
+
+@bot.command()
+async def log(ctx):
+    if host_check(ctx):
+        global audit
+        if audit:
+            audit = False
+        else:
+            audit = True
+        await ctx.send("Set audit log logging mode to " + str(audit) + '.')
 
 
 # Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
