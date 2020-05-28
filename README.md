@@ -46,6 +46,12 @@ e!print_emoji {emoji}: prints the emoji code in terminal
 
 e!bee: prints bee movie script (WIP)
 
+e!spam: Toggles spam mode for "egg" command
+
+e!debug: Toggles debug mode
+
+e!log: Toggles logging of admin commands
+
 ## Official Host (Only on when TheEgghead27 is online)
 https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
 
