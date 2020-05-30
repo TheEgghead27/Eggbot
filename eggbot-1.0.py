@@ -409,7 +409,7 @@ async def timer(ctx, *args):
 
 @bot.command()
 async def get_icon(ctx):
-    await ctx.send("This server's icon can be found at " + ctx.guild.icon_url)
+    await ctx.send("This server's icon can be found at " + str(ctx.guild.icon_url))
 
 
 # Secret Admin-Only Commands
