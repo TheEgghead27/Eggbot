@@ -603,12 +603,11 @@ async def json(ctx):
         await ctx.send(str(roles))
 
 
-# Both bot.events are for personal auto-role assigners, and the variables apply only to my personal server's bots
-# Ask for help on the Eggbot Discord Server if you want to set it up for your own server
+# Both bot.events are for personal auto-role assigners, with special clauses hard-coded for these purposes
 @bot.event
 async def on_raw_reaction_add(payload):
     # get role configurations
-    if str(payload.emoji) == '💰':
+    if str(payload.emoji) == '💰':  # unicode doesn't work in a json
         emoji = "moneybag"
     else:
         emoji = str(payload.emoji)
