@@ -54,18 +54,12 @@ try:
         Bee = Bee.read().replace('\n', '🥚')
         Bee = Bee.replace('[n]', '\n')
         Bee = tuple(Bee.split('🥚'))
-    file = 'kiri.txt'
-    with open(file, 'r') as kirilist:
-        kirilist = kirilist.read().replace('\n', ' ')
-        kirilist = kirilist.split(" ")
-    file = 'egg.txt'
-    with open(file, 'r') as eggs:
-        eggs = eggs.read().replace('\n', ' ')
-        eggs = eggs.split(" ")
-    file = "eggtriggers.txt"
-    with open(file, "r") as eggTrigger:
-        eggTrigger = eggTrigger.read().replace('\n', ' ')
-        eggTrigger = eggTrigger.split(' ')
+    file = 'data.json'
+    with open(file, 'r') as data:
+        data = json.load(data)
+        kirilist = data["kirilist"]
+        eggs = data["eggs"]
+        eggTrigger = data["eggTrigger"]
         c = len(eggs)
         d = 0
         while c > 0:
@@ -73,18 +67,9 @@ try:
             d += 1
             c -= 1
         eggTrigger.append('🥚')  # workaround for user messages with ":egg:" not triggering it
-    file = 'spice.txt'
-    with open(file, 'r') as spic:
-        spic = spic.read().replace('\n', ' ')
-        spic = spic.split(" ")
-    file = "simp.txt"
-    with open(file, "r") as simp:
-        simp = simp.read().replace('\n', ' ')
-        simp = simp.split(' ')
-    file = "uhoh.txt"
-    with open(file, "r") as ohno:
-        ohno = ohno.read().replace('\n', ' ')
-        ohno = tuple(ohno.split(' '))
+        spic = data['spic']
+        simp = data['simp']
+        ohno = data['ohno']
     file = 'roles.json'
     with open(file, "r+") as roles:
         roles = json.load(roles)
@@ -584,7 +569,7 @@ async def on_raw_reaction_add(payload):
     else:
         emoji = str(payload.emoji)
     try:
-        data = roles[str(payload.message_id)][emoji]
+        roleData = roles[str(payload.message_id)][emoji]
     except (KeyError, TypeError):
         return
     react_guild = bot.get_guild(payload.guild_id)
@@ -592,9 +577,9 @@ async def on_raw_reaction_add(payload):
     if react_user.id == bot.user.id:  # don't let the bot count its own reactions
         return
     else:
-        role = discord.Object(id=data['role'])
+        role = discord.Object(id=roleData['role'])
         await react_user.add_roles(role)  # edit role
-        emb = discord.Embed(title="Role Confirmed!", description=data['addMessage'],
+        emb = discord.Embed(title="Role Confirmed!", description=roleData['addMessage'],
                             color=0x0ac845)
         await react_user.send(embed=emb)
 
@@ -607,7 +592,7 @@ async def on_raw_reaction_remove(payload):
     else:
         emoji = str(payload.emoji)
     try:
-        data = roles[str(payload.message_id)][emoji]
+        roleData = roles[str(payload.message_id)][emoji]
     except (KeyError, TypeError):
         return
     react_guild = bot.get_guild(payload.guild_id)
@@ -615,9 +600,9 @@ async def on_raw_reaction_remove(payload):
     if react_user.id == bot.user.id:  # don't let the bot count its own reactions
         return
     else:
-        role = discord.Object(id=data['role'])
+        role = discord.Object(id=roleData['role'])
         await react_user.remove_roles(role)  # edit role
-        emb = discord.Embed(title="Role removed :(", description=data['removeMessage'],
+        emb = discord.Embed(title="Role removed :(", description=roleData['removeMessage'],
                             color=0xbc1a00)
         await react_user.send(embed=emb)
 
