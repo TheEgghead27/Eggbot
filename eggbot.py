@@ -88,18 +88,9 @@ try:
     file = 'roles.json'
     with open(file, "r+") as roles:
         roles = json.load(roles)
-    file = "earth_roles.txt"
-    with open(file, "r+") as earth_roles:
-        earth_roles = earth_roles.read().replace('\n', ' ')
-        earth_roles = int(earth_roles)
-    file = "florida.txt"
-    with open(file, "r+") as florida_roles:
-        florida_roles = florida_roles.read().replace('\n', ' ')
-        florida_roles = int(florida_roles)
 except FileNotFoundError:
     print(file + " and possibly other files are not setup or installed!!")
-    input("The bot will not shut down, but certain features will give a NameError when called, so stuff will be broken"
-          " :( \n(Press enter to continue operation)")
+    input("Press enter to begin the setup process. Close the window to cancel.")
 except ValueError:
     print("It looks like " + file + " is blank! Some features may not work!")
 eggC = 0
@@ -524,33 +515,16 @@ async def bee(ctx):
 
 # e!earth_role and e!florida are for personal auto-role assigners, so the embed will mention unaccessable roles
 # Ask for help on the Eggbot Discord Server if you want to set it up for your own server
-@bot.command()
-async def earth_role(ctx):
-    if host_check(ctx):
-        await ctx.message.delete()
-        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x1abc9c)
-        emb.add_field(name="Ping Me Role", value="React with <:earth:708046023750320179> to get pinged for general "
-                                                 "announcements in " + ctx.guild.name + '.', inline=False)
-        emb.add_field(name="Cheapskate Role", value="React with 💰 to get pinged for announcements in "
-                                                    "<#705235263428886560>.", inline=False)
-        emb.add_field(name="Note:", value="You will receive a confirmation DM for your role, as the bot is not always "
-                                          "online to give out the role", inline=False)
-        cheap_mess = await ctx.send(embed=emb)
-        await cheap_mess.add_reaction('💰')
-        earth = bot.get_emoji(708046023750320179)
-        await cheap_mess.add_reaction(earth)
-        print("Hey! Set earth_roles.txt's data to the number " + '"' + str(cheap_mess.id) + '"!')
-        global earth_roles
-        earth_roles = cheap_mess.id
 
 
 @bot.command()
-async def florida(ctx):
+async def roles(ctx):  # add *args
     if host_check(ctx):
+        role = 'sample'
         await ctx.message.delete()
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x576268)
-        emb.add_field(name="sneak peek ping role", value="React with <:ooo:704401624289771611> to get pinged for "
-                                                         "general announcements in " + ctx.guild.name + '.',
+        emb.add_field(name=role, value="React with <:ooo:704401624289771611> to get pinged for "
+                                       "general announcements in " + ctx.guild.name + '.',
                       inline=False)
         emb.add_field(name="Note:", value="You will receive a confirmation DM for your role, as the bot is not always "
                                           "online to give out the role", inline=False)
@@ -558,8 +532,6 @@ async def florida(ctx):
         knight = bot.get_emoji(704401624289771611)
         await FL_mess.add_reaction(knight)
         print("Hey! Set florida.txt's data to the number " + '"' + str(FL_mess.id) + '"!')
-        global florida_roles
-        florida_roles = FL_mess.id
 
 
 @bot.command()
@@ -613,7 +585,7 @@ async def on_raw_reaction_add(payload):
         emoji = str(payload.emoji)
     try:
         data = roles[str(payload.message_id)][emoji]
-    except KeyError:
+    except (KeyError, TypeError):
         return
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
@@ -636,7 +608,7 @@ async def on_raw_reaction_remove(payload):
         emoji = str(payload.emoji)
     try:
         data = roles[str(payload.message_id)][emoji]
-    except KeyError:
+    except (KeyError, TypeError):
         return
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
