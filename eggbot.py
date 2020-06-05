@@ -76,8 +76,9 @@ try:
 except FileNotFoundError:
     print(file + " and possibly other files are not setup or installed!!")
     input("Press enter to begin the setup process. Close the window to cancel.")
-except ValueError:
-    print("It looks like " + file + " is blank! Some features may not work!")
+except (ValueError, KeyError):
+    # edit later
+    print("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
 eggC = 0
 
 
@@ -176,15 +177,17 @@ async def kiri(ctx, *args):
         send_amount = args[0]
         send_amount = int(send_amount)
         while send_amount > 0:
-            emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
-            emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
-            await ctx.send(embed=emb)
+            await kiriContent(ctx)
             await asyncio.sleep(1)
             send_amount = send_amount - 1
     except (ValueError, IndexError):
-        emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
-        emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
-        await ctx.send(embed=emb)
+        await kiriContent(ctx)
+
+
+async def kiriContent(ctx):
+    emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
+    emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
+    await ctx.send(embed=emb)
 
 
 @bot.command()
@@ -459,6 +462,14 @@ async def say(ctx, *args):
         return
 
 
+@say.error
+async def say_error(ctx, error):
+    if isinstance(error, HTTPException):
+        await ctx.send("empty?")
+    else:
+        raise error
+
+
 @bot.command()
 async def print_emoji(ctx, *args):
     if host_check(ctx):
@@ -503,7 +514,7 @@ async def bee(ctx):
 
 
 @bot.command()
-async def roles(ctx):  # add *args
+async def roleGiver(ctx):  # add *args later
     if host_check(ctx):
         role = 'sample'
         await ctx.message.delete()
