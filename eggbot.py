@@ -36,7 +36,7 @@ prefix = "e!"
 prefixLen = len(prefix)
 # set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
-# use e!botReply to disable unintentional egg spamming with 2 eggbots
+# use e!botSpam to disable unintentional egg spamming with 2 eggbots
 botSafeguard = True
 # set this to True (with e!debug) to enable debug mode (it just prints the messages)
 debugMode = False
