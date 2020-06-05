@@ -56,6 +56,4 @@ e!log: Toggles logging of admin commands
 https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
 
 ## Self-Host
-For the self hosting setup, check https://github.com/TheEgghead27/Eggbot/tree/self-host
-
-Instructions are at https://github.com/TheEgghead27/Eggbot/tree/self-host#self-host
+For self hosting instuctions, check https://github.com/TheEgghead27/Eggbot/blob/master/INSTALL.md
