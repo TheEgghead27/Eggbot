@@ -36,6 +36,8 @@ prefix = "e!"
 prefixLen = len(prefix)
 # set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
+# use e!botReply to disable unintentional egg spamming with 2 eggbots
+botSafeguard = True
 # set this to True (with e!debug) to enable debug mode (it just prints the messages)
 debugMode = False
 # set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
@@ -119,6 +121,8 @@ async def on_message(message):
             await message.channel.send("Woah! Looks like I don't have access to my emotes! "
                                        "Did <@" + str(hosts[0]) + "> add me to the Eggbot Discord Server?")
     if message.author.id == bot.user.id and safeguard:
+        return
+    if botSafeguard and message.author.bot and not message.author.id == bot.user.id:
         return
     else:
         try:
@@ -542,6 +546,18 @@ async def spam(ctx):
 
 
 @bot.command()
+async def botSpam(ctx):
+    if host_check(ctx):
+        global botSafeguard
+        if botSafeguard:
+            botSafeguard = False
+            await ctx.send("Set bot message processing to ON.")
+        else:
+            botSafeguard = True
+            await ctx.send("Set bot message processing to OFF.")
+
+
+@bot.command()
 async def debug(ctx):
     print(eggTrigger)
     if host_check(ctx):
@@ -550,7 +566,7 @@ async def debug(ctx):
             debugMode = False
         else:
             debugMode = True
-        await ctx.send("Set debug mode to " + str(debugMode) + '.')
+        await ctx.send("Set debug state to " + str(debugMode) + '.')
 
 
 @bot.command()
@@ -561,13 +577,7 @@ async def log(ctx):
             audit = False
         else:
             audit = True
-        await ctx.send("Set audit log logging mode to " + str(audit) + '.')
-
-
-@bot.command()
-async def json(ctx):
-    if host_check(ctx):
-        await ctx.send(str(roles))
+        await ctx.send("Set audit log logging to " + str(audit) + '.')
 
 
 # Both bot.events are for personal auto-role assigners, with special clauses hard-coded for these purposes
