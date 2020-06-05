@@ -5,7 +5,7 @@ Basic text pusher with embed message functionality
 This is the `master` branch, home of the raw code used by the developers.
 
 ## Discord
-[![Server Invite](tutorial\invite.png)](https://discord.gg/rTfkdvX)
+[![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
 
 ## Commands
 e!help: help
