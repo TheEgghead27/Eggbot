@@ -14,7 +14,7 @@ e!about: about the speaking/first mentioned user
 
 e!test_args {arguments}: list of args
 
-e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Hanako-kun#6669]
+e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Franky Morrison#6669]
 
 e!song: The screams of the damned (WIP)
 
