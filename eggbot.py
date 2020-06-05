@@ -447,12 +447,18 @@ async def say(ctx, *args):
         except ValueError:
             channel = ctx.channel
         finally:
-            echo = " "
+            echo = ""
             while arghs:
                 echo = echo + " " + arghs[0]
                 del arghs[0]
-            if echo is None or echo == " ":
-                await ctx.send(ctx.message.content[len(prefix) + 4:])
+            print('"{}"'.format(echo))
+            print(type(echo))
+            if echo == "" or echo is None:
+                print("a")
+                if not ctx.message.content[len(prefix) + 4:] == "":
+                    await ctx.send(ctx.message.content[len(prefix) + 4:])
+                else:
+                    await ctx.author.send("you idot, you can't just have me say nothing")
             else:
                 try:
                     await channel.send(echo)
@@ -460,14 +466,6 @@ async def say(ctx, *args):
                     await ctx.send(echo)
     else:
         return
-
-
-@say.error
-async def say_error(ctx, error):
-    if isinstance(error, HTTPException):
-        await ctx.send("empty?")
-    else:
-        raise error
 
 
 @bot.command()
