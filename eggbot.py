@@ -503,6 +503,7 @@ async def bee(ctx):
                 messno = messno + 1  # keep the message numbers rising
                 async with ctx.typing():
                     beetime = True
+                    await asyncio.sleep(1)
             emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
             limitcheck = limitcheck + 1
