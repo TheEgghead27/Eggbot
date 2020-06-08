@@ -455,8 +455,6 @@ async def say(ctx, *args):
             while arghs:
                 echo = echo + " " + arghs[0]
                 del arghs[0]
-            print('"{}"'.format(echo))
-            print(type(echo))
             if echo == "" or echo is None:
                 print("a")
                 if not ctx.message.content[len(prefix) + 4:] == "":
