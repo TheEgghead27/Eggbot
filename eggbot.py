@@ -21,7 +21,9 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-bot = commands.Bot(command_prefix='e!', case_insensitive=True, description="e!help")
+prefix = 'e!'
+prefixLen = len(prefix)
+bot = commands.Bot(command_prefix=prefix, case_insensitive=True, description="e!help")
 bot.remove_command("help")
 on = True
 
@@ -32,8 +34,6 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="e!help"))
 
 
-prefix = "e!"
-prefixLen = len(prefix)
 # set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
 # use e!botSpam to disable unintentional egg spamming with 2 eggbots
