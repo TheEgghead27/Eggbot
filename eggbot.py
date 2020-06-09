@@ -12,7 +12,7 @@ except ModuleNotFoundError:  # install the discord modules
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
     import discord
     from discord.ext import commands
-# remove logging in release
+
 import logging
 
 logger = logging.getLogger('discord')
@@ -532,7 +532,10 @@ async def pp(ctx):
     if ctx.message.channel.is_nsfw():
         await ctx.send("Here's the good stuff.")
         await asyncio.sleep(2)
-        await ctx.send(file=discord.File(filename="pp.png", fp="pp.png"))
+        try:
+            await ctx.send(file=discord.File(filename="pp.png", fp="pp.png"))
+        except FileNotFoundError:
+            await ctx.send("Oops! pp not found! It's probably too small! xD")
     else:
         await ctx.send("This content is NSFW, ya dingus!")
 
