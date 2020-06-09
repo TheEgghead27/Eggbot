@@ -164,7 +164,8 @@ async def help(ctx):
     emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
                   value="Reveals basically everything (legal) I can get on you", inline=False)
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
-    emb.add_field(name="e!invite", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
+    emb.add_field(name="e!invite", value="Links to an invite link for Eggbot.", inline=False)
+    emb.add_field(name="e!server", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
     emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
     emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
                                                              "specified time.", inline=False)
@@ -292,8 +293,24 @@ async def github(ctx):
 
 
 @bot.command()
-@commands.cooldown(1, 30, commands.BucketType.user)
 async def invite(ctx):
+    emb = discord.Embed(title="Bot Invite", 
+                        description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
+                                    "permissions=3537984&scope=bot", color=0xffffff)
+    await ctx.send(embed=emb)
+
+
+@invite.error
+async def invite_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("Bruh, you don't need that many bot invites. Ask again later.")
+    else:
+        raise error
+
+
+@bot.command()
+@commands.cooldown(1, 30, commands.BucketType.user)
+async def server(ctx):
     egg_guild = bot.get_guild(675750662058934324)
     if ctx.guild != egg_guild:
         emb = discord.Embed(title="Official Eggbot Discord Server", description="https://discord.gg/rTfkdvX",
@@ -304,8 +321,8 @@ async def invite(ctx):
         await ctx.send("You're already in the Eggbot Server!")
 
 
-@invite.error
-async def invite_error(ctx, error):
+@server.error
+async def server_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("Bro, you don't need that many invite links. Ask again later.")
     else:
@@ -508,6 +525,16 @@ async def bee(ctx):
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
             limitcheck = limitcheck + 1
         await ctx.send(embed=emb)
+
+
+@bot.command()
+async def pp(ctx):
+    if ctx.message.channel.is_nsfw():
+        await ctx.send("Here's the good stuff.")
+        await asyncio.sleep(2)
+        await ctx.send(file=discord.File(filename="pp.png", fp="pp.png"))
+    else:
+        await ctx.send("This content is NSFW, ya dingus!")
 
 
 # e!earth_role and e!florida are for personal auto-role assigners, so the embed will mention unaccessable roles
