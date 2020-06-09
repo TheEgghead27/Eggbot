@@ -30,6 +30,8 @@ e!timer {number} {time unit}: Creates a timer that pings the requesting user aft
 
 e!get_icon: Links to a copy of the current server's icon.
 
+e!admins: Lists the admins for the current copy of Eggbot.
+
 egg: egg
 
 e!eggCount: counts the day's eggs

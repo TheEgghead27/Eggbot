@@ -25,7 +25,6 @@ prefix = 'e!'
 prefixLen = len(prefix)
 bot = commands.Bot(command_prefix=prefix, case_insensitive=True, description="e!help")
 bot.remove_command("help")
-on = True
 
 
 @bot.event
@@ -42,46 +41,87 @@ botSafeguard = True
 debugMode = False
 # set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
 audit = True
-# read all the files for variables
-file = "No file"
-try:
-    file = "host.txt"
-    with open(file, 'r') as hosts:
-        hosts = hosts.read().split("\n")
-    file = 'token.txt'
-    with open(file, 'r') as token:
-        token = token.read()
-    file = 'bee.txt'
-    with open(file, 'r') as Bee:
-        Bee = Bee.read().replace('\n', '🥚')
-        Bee = Bee.replace('[n]', '\n')
-        Bee = tuple(Bee.split('🥚'))
-    file = 'data.json'
-    with open(file, 'r') as data:
-        data = json.load(data)
-        kirilist = data["kirilist"]
-        eggs = data["eggs"]
-        eggTrigger = data["eggTrigger"]
-        c = len(eggs)
-        d = 0
-        while c > 0:
-            eggTrigger.append(eggs[d])
-            d += 1
-            c -= 1
-        eggTrigger.append('🥚')  # workaround for user messages with ":egg:" not triggering it
-        spic = data['spic']
-        simp = data['simp']
-        ohno = data['ohno']
-    file = 'roles.json'
-    with open(file, "r+") as roles:
-        roles = json.load(roles)
-except FileNotFoundError:
-    print(file + " and possibly other files are not setup or installed!!")
-    input("Press enter to begin the setup process. Close the window to cancel.")
-except (ValueError, KeyError):
-    # edit later
-    print("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
+# set the placeholder variables
+hosts = [474328006588891157]
+token = "Improper token"
+Bee = ["Error", "The bee.txt data was not "]
+kirilist = ['https://cdn.discordapp.com/attachments/555165702395527178/719998472752726146/unknown.png']
+eggs = ['egg']
+eggTrigger = ['egg']
+spic = [' ']
+simp = ['simp']
+ohno = ['ohno']
+roles = {
+
+}
+blacklist = []
+
+
+def load(exclude):
+    """read files for data"""
+    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, blacklist
+    # read all the files for variables
+    file = "No file"
+    try:
+        file = "host.txt"
+        if file not in exclude:
+            with open(file, 'r') as hosts:
+                hosts = hosts.read().split("\n")
+        file = 'token.txt'
+        if file not in exclude:
+            with open(file, 'r') as token:
+                token = token.read()
+        file = 'bee.txt'
+        if file not in exclude:
+            with open(file, 'r') as Bee:
+                Bee = Bee.read().replace('\n', '🥚')
+                Bee = Bee.replace('[n]', '\n')
+                Bee = tuple(Bee.split('🥚'))
+        file = 'data.json'
+        if file not in exclude:
+            with open(file, 'r') as data:
+                data = json.load(data)
+                kirilist = data["kirilist"]
+                eggs = data["eggs"]
+                eggTrigger = data["eggTrigger"]
+                c = len(eggs)
+                d = 0
+                while c > 0:
+                    eggTrigger.append(eggs[d])
+                    d += 1
+                    c -= 1
+                eggTrigger.append('🥚')  # workaround for user messages with ":egg:" not triggering it
+                spic = data['spic']
+                simp = data['simp']
+                ohno = data['ohno']
+        file = 'roles.json'
+        if file not in exclude:
+            with open(file, "r+") as roles:
+                roles = json.load(roles)
+    except FileNotFoundError:
+        if file == 'data.json':
+            input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
+        elif file in ['roles.json', 'bee.txt']:
+            input("It looks like a non-essential file, {}, is missing! \n"
+                  "You can safely press enter to ignore this if you do not intend to use the functions related to "
+                  "{}.".format(file, file))
+            blacklist.append(file)
+            load(blacklist)
+        # input("Press enter to begin the setup process. Close the window to cancel.")
+    except (ValueError, KeyError):
+        if file == 'data.json':
+            input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
+        elif file in ['roles.json', 'bee.txt']:
+            input("It looks like a non-essential file, {}, is corrupted! \n"
+                  "You can safely press enter to ignore this if you do not intend to use the functions related to "
+                  "{}.".format(file, file))
+            blacklist.append(file)
+            load(blacklist)
+
+
+load(blacklist)
 eggC = 0
+on = True
 
 
 def host_check(ctx):
@@ -170,6 +210,7 @@ async def help(ctx):
     emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
                                                              "specified time.", inline=False)
     emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
+    emb.add_field(name="e!admins", value="Lists the admins for this copy of Eggbot.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
@@ -294,7 +335,7 @@ async def github(ctx):
 
 @bot.command()
 async def invite(ctx):
-    emb = discord.Embed(title="Bot Invite", 
+    emb = discord.Embed(title="Bot Invite",
                         description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
                                     "permissions=3537984&scope=bot", color=0xffffff)
     await ctx.send(embed=emb)
@@ -414,6 +455,30 @@ async def timer(ctx, *args):
 @bot.command()
 async def get_icon(ctx):
     await ctx.send("This server's icon can be found at " + str(ctx.guild.icon_url))
+
+
+async def wrongAdmins(ctx, wrongAdmin):
+    await ctx.send('There is an invalid listing in the hosts list, {}.'.format(wrongAdmin))
+    await asyncio.sleep(2)
+
+
+@bot.command()
+async def admins(ctx):
+    c = len(eggs) - 1
+    d = 0
+    mess = 'Admins for this Eggbot: '
+    while c > 0:
+        try:
+            user = bot.get_user(int(hosts[d]))
+            if str(user) != 'None':
+                mess += "\n{}".format(str(user))
+            else:
+                await wrongAdmins(ctx, hosts[d])
+        except ValueError:
+            await wrongAdmins(ctx, hosts[d])
+        d += 1
+        c -= 1
+    await ctx.send(mess)
 
 
 # Secret Admin-Only Commands
