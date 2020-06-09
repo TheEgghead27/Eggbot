@@ -20,7 +20,9 @@ e!song: The screams of the damned (WIP)
 
 e!github: Links to this Github Repo
 
-e!invite: DMs you an invite to the official Discord Server
+e!invite: Links to an invite link for Eggbot.
+
+e!server: DMs you an invite to the official Discord Server
 
 e!vacuum {number}: Mass deletes {number} messages. 
 
