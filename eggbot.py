@@ -63,14 +63,12 @@ def load(exclude):
     # read all the files for variables
     file = "No file"
     try:
-        file = "host.txt"
+        file = "config.json"
         if file not in exclude:
-            with open(file, 'r') as hosts:
-                hosts = hosts.read().split("\n")
-        file = 'token.txt'
-        if file not in exclude:
-            with open(file, 'r') as token:
-                token = token.read()
+            with open(file, "r") as config:
+                config = json.load(config)
+                hosts = config['hosts']
+                token = config['token']
         file = 'bee.txt'
         if file not in exclude:
             with open(file, 'r') as Bee:
@@ -107,7 +105,12 @@ def load(exclude):
                   "{}.".format(file, file))
             blacklist.append(file)
             load(blacklist)
-        # input("Press enter to begin the setup process. Close the window to cancel.")
+        elif file == 'config.json':
+            input("Press enter to begin the setup process. \nIf you want to convert an old configuration, exit this "
+                  "window and open convert.py")
+            setup()
+            blacklist.append(file)
+            load(blacklist)
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
@@ -119,12 +122,41 @@ def load(exclude):
             load(blacklist)
 
 
+def setup():
+    """out of box setup function to configure the token and hosts, then package in the new json"""
+    global token, hosts
+    if token == "Improper token":
+        token = input("Paste your token here.\n").strip(' ')
+    if len(hosts) > 0:
+        hosts = []
+        a = input("Input your user ID.\n")
+        if len(a) == 18:
+            hosts.append(a)
+        else:
+            print('Invalid input.')
+            setup()
+    hostInput = True
+    while hostInput:
+        a = input('Enter the next user ID. If you wish to exit, type nothing.\n')
+        if len(a) == 18:
+            hosts.append(a)
+        elif len(a) in [0, 1]:
+            hostInput = False
+        else:
+            pass
+    data = {"hosts": hosts, "token": token}
+    with open("config.json", "w") as config:
+        json.dump(data, config)
+    input("Configuration complete! Press enter to continue operations...")
+
+
 load(blacklist)
 eggC = 0
 on = True
 
 
 def host_check(ctx):
+    """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
     if str(ctx.message.author.id) in hosts:
         if audit:
             mess = ctx.message.content.split(' ')
@@ -458,13 +490,13 @@ async def get_icon(ctx):
 
 
 async def wrongAdmins(ctx, wrongAdmin):
-    await ctx.send('There is an invalid listing in the hosts list, {}.'.format(wrongAdmin))
+    await ctx.send('There is an unsolved reference in the hosts list, {}.'.format(wrongAdmin))
     await asyncio.sleep(2)
 
 
 @bot.command()
 async def admins(ctx):
-    c = len(eggs) - 1
+    c = len(hosts)
     d = 0
     mess = 'Admins for this Eggbot: '
     while c > 0:
