@@ -79,19 +79,14 @@ def load(exclude):
         if file not in exclude:
             with open(file, 'r') as data:
                 data = json.load(data)
-                kirilist = data["kirilist"]
-                eggs = data["eggs"]
+                kirilist = tuple(data["kirilist"])
+                eggs = tuple(data["eggs"])
                 eggTrigger = data["eggTrigger"]
-                c = len(eggs)
-                d = 0
-                while c > 0:
-                    eggTrigger.append(eggs[d])
-                    d += 1
-                    c -= 1
                 eggTrigger.append('🥚')  # workaround for user messages with ":egg:" not triggering it
-                spic = data['spic']
-                simp = data['simp']
-                ohno = data['ohno']
+                eggTrigger = tuple(eggTrigger)
+                spic = tuple(data['spic'])
+                simp = tuple(data['simp'])
+                ohno = tuple(data['ohno'])
         file = 'roles.json'
         if file not in exclude:
             with open(file, "r+") as roles:
@@ -185,8 +180,6 @@ async def on_message(message):
         mess = mess[2:-2]
     elif mess[:-len(mess) + 4] in ("***e", "***<", "***:"):
         mess = mess[3:-3]
-    if mess.startswith(prefix) is True:  # remove prefix text
-        mess = mess[prefixLen:]
     a = mess.split()
     if mess in ohno:  # check if emotes are screwed up
         if message.author.id == bot.user.id:
@@ -198,7 +191,7 @@ async def on_message(message):
         return
     else:
         try:
-            if a[0] in eggTrigger:
+            if a[0] in eggTrigger or a[0].startswith(eggTrigger):
                 sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 if not safeguard:
@@ -491,7 +484,7 @@ async def get_icon(ctx):
 
 async def wrongAdmins(ctx, wrongAdmin):
     await ctx.send('There is an unsolved reference in the hosts list, {}.'.format(wrongAdmin))
-    await asyncio.sleep(2)
+    await asyncio.sleep(0.75)
 
 
 @bot.command()
