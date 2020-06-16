@@ -406,11 +406,15 @@ async def eggCount(ctx):
 async def vacuum(ctx, *args):
     if ctx.message.author.permissions_in(ctx.message.channel).manage_messages:
         try:
-            kirby = int(args[0]) + 1
-            await ctx.message.channel.purge(limit=kirby)
-            await ctx.send('Succed ' + str(kirby) + ' messages.')
+            kirby = int(args[0])
+            await ctx.message.delete()
+            if kirby <= 0:
+                await ctx.send('Succed 1 message.')
+            else:
+                await ctx.message.channel.purge(limit=kirby)
+                await ctx.send('Succed ' + str(kirby + 1) + ' messages.')
         except discord.Forbidden:
-            await ctx.send("I was unable to delete the message!")
+            await ctx.send("I was unable to delete the message(s)!")
         except IndexError:
             await ctx.send("You didn't use the correct syntax!")
             async with ctx.typing():
@@ -461,10 +465,13 @@ async def timer(ctx, *args):
                                                                                           'the first argument!')
             return
         time = number * unit
-        if time == 0:
+        if time <= 0:
             await ctx.send('bruh')
             await asyncio.sleep(0.5)
             await ctx.send('no')
+            async with ctx.typing():
+                await asyncio.sleep(2)
+                await ctx.send('What are you thinking bro, thats not even an amount of time I can time?!?')
             return
         if 30 >= time or time >= 1800:
             await ctx.send('The timer may be inaccurate or unable to alert you due to the unit of time '
