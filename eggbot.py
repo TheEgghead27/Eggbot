@@ -51,15 +51,14 @@ eggTrigger = ['egg']
 spic = [' ']
 simp = ['simp']
 ohno = ['ohno']
-roles = {
-
-}
+roles = {}
+colors = {}
 blacklist = []
 
 
 def load(exclude):
     """read files for data"""
-    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, blacklist
+    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist
     # read all the files for variables
     file = "No file"
     try:
@@ -91,6 +90,39 @@ def load(exclude):
         if file not in exclude:
             with open(file, "r+") as roles:
                 roles = json.load(roles)
+        colors = {
+            "teal": discord.Colour.teal(),
+            "dark teal": discord.Colour.teal(),
+            "green": discord.Colour.from_rgb(0, 255, 0),
+            "dark green": discord.Colour.dark_green(),
+            "blue": discord.Colour.from_rgb(0, 0, 255),
+            "dark blue": discord.Colour.dark_blue(),
+            "purple": discord.Colour.purple(),
+            "dark purple": discord.Colour.dark_purple(),
+            "magenta": discord.Colour.magenta(),
+            "dark magenta": discord.Colour.dark_magenta(),
+            "gold": discord.Colour.gold(),
+            "dark_gold": discord.Colour.dark_gold(),
+            "orange": discord.Colour.orange(),
+            "dark orange": discord.Colour.dark_orange(),
+            "red": discord.Colour.from_rgb(255, 0, 0),
+            "dark red": discord.Colour.dark_red(),
+            "lighter gray": discord.Colour.lighter_grey(),
+            "light gray": discord.Colour.light_grey(),
+            "dark gray": discord.Colour.dark_grey(),
+            "darker gray": discord.Colour.darker_grey(),
+            "gray":  discord.Colour.from_rgb(128, 128, 128),
+            "lighter grey": discord.Colour.lighter_grey(),
+            "light grey": discord.Colour.light_grey(),
+            "dark grey": discord.Colour.dark_grey(),
+            "darker grey": discord.Colour.darker_grey(),
+            "grey":  discord.Colour.from_rgb(128, 128, 128),
+            "blurple": discord.Colour.blurple(),
+            "greyple": discord.Colour.greyple(),
+            "grayple": discord.Colour.greyple(),
+            "white": discord.Colour.from_rgb(255, 255, 255),
+            "black": discord.Colour.from_rgb(0, 0, 0)
+        }
     except FileNotFoundError:
         if file == 'data.json':
             input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
@@ -661,24 +693,47 @@ async def pp(ctx):
 @bot.command()
 async def roleGiver(ctx, *args):
     if host_check(ctx):
-        colors = {'red': 0xff0000}
-        color = args[0]
-        if color in colors:
-            color = colors[color]
-        else:
-            pass
-        role = args[1]
+        global roles
+        args = list(args)
         try:
+            role = args[0]
             role = ctx.guild.get_role(int(role[-19:-1]))
+            del args[0]
         except ValueError:
             await ctx.send("Invalid role was passed.")  # maybe change this
-        emoji = args[2]
+            return
+        except IndexError:
+            await ctx.send("Role was not given.")  # maybe change this
+            return
+        if role is None:
+            await ctx.send("Invalid role was passed.")  # maybe change this
+            return
         try:
+            emoji = args[0]
             emoji = bot.get_emoji(int(emoji[-19:-1]))
+            del args[0]
         except ValueError:
             await ctx.send("Invalid emoji was passed.")  # maybe change this
+            return
+        except IndexError:
+            await ctx.send("Emoji was not given.")  # maybe change this
+            return
+        if emoji is None:
+            await ctx.send("Invalid role was passed.")  # maybe change this
+            return
+        try:
+            if len(args) == 2:
+                colo = args[0] + ' ' + args[1]
+            else:
+                colo = args[0]
+            if colo in colors:
+                colo = colors[colo]
+            else:
+                colo = discord.Colour.from_rgb(0, 0, 0)
+        except IndexError:
+            colo = discord.Colour.from_rgb(0, 0, 0)
         await ctx.message.delete()
-        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=color)
+        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
         emb.add_field(name=role.name + " role", value="React with {emote} to get the {role} role.".format(emote=emoji,
                                                                                                           role=role.
                                                                                                           mention),
