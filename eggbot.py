@@ -218,13 +218,15 @@ async def on_message(message):
 
 
 @bot.command()
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def help(ctx):
-    user = bot.get_user(255070100325924864)
+    kiriPerson = bot.get_user(255070100325924864)
+    owner = bot.get_user(int(hosts[0]))
     emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
     emb.add_field(name="e!help", value="Displays this manual", inline=False)
     emb.add_field(name="e!kiri [number]", value="Displays an image of Eijiro Kirishima from My Hero Academia. You can "
                                                 "specify the number of images you want to be sent. "
-                                                "[request from " + str(user) + "]", inline=False)
+                                                "[request from {user}]".format(user=kiriPerson), inline=False)
     emb.add_field(name="e!test_args [words go here]", value="Test arguments", inline=False)
     emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
                   value="Reveals basically everything (legal) I can get on you", inline=False)
@@ -239,7 +241,14 @@ async def help(ctx):
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
+    emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
     await ctx.send(embed=emb)
+
+
+@help.error
+async def help_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("bro this is all I have, no need to spam me for more")
 
 
 @bot.command()
@@ -256,8 +265,10 @@ async def kiri(ctx, *args):
 
 
 async def kiriContent(ctx):
+    kiriPerson = bot.get_user(255070100325924864)
     emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
     emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
+    emb.set_footer(text="This command, and its related images were requested and sourced from {}.".format(kiriPerson))
     await ctx.send(embed=emb)
 
 
@@ -359,6 +370,7 @@ async def github(ctx):
 
 
 @bot.command()
+@commands.cooldown(1, 30, commands.BucketType.user)
 async def invite(ctx):
     emb = discord.Embed(title="Bot Invite",
                         description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
@@ -642,20 +654,35 @@ async def pp(ctx):
 
 
 @bot.command()
-async def roleGiver(ctx):  # add *args later
+async def roleGiver(ctx, *args):
     if host_check(ctx):
-        role = 'sample'
+        colors = {'red': 0xff0000}
+        color = args[0]
+        if color in colors:
+            color = colors[color]
+        else:
+            pass
+        role = args[1]
+        try:
+            role = ctx.guild.get_role(int(role[-19:-1]))
+        except ValueError:
+            await ctx.send("Invalid role was passed.")  # maybe change this
+        emoji = args[2]
+        try:
+            emoji = bot.get_emoji(int(emoji[-19:-1]))
+        except ValueError:
+            await ctx.send("Invalid emoji was passed.")  # maybe change this
         await ctx.message.delete()
-        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=0x576268)
-        emb.add_field(name=role, value="React with <:ooo:704401624289771611> to get pinged for "
-                                       "general announcements in " + ctx.guild.name + '.',
+        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=color)
+        emb.add_field(name=role.name + " role", value="React with {emote} to get the {role} role.".format(emote=emoji,
+                                                                                                          role=role.
+                                                                                                          mention),
                       inline=False)
         emb.add_field(name="Note:", value="You will receive a confirmation DM for your role, as the bot is not always "
                                           "online to give out the role", inline=False)
-        FL_mess = await ctx.send(embed=emb)
-        knight = bot.get_emoji(704401624289771611)
-        await FL_mess.add_reaction(knight)
-        print("Hey! Set florida.txt's data to the number " + '"' + str(FL_mess.id) + '"!')
+        mess = await ctx.send(embed=emb)
+        await mess.add_reaction(emoji)
+        print("aaaaa!")
 
 
 @bot.command()
@@ -713,9 +740,13 @@ async def on_raw_reaction_add(payload):
         emoji = "moneybag"
     else:
         emoji = str(payload.emoji)
-    try:
-        roleData = roles[str(payload.message_id)][emoji]
-    except (KeyError, TypeError):
+    if str(payload.message_id) in roles:
+        roleData = roles[str(payload.message_id)]
+        if emoji in roleData:
+            roleData = roleData[emoji]
+        else:
+            return
+    else:
         return
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
@@ -736,9 +767,13 @@ async def on_raw_reaction_remove(payload):
         emoji = "moneybag"
     else:
         emoji = str(payload.emoji)
-    try:
-        roleData = roles[str(payload.message_id)][emoji]
-    except (KeyError, TypeError):
+    if str(payload.message_id) in roles:
+        roleData = roles[str(payload.message_id)]
+        if emoji in roleData:
+            roleData = roleData[emoji]
+        else:
+            return
+    else:
         return
     react_guild = bot.get_guild(payload.guild_id)
     react_user = react_guild.get_member(payload.user_id)
