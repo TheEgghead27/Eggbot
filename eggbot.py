@@ -510,19 +510,24 @@ async def wrongAdmins(ctx, wrongAdmin):
 async def admins(ctx):
     c = len(hosts)
     d = 0
-    mess = 'Admins for this Eggbot: '
+    e = 0
+    emb = discord.Embed(title='Admins for this Eggbot:')
     while c > 0:
         try:
             user = bot.get_user(int(hosts[d]))
             if str(user) != 'None':
-                mess += "\n{}".format(str(user))
+                if e == 0:
+                    emb.add_field(name="Owner", value=str(user), inline=False)
+                else:
+                    emb.add_field(name="Admin {}".format(str(e)), value=str(user), inline=False)
+                e += 1
             else:
                 await wrongAdmins(ctx, hosts[d])
         except ValueError:
             await wrongAdmins(ctx, hosts[d])
         d += 1
         c -= 1
-    await ctx.send(mess)
+    await ctx.send(embed=emb)
 
 
 # Secret Admin-Only Commands
@@ -621,7 +626,7 @@ async def bee(ctx):
                 if beetime:  # don't send an empty embed
                     await ctx.send(embed=emb)
                 emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-                emb.set_author(name="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
+                emb.set_footer(text="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
                                     "313")
                 # alternate colors
                 color_list.append(color_list[0])
