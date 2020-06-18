@@ -1,14 +1,1 @@
-{
-  "708056795523973292":
-  {"moneybag": {"role": 706296742114754670,
-    "addMessage":  "You will now be pinged when a major announcement appears in <#705235263428886560>",
-    "removeMessage":  "You will no longer be pinged when a major announcement appears in <#705235263428886560>"},
-  "<:earth:708046023750320179>": {"role": 708042351037120512,
-    "addMessage":  "You will now be pinged when there is an announcement in Earth 2.0.",
-    "removeMessage": "You will no longer be pinged when there is an announcement in Earth 2.0."}},
-  "708435235569664078":
-  {"<:ooo:704401624289771611>": {"role": 708421333888794644,
-    "addMessage":  "You will now be pinged when a major announcement appears in <#706645368678645831>",
-    "removeMessage": "You will no longer be pinged when a major announcement appears in <#706645368678645831>"}},
-  "722963178081746964": {"<:egghead:698281894441123990>": {"role": 722962992215359538}}
-}
+{"708056795523973292": {"moneybag": {"role": 706296742114754670, "addMessage": "You will now be pinged when a major announcement appears in <#705235263428886560>", "removeMessage": "You will no longer be pinged when a major announcement appears in <#705235263428886560>"}, "<:earth:708046023750320179>": {"role": 708042351037120512, "addMessage": "You will now be pinged when there is an announcement in Earth 2.0.", "removeMessage": "You will no longer be pinged when there is an announcement in Earth 2.0."}}, "708435235569664078": {"<:ooo:704401624289771611>": {"role": 708421333888794644, "addMessage": "You will now be pinged when a major announcement appears in <#706645368678645831>", "removeMessage": "You will no longer be pinged when a major announcement appears in <#706645368678645831>"}}, "722963178081746964": {"<:egghead:698281894441123990>": {"role": 722962992215359538}}, "722983789910949960": {"<:egghead:647895942745554976>": {"role": 722951631565750322}}}

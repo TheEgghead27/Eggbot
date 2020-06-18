@@ -53,7 +53,7 @@ simp = ['simp']
 ohno = ['ohno']
 roles = {}
 colors = {}
-tempRolesEmbed = {}
+roleEmbeds = {}
 blacklist = []
 
 
@@ -694,6 +694,7 @@ async def pp(ctx):
 @bot.command()
 async def roleGiver(ctx, *args):
     if host_check(ctx):
+        global roleEmbeds
         args = list(args)
         role, emoji, colo = await roleProcess(ctx, args)
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
@@ -707,10 +708,9 @@ async def roleGiver(ctx, *args):
         await mess.add_reaction(emoji)
         roleData = {str(emoji): {"role": role.id}}
         roles[str(mess.id)] = roleData
-        print(roles)
         with open("roles.json", "w") as j:
             json.dump(roles, j)
-        tempRolesEmbed[ctx.message.id] = emb.to_dict()
+        roleEmbeds[ctx.message.channel] = emb.to_dict()
         emb = discord.Embed(title="Role giver set up!", description="If you need to add more roles, use `e!addRoles` "
                                                                     "(same syntax) soon (before the bot is shut off) "
                                                                     "to add another role.",
@@ -722,19 +722,18 @@ async def roleGiver(ctx, *args):
 async def addRoles(ctx, *args):
     if host_check(ctx):
         args = list(args)
-        try:
-            mess = await ctx.channel.fetch_message(int(args[0]))
-            del args[0]
-        except ValueError:
-            await ctx.send("Invalid message ID was passed.")  # maybe change this
-            return
-        except IndexError:
-            await ctx.send("Role was not given.")  # maybe change this
-            return
-        if mess is None:
-            await ctx.send("Invalid role was passed.")  # maybe change this
-            return
         role, emoji, colo = await roleProcess(ctx, args)
+        try:
+            emb = roleEmbeds[ctx.message.channel]
+            emb = discord.Embed.from_dict(emb)
+            emb.insert_field_at(index=-1, name=role.name + " role", value="React with {emote} to get the {role} role.".
+                                format(emote=emoji, role=role.mention), inline=False)
+        except KeyError:
+            await ctx.send("Role giver message not found in cache! Are you in the right channel, or did "
+                           "the bot reboot?")
+            return
+        await ctx.send(embed=emb)
+        # await ctx.channel.fetch_message(payload.message_id)
 
 
 async def roleProcess(ctx, args):
@@ -890,7 +889,7 @@ async def on_raw_reaction_remove(payload):
 
 
 try:
-    while True:
+    while on:
         bot.run(token)
 except (FileNotFoundError, NameError):
     input("The bot token was not found! Press enter to exit...")
