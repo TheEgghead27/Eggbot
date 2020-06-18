@@ -44,8 +44,6 @@ e!say: says whatever you tell it to say
 
 e!shutdown: shuts the bot down without needing to manually stop the script
 
-e!get_icon: posts a link to the current server icon
-
 e!print_emoji {emoji}: prints the emoji code in terminal
 
 e!bee: prints bee movie script (WIP)
