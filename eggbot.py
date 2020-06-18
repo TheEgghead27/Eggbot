@@ -53,6 +53,7 @@ simp = ['simp']
 ohno = ['ohno']
 roles = {}
 colors = {}
+tempRolesEmbed = {}
 blacklist = []
 
 
@@ -111,12 +112,12 @@ def load(exclude):
             "light gray": discord.Colour.light_grey(),
             "dark gray": discord.Colour.dark_grey(),
             "darker gray": discord.Colour.darker_grey(),
-            "gray":  discord.Colour.from_rgb(128, 128, 128),
+            "gray": discord.Colour.from_rgb(128, 128, 128),
             "lighter grey": discord.Colour.lighter_grey(),
             "light grey": discord.Colour.light_grey(),
             "dark grey": discord.Colour.dark_grey(),
             "darker grey": discord.Colour.darker_grey(),
-            "grey":  discord.Colour.from_rgb(128, 128, 128),
+            "grey": discord.Colour.from_rgb(128, 128, 128),
             "blurple": discord.Colour.blurple(),
             "greyple": discord.Colour.greyple(),
             "grayple": discord.Colour.greyple(),
@@ -693,46 +694,8 @@ async def pp(ctx):
 @bot.command()
 async def roleGiver(ctx, *args):
     if host_check(ctx):
-        global roles
         args = list(args)
-        try:
-            role = args[0]
-            role = ctx.guild.get_role(int(role[-19:-1]))
-            del args[0]
-        except ValueError:
-            await ctx.send("Invalid role was passed.")  # maybe change this
-            return
-        except IndexError:
-            await ctx.send("Role was not given.")  # maybe change this
-            return
-        if role is None:
-            await ctx.send("Invalid role was passed.")  # maybe change this
-            return
-        try:
-            emoji = args[0]
-            emoji = bot.get_emoji(int(emoji[-19:-1]))
-            del args[0]
-        except ValueError:
-            await ctx.send("Invalid emoji was passed.")  # maybe change this
-            return
-        except IndexError:
-            await ctx.send("Emoji was not given.")  # maybe change this
-            return
-        if emoji is None:
-            await ctx.send("Invalid role was passed.")  # maybe change this
-            return
-        try:
-            if len(args) == 2:
-                colo = args[0] + ' ' + args[1]
-            else:
-                colo = args[0]
-            if colo in colors:
-                colo = colors[colo]
-            else:
-                colo = discord.Colour.from_rgb(0, 0, 0)
-        except IndexError:
-            colo = discord.Colour.from_rgb(0, 0, 0)
-        await ctx.message.delete()
+        role, emoji, colo = await roleProcess(ctx, args)
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
         emb.add_field(name=role.name + " role", value="React with {emote} to get the {role} role.".format(emote=emoji,
                                                                                                           role=role.
@@ -742,7 +705,80 @@ async def roleGiver(ctx, *args):
                                           "online to give out the role", inline=False)
         mess = await ctx.send(embed=emb)
         await mess.add_reaction(emoji)
-        print("aaaaa!")
+        roleData = {str(emoji): {"role": role.id}}
+        roles[str(mess.id)] = roleData
+        print(roles)
+        with open("roles.json", "w") as j:
+            json.dump(roles, j)
+        tempRolesEmbed[ctx.message.id] = emb.to_dict()
+        emb = discord.Embed(title="Role giver set up!", description="If you need to add more roles, use `e!addRoles` "
+                                                                    "(same syntax) soon (before the bot is shut off) "
+                                                                    "to add another role.",
+                            color=0x0ac845)
+        await ctx.author.send(embed=emb)
+
+
+@bot.command()
+async def addRoles(ctx, *args):
+    if host_check(ctx):
+        args = list(args)
+        try:
+            mess = await ctx.channel.fetch_message(int(args[0]))
+            del args[0]
+        except ValueError:
+            await ctx.send("Invalid message ID was passed.")  # maybe change this
+            return
+        except IndexError:
+            await ctx.send("Role was not given.")  # maybe change this
+            return
+        if mess is None:
+            await ctx.send("Invalid role was passed.")  # maybe change this
+            return
+        role, emoji, colo = await roleProcess(ctx, args)
+
+
+async def roleProcess(ctx, args):
+    global roles
+    args = list(args)
+    try:
+        role = args[0]
+        role = ctx.guild.get_role(int(role[-19:-1]))
+        del args[0]
+    except ValueError:
+        await ctx.send("Invalid role was passed.")  # maybe change this
+        return
+    except IndexError:
+        await ctx.send("Role was not given.")  # maybe change this
+        return
+    if role is None:
+        await ctx.send("Invalid role was passed.")  # maybe change this
+        return
+    try:
+        emoji = args[0]
+        emoji = bot.get_emoji(int(emoji[-19:-1]))
+        del args[0]
+    except ValueError:
+        await ctx.send("Invalid emoji was passed.")  # maybe change this
+        return
+    except IndexError:
+        await ctx.send("Emoji was not given.")  # maybe change this
+        return
+    if emoji is None:
+        await ctx.send("Invalid role was passed.")  # maybe change this
+        return
+    try:
+        if len(args) >= 2:
+            colo = args[0] + ' ' + args[1]
+        else:
+            colo = args[0]
+        if colo in colors:
+            colo = colors[colo]
+        else:
+            colo = discord.Colour.from_rgb(0, 0, 0)
+    except IndexError:
+        colo = discord.Colour.from_rgb(0, 0, 0)
+    await ctx.message.delete()
+    return role, emoji, colo
 
 
 @bot.command()
@@ -796,7 +832,7 @@ async def log(ctx):
 @bot.event
 async def on_raw_reaction_add(payload):
     # get role configurations
-    if str(payload.emoji) == '💰':  # unicode doesn't work in a json
+    if str(payload.emoji) == '💰':  # unicode doesn't work in default json module, install simplejson later maybe
         emoji = "moneybag"
     else:
         emoji = str(payload.emoji)
@@ -813,10 +849,13 @@ async def on_raw_reaction_add(payload):
     if react_user.id == bot.user.id:  # don't let the bot count its own reactions
         return
     else:
-        role = discord.Object(id=roleData['role'])
+        role = react_guild.get_role(roleData['role'])
         await react_user.add_roles(role)  # edit role
-        emb = discord.Embed(title="Role Confirmed!", description=roleData['addMessage'],
-                            color=0x0ac845)
+        if 'addMessage' in roleData:
+            mess = roleData['addMessage']
+        else:
+            mess = "You now have the @{} role.".format(role.name)
+        emb = discord.Embed(title="Role Confirmed!", description=mess, color=0x0ac845)
         await react_user.send(embed=emb)
 
 
@@ -840,10 +879,13 @@ async def on_raw_reaction_remove(payload):
     if react_user.id == bot.user.id:  # don't let the bot count its own reactions
         return
     else:
-        role = discord.Object(id=roleData['role'])
+        role = react_guild.get_role(roleData['role'])
         await react_user.remove_roles(role)  # edit role
-        emb = discord.Embed(title="Role removed :(", description=roleData['removeMessage'],
-                            color=0xbc1a00)
+        if 'removeMessage' in roleData:
+            mess = roleData['removeMessage']
+        else:
+            mess = "You no longer have the @{} role.".format(role.name)
+        emb = discord.Embed(title="Role removed :(", description=mess, color=0xbc1a00)
         await react_user.send(embed=emb)
 
 
