@@ -102,6 +102,7 @@ def load(exclude):
             "dark purple": discord.Colour.dark_purple(),
             "magenta": discord.Colour.magenta(),
             "dark magenta": discord.Colour.dark_magenta(),
+            "yellow": discord.Colour.from_rgb(255, 255, 0),
             "gold": discord.Colour.gold(),
             "dark_gold": discord.Colour.dark_gold(),
             "orange": discord.Colour.orange(),
@@ -741,7 +742,12 @@ async def roleProcess(ctx, args):
     args = list(args)
     try:
         role = args[0]
-        role = ctx.guild.get_role(int(role[-19:-1]))
+        if len(role) == 18:
+            role = ctx.guild.get_role(int(role))
+        elif len(role) == 22:
+            role = ctx.guild.get_role(int(role[-19:-1]))
+        else:
+            raise ValueError
         del args[0]
     except ValueError:
         await ctx.send("Invalid role was passed.")  # maybe change this
@@ -849,13 +855,20 @@ async def on_raw_reaction_add(payload):
         return
     else:
         role = react_guild.get_role(roleData['role'])
-        await react_user.add_roles(role)  # edit role
-        if 'addMessage' in roleData:
-            mess = roleData['addMessage']
-        else:
-            mess = "You now have the @{} role.".format(role.name)
-        emb = discord.Embed(title="Role Confirmed!", description=mess, color=0x0ac845)
-        await react_user.send(embed=emb)
+        try:
+            await react_user.add_roles(role)  # edit role
+            if 'addMessage' in roleData:
+                mess = roleData['addMessage']
+            else:
+                mess = "You now have the @{} role.".format(role.name)
+            emb = discord.Embed(title="Role Confirmed!", description=mess, color=0x0ac845)
+            await react_user.send(embed=emb)
+        except discord.Forbidden:
+            emb = discord.Embed(title="Error: Missing Permissions", description="I don't have permission to give you "
+                                                                                "that role! Please notify a moderator "
+                                                                                "so I can get the `Manage Roles` "
+                                                                                "permission!", color=0xbc1a00)
+            await react_user.send(embed=emb)
 
 
 @bot.event
@@ -879,13 +892,20 @@ async def on_raw_reaction_remove(payload):
         return
     else:
         role = react_guild.get_role(roleData['role'])
-        await react_user.remove_roles(role)  # edit role
-        if 'removeMessage' in roleData:
-            mess = roleData['removeMessage']
-        else:
-            mess = "You no longer have the @{} role.".format(role.name)
-        emb = discord.Embed(title="Role removed :(", description=mess, color=0xbc1a00)
-        await react_user.send(embed=emb)
+        try:
+            await react_user.remove_roles(role)  # edit role
+            if 'removeMessage' in roleData:
+                mess = roleData['removeMessage']
+            else:
+                mess = "You no longer have the @{} role.".format(role.name)
+            emb = discord.Embed(title="Role removed :(", description=mess, color=0xbc1a00)
+            await react_user.send(embed=emb)
+        except discord.Forbidden:
+            emb = discord.Embed(title="Error: Missing Permissions", description="I don't have permission to give you "
+                                                                                "that role! Please notify a moderator "
+                                                                                "so I can get the `Manage Roles` "
+                                                                                "permission!", color=0xbc1a00)
+            await react_user.send(embed=emb)
 
 
 try:
