@@ -48,7 +48,7 @@ e!print_emoji {emoji}: prints the emoji code in terminal
 
 e!bee: prints bee movie script (WIP)
 
-e!roleGiver {@role/role id} {emoji}: Creates an automatic role giver with the specified parameters.
+e!roleGiver {@role/role id} {emoji} {color name}: Creates an automatic role giver with the specified parameters.
 
 e!addRole {@role/role id} {emoji}: Adds a role to a recently made role giver (in the same channel).
 
