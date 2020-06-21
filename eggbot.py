@@ -1,17 +1,19 @@
 import asyncio  # for asyncio.sleep
 import random  # to randomize egg, simp, and e!kiri
-import json  # to manage databases
 
-try:  # in case discord.py isn't installed
+try:  # in case discord.py or simplejson isn't installed
     import discord
     from discord.ext import commands
+    import simplejson as json  # to manage databases
 except ModuleNotFoundError:  # install the discord modules
     import subprocess
     import sys
 
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', "simplejson"])
     import discord
     from discord.ext import commands
+    import simplejson as json
 
 import logging
 
@@ -711,7 +713,9 @@ async def roleGiver(ctx, *args):
         roles[str(mess.id)] = roleData
         with open("roles.json", "w") as j:
             json.dump(roles, j)
-        roleEmbeds[ctx.message.channel] = emb.to_dict()
+        rolls = [role.id]
+        emojis = [str(emoji)]
+        roleEmbeds[ctx.message.channel] = [emb.to_dict(), mess.id, roleData, rolls, emojis]
         emb = discord.Embed(title="Role giver set up!", description="If you need to add more roles, use `e!addRoles` "
                                                                     "(same syntax) soon (before the bot is shut off) "
                                                                     "to add another role.",
@@ -720,21 +724,35 @@ async def roleGiver(ctx, *args):
 
 
 @bot.command()
-async def addRoles(ctx, *args):
+async def addRole(ctx, *args):
     if host_check(ctx):
         args = list(args)
-        role, emoji, colo = await roleProcess(ctx, args)
         try:
-            emb = roleEmbeds[ctx.message.channel]
-            emb = discord.Embed.from_dict(emb)
-            emb.insert_field_at(index=-1, name=role.name + " role", value="React with {emote} to get the {role} role.".
-                                format(emote=emoji, role=role.mention), inline=False)
+            info = roleEmbeds[ctx.message.channel]
         except KeyError:
             await ctx.send("Role giver message not found in cache! Are you in the right channel, or did "
                            "the bot reboot?")
             return
-        await ctx.send(embed=emb)
-        # await ctx.channel.fetch_message(payload.message_id)
+        role, emoji, colo = await roleProcess(ctx, args)
+        if str(emoji) in info:
+            await ctx.send("This emoji is already in use!")
+            return
+        if role.id in info[3]:
+            await ctx.send("This role is already available!")
+            return
+        info[3].append(role.id)
+        info[3].append(role.id)
+        mess = await ctx.channel.fetch_message(info[1])
+        emb = discord.Embed.from_dict(info[0])
+        emb.insert_field_at(index=-1, name=role.name + " role", value="React with {emote} to get the {role} role.".
+                            format(emote=emoji, role=role.mention), inline=False)
+        await mess.edit(embed=emb)
+        await mess.add_reaction(emoji)
+        info = info[2]
+        info[str(emoji)] = {"role": role.id}
+        roles[str(mess.id)] = info
+        with open("roles.json", "w") as j:
+            json.dump(roles, j)
 
 
 async def roleProcess(ctx, args):
@@ -760,7 +778,10 @@ async def roleProcess(ctx, args):
         return
     try:
         emoji = args[0]
-        emoji = bot.get_emoji(int(emoji[-19:-1]))
+        if len(emoji) == 1:
+            pass
+        else:
+            emoji = bot.get_emoji(int(emoji[-19:-1]))
         del args[0]
     except ValueError:
         await ctx.send("Invalid emoji was passed.")  # maybe change this
@@ -812,7 +833,8 @@ async def botSpam(ctx):
 
 @bot.command()
 async def debug(ctx):
-    print(eggTrigger)
+    print(roleEmbeds)
+    print(roles)
     if host_check(ctx):
         global debugMode
         if debugMode:
@@ -833,14 +855,35 @@ async def log(ctx):
         await ctx.send("Set audit log logging to " + str(audit) + '.')
 
 
-# Both bot.events are for personal auto-role assigners, with special clauses hard-coded for these purposes
+@bot.command()
+async def reloadRoles(ctx):
+    if host_check(ctx):
+        global roles
+        try:
+            with open("roles.json.bak", "r+") as roles:
+                roles = json.load(roles)
+        except FileNotFoundError:
+            await ctx.send("There is no backup, it is highly recommended that you use `e!backupRoles` to create one.")
+            with open("roles.json", "r+") as roles:
+                roles = json.load(roles)
+        await asyncio.sleep(1)
+        with open("roles.json", "w") as J:
+            json.dump(roles, J, encoding="utf-8")
+        await ctx.send("Restored role database from backup.")
+
+
+@bot.command()
+async def backupRoles(ctx):
+    if host_check(ctx):
+        with open("roles.json.bak", "w") as j:
+            json.dump(roles, j, encoding="utf-8")
+        await ctx.send("Backed up the current role database!")
+
+
 @bot.event
 async def on_raw_reaction_add(payload):
     # get role configurations
-    if str(payload.emoji) == '💰':  # unicode doesn't work in default json module, install simplejson later maybe
-        emoji = "moneybag"
-    else:
-        emoji = str(payload.emoji)
+    emoji = str(payload.emoji)
     if str(payload.message_id) in roles:
         roleData = roles[str(payload.message_id)]
         if emoji in roleData:
@@ -874,10 +917,7 @@ async def on_raw_reaction_add(payload):
 @bot.event
 async def on_raw_reaction_remove(payload):
     # get role configurations
-    if str(payload.emoji) == '💰':
-        emoji = "moneybag"
-    else:
-        emoji = str(payload.emoji)
+    emoji = str(payload.emoji)
     if str(payload.message_id) in roles:
         roleData = roles[str(payload.message_id)]
         if emoji in roleData:
