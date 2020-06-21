@@ -365,8 +365,8 @@ async def about(ctx):
         emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
         if type(message.author) == discord.member.Member:
             emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
-            name_roles = user.roles[0].name
             try:
+                name_roles = user.roles[0].name
                 for discord.role in user.roles:  # i don't know why, but the for loop does not log all roles
                     del user.roles[0]
                     name_roles = name_roles + ', ' + user.roles[0].name
