@@ -310,6 +310,7 @@ async def kiriContent(ctx):
 
 
 @bot.command()
+@commands.cooldown(1, 30, commands.BucketType.user)
 async def song(ctx):
     micheal = await ctx.message.author.voice.channel.connect(timeout=60.0, reconnect=True)
     await asyncio.sleep(5)
@@ -317,7 +318,6 @@ async def song(ctx):
 
 
 @song.error
-# @commands.cooldown(1, 30, commands.BucketType.user)
 async def song_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("The damned have a limited amount of bandwidth. Ask again later.")
@@ -335,12 +335,12 @@ async def test_args(ctx, *args):
     if argsleft == 0:
         emb.add_field(name="Error", value="No arguments detected", inline=False)
     else:
-        argnumber = 0
+        argNumber = 0
         while 0 < argsleft:
-            argnotext = str(argnumber + 1)
-            emb.add_field(name="Argument " + argnotext, value=arghs[argnumber], inline=False)
+            argnotext = str(argNumber + 1)
+            emb.add_field(name="Argument " + argnotext, value=arghs[argNumber], inline=False)
             argsleft = argsleft - 1
-            argnumber = 1 + argnumber
+            argNumber = 1 + argNumber
         argnotext = str(len(arghs))
         emb.add_field(name="Total Arguments", value=argnotext, inline=False)
     await ctx.send(embed=emb)
@@ -520,7 +520,7 @@ async def timer(ctx, *args):
             await ctx.send('no')
             async with ctx.typing():
                 await asyncio.sleep(2)
-                await ctx.send('What are you thinking bro, thats not even an amount of time I can time?!?')
+                await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
             return
         if 30 >= time or time >= 1800:
             await ctx.send('The timer may be inaccurate or unable to alert you due to the unit of time '
@@ -654,8 +654,6 @@ async def bee(ctx):
         limitcheck = 25
         messno = 1
         color_list = [0xffff00, 0x000000]
-        await ctx.send("Work In Progress T_Ts")
-        await ctx.send("hey dev man, you gotta remember to format the newlines")
         emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
         for _ in range(beelen):  # why did i do this?!?!
             if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
@@ -689,10 +687,6 @@ async def pp(ctx):
             await ctx.send("Oops! pp not found! It's probably too small! xD")
     else:
         await ctx.send("This content is NSFW, ya dingus!")
-
-
-# e!earth_role and e!florida are for personal auto-role assigners, so the embed will mention unaccessable roles
-# Ask for help on the Eggbot Discord Server if you want to set it up for your own server
 
 
 @bot.command()
