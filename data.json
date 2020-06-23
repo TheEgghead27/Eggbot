@@ -1,6 +1,6 @@
 {
   "spic": ["*", "**", "***", "||", "`", " "],
-  "eggTrigger": ["egg", "eeg", "eg", "geg", "gge", "egeg", "eegg", "eeeg", ":egg:", "<:egghead:698281894441123990>"],
+  "eggTrigger": ["egg", "eeg", "eg", "geg", "gge", "egeg", "eegg", "eeeg", ":egg:", "gee", "ggge", "<:egghead:698281894441123990>"],
   "eggs": ["egg", "Egg", "eGg", "egG", "EGg", "eGG", "EgG", ":egg:", "<:egghead:698281894441123990>"],
   "simp": ["Simp", "SIMP", "simp", "<:simp:698281866146480138>", "<:simp:707035443819970561>"],
   "ohno": [":egghead:", ":simp:"],
