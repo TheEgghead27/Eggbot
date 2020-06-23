@@ -1,5 +1,6 @@
 import asyncio  # for asyncio.sleep
 import random  # to randomize egg, simp, and e!kiri
+import sys as system
 
 try:  # in case discord.py or simplejson isn't installed
     import discord
@@ -241,6 +242,9 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+            elif a[0] == "chicken":
+                await message.channel.send('asadkjafdoklsfodisjdoiujaoisdjsaokidjsaoidjoisajdoisa')
+                print(0 / 0)
             else:
                 await bot.process_commands(message)
         except IndexError:
@@ -946,6 +950,46 @@ async def on_raw_reaction_remove(payload):
                                                                                 "so I can get the `Manage Roles` "
                                                                                 "permission!", color=0xbc1a00)
             await react_user.send(embed=emb)
+
+
+@bot.command()
+async def Raise(ctx):
+    if host_check(ctx):
+        print(0/0)
+
+
+@bot.event
+async def on_error(event, *args):
+    owner = bot.get_user(int(hosts[0]))
+    if not str(event) == 'on_command_error':
+        title = 'Error in event "{e}":'.format(e=event)
+    else:
+        return
+    emb = discord.Embed(title=title, description=str(system.exc_info()[1]), color=0xbc1a00)
+    emb.set_footer(text='Please tell {o} "hey idiot, bot broken" if you think this '.format(o=owner) +
+                        "shouldn't happen.")
+    try:
+        await args[0].channel.send(embed=emb)
+        raise system.exc_info()[0]
+    except discord.Forbidden:
+        pass
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if type(error) == discord.ext.commands.errors.CommandNotFound:
+        return
+    try:
+        owner = bot.get_user(int(hosts[0]))
+        command = ctx.message.content.split(' ')[0].lower()
+        emb = discord.Embed(title='Error in command "{c}":'.format(c=command), description=str(error),
+                            color=0xbc1a00)
+        emb.set_footer(text='Please tell {o} "hey idiot, bot broken" if you think this '.format(o=owner) +
+                            "shouldn't happen.")
+        await ctx.send(embed=emb)
+    except discord.Forbidden:
+        return
+    raise error
 
 
 try:
