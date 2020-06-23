@@ -46,7 +46,7 @@ e!shutdown: shuts the bot down without needing to manually stop the script
 
 e!print_emoji {emoji}: prints the emoji code in terminal
 
-e!bee: prints bee movie script (WIP)
+e!bee: Prints the bee movie script 
 
 e!roleGiver {@role/role id} {emoji} {color name}: Creates an automatic role giver with the specified parameters.
 
