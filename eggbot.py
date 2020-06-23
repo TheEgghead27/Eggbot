@@ -242,9 +242,6 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-            elif a[0] == "chicken":
-                await message.channel.send('asadkjafdoklsfodisjdoiujaoisdjsaokidjsaoidjoisajdoisa')
-                print(0 / 0)
             else:
                 await bot.process_commands(message)
         except IndexError:
@@ -950,12 +947,6 @@ async def on_raw_reaction_remove(payload):
                                                                                 "so I can get the `Manage Roles` "
                                                                                 "permission!", color=0xbc1a00)
             await react_user.send(embed=emb)
-
-
-@bot.command()
-async def Raise(ctx):
-    if host_check(ctx):
-        print(0/0)
 
 
 @bot.event
