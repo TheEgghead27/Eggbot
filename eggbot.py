@@ -1,5 +1,5 @@
 import asyncio  # for asyncio.sleep
-import random  # to randomize egg, simp, and e!kiri
+import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
 
 try:  # in case discord.py or simplejson isn't installed
@@ -57,12 +57,13 @@ ohno = ['ohno']
 roles = {}
 colors = {}
 roleEmbeds = {}
+stonks = {}
 blacklist = []
 
 
 def load(exclude):
     """read files for data"""
-    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist
+    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist, stonks
     # read all the files for variables
     file = "No file"
     try:
@@ -94,6 +95,11 @@ def load(exclude):
         if file not in exclude:
             with open(file, "r+") as roles:
                 roles = json.load(roles)
+        file = 'stonks.json'
+        if file not in exclude:
+            with open(file, "r+") as money:
+                stonks = json.load(money)
+                del money
         colors = {
             "teal": discord.Colour.teal(),
             "dark teal": discord.Colour.teal(),
@@ -125,7 +131,7 @@ def load(exclude):
             "blurple": discord.Colour.blurple(),
             "greyple": discord.Colour.greyple(),
             "grayple": discord.Colour.greyple(),
-            "white": discord.Colour.from_rgb(255, 255, 255),
+            "white": discord.Colour.from_rgb(254, 254, 254),
             "black": discord.Colour.from_rgb(0, 0, 0)
         }
     except FileNotFoundError:
@@ -204,7 +210,7 @@ async def on_message(message):
     if str(message.channel.type) == "private" or debugMode:
         if not message.author.id == bot.user.id:  # don't let the bot echo its own dms
             print(str(message.author) + ' says:\n' + message.content)
-    global eggC  # make eggcount actually count
+    global stonks  # make economy things happen
     # allows for text formatting stuff to be parsed
     mess = message.content.lower()
     if mess[:-len(mess) + 2] in ("||", "~~"):
@@ -227,15 +233,34 @@ async def on_message(message):
     if botSafeguard and message.author.bot and not message.author.id == bot.user.id:
         return
     else:
+        oval = random.randrange(0, 5)
+        if oval <= 2:
+            pass
+        else:
+            oval = random.randrange(1, 5)
+            try:
+                stonks["users"][str(message.author.id)][str(message.guild.id)] += oval
+                if stonks["users"][str(message.author.id)]["notif"] == "True":
+                    await message.channel.send("You got {e} {s} eggs!".format(e=str(oval), s=str(message.guild)))
+                else:
+                    pass
+            except KeyError:
+                stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): oval, "notif": "False"}
+            except AttributeError:
+                pass
         try:
             if a[0] in eggTrigger or a[0].startswith(eggTrigger):
                 sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
+                try:
+                    stonks["users"][str(message.author.id)]["global"] += 1
+                except KeyError:
+                    stonks["users"][str(message.author.id)] = {"global": 1, str(message.guild.id): 0, "notif": "False"}
+                except AttributeError:
+                    pass
                 if not safeguard:
                     async with message.channel.typing():
-                        eggC = eggC + 1
-                else:
-                    eggC = eggC + 1
+                        pass
             elif a[0] in ("simp", "sɪᴍᴘ"):
                 if message.author.id == bot.user.id:
                     return
@@ -261,6 +286,7 @@ async def help(ctx):
     owner = bot.get_user(int(hosts[0]))
     emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
     emb.add_field(name="e!help", value="Displays this manual", inline=False)
+    emb.add_field(name="e!economyHelp", value="Displays the economy manual", inline=False)
     emb.add_field(name="e!kiri [number]", value="Displays an image of Eijiro Kirishima from My Hero Academia. You can "
                                                 "specify the number of images you want to be sent. "
                                                 "[request from {user}]".format(user=kiriPerson), inline=False)
@@ -286,6 +312,17 @@ async def help(ctx):
 async def help_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("bro this is all I have, no need to spam me for more")
+
+
+@bot.command()
+async def economyHelp(ctx):
+    emb = discord.Embed(title="Eggbot Economy Commands", color=0x00ff55)
+    emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.", inline=False)
+    emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
+    emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
+    emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
+    emb.add_field(name="e!notifs {on/off}", value="Toggles notifications for eggs earned.", inline=False)
+    await ctx.send(embed=emb)
 
 
 @bot.command()
@@ -574,6 +611,7 @@ async def admins(ctx):
 async def shutdown(ctx):
     message = ctx.message
     if host_check(ctx):
+        write()
         global on
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
@@ -694,7 +732,10 @@ async def roleGiver(ctx, *args):
     if host_check(ctx):
         global roleEmbeds
         args = list(args)
-        role, emoji, colo = await roleProcess(ctx, args)
+        try:
+            role, emoji, colo = await roleProcess(ctx, args)
+        except TypeError:
+            return
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
         emb.add_field(name=role.name + " role", value="React with {emote} to get the {role} role.".format(emote=emoji,
                                                                                                           role=role.
@@ -728,7 +769,10 @@ async def addRole(ctx, *args):
             await ctx.send("Role giver message not found in cache! Are you in the right channel, or did "
                            "the bot reboot?")
             return
-        role, emoji, colo = await roleProcess(ctx, args)
+        try:
+            role, emoji, colo = await roleProcess(ctx, args)
+        except TypeError:
+            return
         if str(emoji) in info:
             await ctx.send("This emoji is already in use!")
             return
@@ -795,9 +839,11 @@ async def roleProcess(ctx, args):
         if colo in colors:
             colo = colors[colo]
         else:
-            colo = discord.Colour.from_rgb(0, 0, 0)
+            await ctx.send("Invalid color name was passed.")  # maybe change this
+            return
     except IndexError:
-        colo = discord.Colour.from_rgb(0, 0, 0)
+        await ctx.send("Invalid color name was passed.")  # maybe change this
+        return
     await ctx.message.delete()
     return role, emoji, colo
 
@@ -873,6 +919,100 @@ async def backupRoles(ctx):
         with open("roles.json.bak", "w") as j:
             json.dump(roles, j, encoding="utf-8")
         await ctx.send("Backed up the current role database!")
+
+
+@bot.command()
+async def save(ctx):
+    if host_check(ctx):
+        write()
+        await ctx.send("Saved the roles and economy database!")
+
+
+def write():
+    with open("roles.json", "w") as j:
+        json.dump(roles, j, encoding="utf-8")
+    with open("stonks.json", "w") as j:
+        json.dump(stonks, j, encoding="utf-8")
+
+
+@bot.command()
+async def notifs(ctx, arg1):
+    try:
+        if arg1.lower() in ['on', "true", "yes", "y"]:
+            stonks["users"][str(ctx.author.id)]["notif"] = "True"
+            await ctx.send("Egg gain notifications have been turned on.")
+        else:
+            stonks["users"][str(ctx.author.id)]["notif"] = "False"
+            await ctx.send("Egg gain notifications have been turned off.")
+    except KeyError:
+        await asyncio.sleep(1)
+        await notifs(ctx, arg1)
+
+
+@bot.command()
+async def fridge(ctx):
+    emb = discord.Embed(title="{u}'s fridge:".format(u=str(ctx.author)), color=0xfefefe)
+    emb.set_footer(text="Protip: Use e!notifs to be notified of the number of eggs you receive.")
+    try:
+        wallet = stonks["users"][str(ctx.author.id)]
+        try:
+            emb.add_field(name="Global Eggs:", value=wallet["global"])
+        except KeyError:
+            raise KeyError
+        try:
+            emb.add_field(name="Eggs for this Server:", value=wallet[str(ctx.guild.id)])
+        except KeyError:
+            wallet[str(ctx.guild.id)] = 0
+            emb.add_field(name="Eggs for this Server:", value="0")
+        except AttributeError:
+            pass
+        await ctx.send(embed=emb)
+    except KeyError:
+        await asyncio.sleep(1)
+        await fridge(ctx)
+    except AttributeError:
+        pass
+
+
+@bot.command()
+async def bank(ctx):
+    try:
+        emb = discord.Embed(title="{s} Bank Balance:".format(s=str(ctx.guild)),
+                            description=str(stonks["servers"][str(ctx.guild.id)]), color=0xfefefe)
+        await ctx.send(embed=emb)
+    except KeyError:
+        stonks["servers"][str(ctx.guild.id)] = 0
+        emb = discord.Embed(title="{s} Bank Balance:".format(s=str(ctx.guild)), description="0", color=0xfefefe)
+        await ctx.send(embed=emb)
+    except AttributeError:
+        pass
+
+
+@bot.event
+async def on_command(ctx):
+    global stonks
+    try:
+        args = ctx.message.content.split(' ')[0]
+        args = args[2:]
+        if args in ["help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs", "save",
+                    "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log', 'debug', 'spam',
+                    'botspam', 'shutdown', 'print_emoji']:
+            pass
+        else:
+            oval = random.randrange(0, 2)
+            if oval == 0:
+                pass
+            else:
+                oval = random.randrange(1, 3)
+                stonks["users"][str(ctx.author.id)]["global"] += oval
+                if stonks["users"][str(ctx.author.id)]["notif"] == "True":
+                    await ctx.send("You got {e} eggs!".format(e=str(oval)))
+                else:
+                    pass
+    except KeyError:
+        stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False"}
+    except AttributeError:
+        pass
 
 
 @bot.event
