@@ -10,7 +10,7 @@ This is the `master` branch, home of the raw code used by the developers.
 ## Commands
 e!help: help
 
-e!about: about the speaking/first mentioned user
+e!about {OPTIONAL: @user or user id}: about the speaking/tagged user
 
 e!test_args {arguments}: list of args
 

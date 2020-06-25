@@ -100,6 +100,8 @@ def load(exclude):
             with open(file, "r+") as money:
                 stonks = json.load(money)
                 del money
+                warehouse = stonks["amazon"]
+                stonks = stonks["moneys"]
         colors = {
             "teal": discord.Colour.teal(),
             "dark teal": discord.Colour.teal(),
@@ -295,7 +297,7 @@ async def help(ctx):
                                                 "specify the number of images you want to be sent. "
                                                 "[request from {user}]".format(user=kiriPerson), inline=False)
     emb.add_field(name="e!test_args [words go here]", value="Test arguments", inline=False)
-    emb.add_field(name="e!about [blank for self, mention a user if you want dirt on them]",
+    emb.add_field(name="e!about [blank for self, mention a user/type the user id to target the specified user]",
                   value="Reveals basically everything (legal) I can get on you", inline=False)
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
     emb.add_field(name="e!invite", value="Links to an invite link for Eggbot.", inline=False)
@@ -316,18 +318,6 @@ async def help(ctx):
 async def help_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("bro this is all I have, no need to spam me for more")
-
-
-@bot.command()
-async def economyHelp(ctx):
-    emb = discord.Embed(title="Eggbot Economy Commands", color=0x00ff55)
-    emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.", inline=False)
-    emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
-    emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
-    emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
-    emb.add_field(name="e!donate {number}", value="Donates the specified number of eggs to the server.", inline=False)
-    emb.add_field(name="e!notifs {on/off}", value="Toggles notifications for eggs earned.", inline=False)
-    await ctx.send(embed=emb)
 
 
 @bot.command()
@@ -392,11 +382,20 @@ async def test_args(ctx, *args):
 async def about(ctx):
     message = ctx.message
     async with ctx.typing():
-        if not message.mentions:
-            user = message.author
-        else:
+        if message.mentions:
             user = message.mentions
             user = user[0]
+        else:
+            args = ctx.message.content.split(' ')
+            if len(args[1]) == 18:
+                try:
+                    user = ctx.guild.get_member(int(args[1]))
+                except AttributeError:
+                    user = bot.get_user(int(args[1]))
+                if not user:
+                    user = message.author
+            else:
+                user = message.author
         userColor = user.color
         emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
                             color=0x03f4fc)
@@ -941,6 +940,20 @@ def write():
 
 
 @bot.command()
+async def economyHelp(ctx):
+    emb = discord.Embed(title="Eggbot Economy Commands", color=0x00ff55)
+    emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.", inline=False)
+    emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
+    emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
+    emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
+    # emb.add_field(name="e!setGoal", value="Sets a fundraising goal displayed in e!bank. "
+    #                                       "Use e!accept to deduct the balance from the bank.")
+    emb.add_field(name="e!donate {number}", value="Donates the specified number of eggs to the server.", inline=False)
+    emb.add_field(name="e!notifs {on/off}", value="Toggles notifications for eggs earned.", inline=False)
+    await ctx.send(embed=emb)
+
+
+@bot.command()
 async def notifs(ctx, arg1):
     try:
         if arg1.lower() in ['on', "true", "yes", "y"]:
@@ -1020,7 +1033,8 @@ async def donate(ctx, arg1):
 @bot.command()
 async def setGoal(ctx, args):
     if ctx.author.guild_permissions.administrator:
-        print(args)
+        cost = int(args[0])
+
         pass
     else:
         await ctx.send("Bruh, you can't do that!")
@@ -1034,7 +1048,7 @@ async def on_command(ctx):
         args = args[2:]
         if args in ["help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs", "save",
                     "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log', 'debug', 'spam',
-                    'botspam', 'shutdown', 'print_emoji']:
+                    'botspam', 'shutdown', 'print_emoji', 'economyhelp']:
             pass
         else:
             oval = random.randrange(0, 10)
