@@ -234,7 +234,7 @@ async def on_message(message):
         return
     else:
         oval = random.randrange(0, 5)
-        if oval <= 2:
+        if oval <= 4:
             pass
         else:
             oval = random.randrange(1, 5)
@@ -253,7 +253,11 @@ async def on_message(message):
                 sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 try:
-                    stonks["users"][str(message.author.id)]["global"] += 1
+                    oval = random.randrange(0, 10)
+                    if oval >= 8:
+                        pass
+                    else:
+                        stonks["users"][str(message.author.id)]["global"] += 1
                 except KeyError:
                     stonks["users"][str(message.author.id)] = {"global": 1, str(message.guild.id): 0, "notif": "False"}
                 except AttributeError:
@@ -988,6 +992,30 @@ async def bank(ctx):
         pass
 
 
+@bot.command()
+async def donate(ctx, arg1):
+    try:
+        wallet = stonks["users"][str(ctx.author.id)]
+        arg1 = int(arg1)
+    except KeyError:
+        await ctx.send("Don't be cheeky, you don't have any eggs to donate!")
+        return
+    except AttributeError:
+        await ctx.send("Don't be cheeky, this isn't even a server!")
+        return
+    try:
+        if wallet[str(ctx.guild.id)] >= arg1:
+            await ctx.send("Don't be cheeky, you don't have that many eggs to donate!")
+            return
+        stonks["servers"][str(ctx.guild.id)] += arg1
+    except KeyError:
+        stonks["servers"][str(ctx.guild.id)] = arg1
+    wallet[str(ctx.guild.id)] -= arg1
+    emb = discord.Embed(title="Donated {e} eggs to {s}".format(e=str(arg1), s=str(ctx.guild)),
+                        color=0x00ff55)
+    await ctx.send(embed=emb)
+
+
 @bot.event
 async def on_command(ctx):
     global stonks
@@ -999,8 +1027,8 @@ async def on_command(ctx):
                     'botspam', 'shutdown', 'print_emoji']:
             pass
         else:
-            oval = random.randrange(0, 2)
-            if oval == 0:
+            oval = random.randrange(0, 10)
+            if oval >= 8:
                 pass
             else:
                 oval = random.randrange(1, 3)
