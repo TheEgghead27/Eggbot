@@ -152,7 +152,7 @@ def load(exclude):
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
-        elif file in ['roles.json', 'bee.txt']:
+        elif file in ['roles.json', 'bee.txt', 'stonks.json']:
             input("It looks like a non-essential file, {}, is corrupted! \n"
                   "You can safely press enter to ignore this if you do not intend to use the functions related to "
                   "{}.".format(file, file))
@@ -325,6 +325,7 @@ async def economyHelp(ctx):
     emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
     emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
     emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
+    emb.add_field(name="e!donate {number}", value="Donates the specified number of eggs to the server.", inline=False)
     emb.add_field(name="e!notifs {on/off}", value="Toggles notifications for eggs earned.", inline=False)
     await ctx.send(embed=emb)
 
@@ -1011,9 +1012,18 @@ async def donate(ctx, arg1):
     except KeyError:
         stonks["servers"][str(ctx.guild.id)] = arg1
     wallet[str(ctx.guild.id)] -= arg1
-    emb = discord.Embed(title="Donated {e} eggs to {s}".format(e=str(arg1), s=str(ctx.guild)),
+    emb = discord.Embed(title="Donated {e} eggs to {s} Server".format(e=str(arg1), s=str(ctx.guild)),
                         color=0x00ff55)
     await ctx.send(embed=emb)
+
+
+@bot.command()
+async def setGoal(ctx, args):
+    if ctx.author.guild_permissions.administrator:
+        print(args)
+        pass
+    else:
+        await ctx.send("Bruh, you can't do that!")
 
 
 @bot.event
