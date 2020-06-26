@@ -32,11 +32,33 @@ e!get_icon: Links to a copy of the current server's icon.
 
 e!admins: Lists the admins for the current copy of Eggbot.
 
+e!fridge: Shows the number of global and server eggs you own.
+
+e!bank: Shows the current number of server eggs donated to the server.
+
+e!goals: Displays the server goals. One can contribute to the funding of the goals by using e!donate.
+
+e!donate {number}: Donates the specified number of eggs to the server.
+
+e!notifs {on/off}: Toggles notifications for eggs earned.
+
 egg: egg
 
 e!eggCount: counts the day's eggs
 
 simp: SIMP
+
+### Server or Eggbot Admin-only Commands
+
+e!setGoal {cost} {name}: Sets a server goal.
+
+e!deleteGoal {name}: Deletes a server goal.
+
+e!addEggs {number}: Adds eggs to the server bank.
+
+e!removeEggs {number}: Removes eggs from the server bank.
+
+e!confirmGoal {name}: Confirms goal completion. (Deducts eggs from the server bank, deletes goal) 
 
 ### Eggbot Admin-Only Commands
 
@@ -63,6 +85,8 @@ e!botSpam: Toggles processing of bot commands for "egg" and "simp" commands (rec
 e!debug: Toggles debug mode
 
 e!log: Toggles logging of admin commands
+
+
 
 ## Official Host (Only on when TheEgghead27 is online)
 https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
