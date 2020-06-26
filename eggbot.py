@@ -248,7 +248,11 @@ async def on_message(message):
                 else:
                     pass
             except KeyError:
-                stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): oval, "notif": "False"}
+                try:
+                    stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): oval,
+                                                               "notif": "False"}
+                except AttributeError:
+                    pass
             except AttributeError:
                 pass
         try:
@@ -962,6 +966,8 @@ async def economyHelp(ctx):
     emb.add_field(name="e!deleteGoal {name}", value="Deletes a server goal. (admin only)", inline=False)
     emb.add_field(name="e!addEggs {number}", value="Adds eggs to the server bank. (admin only)", inline=False)
     emb.add_field(name="e!removeEggs {number}", value="Removes eggs from the server bank. (admin only)", inline=False)
+    emb.add_field(name="e!confirmGoal {name}", value="Confirms goal completion. (Deducts eggs from the server bank, "
+                                                     "deletes goal) (admin only)", inline=False)
     await ctx.send(embed=emb)
 
 
@@ -1171,6 +1177,51 @@ async def removeEggs(ctx, arg1):
         await ctx.send("Bruh, this isn't a server!?!")
 
 
+@bot.command()
+async def confirmgoal(ctx, *args):
+    try:
+        if ctx.author.guild_permissions.administrator:
+            try:
+                try:
+                    if len(warehouse[str(ctx.guild.id)]) == 0:
+                        await ctx.send("You don't have any goals to confirm???????????")
+                    else:
+                        args = list(args)
+                        name = joinArgs(arghs=args)
+                        name = name.strip(' ')
+                        a = 0
+                        for _ in warehouse[str(ctx.guild.id)]:
+                            if name == warehouse[str(ctx.guild.id)][a]:
+                                cost = warehouse[str(ctx.guild.id)][a + 1]
+                                try:
+                                    if cost <= stonks["servers"][str(ctx.guild.id)]:
+                                        stonks["servers"][str(ctx.guild.id)] -= cost
+                                        del warehouse[str(ctx.guild.id)][a], warehouse[str(ctx.guild.id)][a]
+                                        await ctx.send("Confirmed the `{g}` goal transaction.".format(g=name))
+                                        return
+                                    else:
+                                        await ctx.send("The server bank doesn't that many eggs!?!")
+                                        return
+                                except KeyError:
+                                    stonks["servers"][str(ctx.guild.id)] = 0
+                                    await ctx.send("There are no eggs to spend.")
+                                    return
+                            else:
+                                a += 1
+                        await ctx.send("There is no goal called `{g}` to confirm.".format(g=name))
+                        return
+                except KeyError:
+                    await ctx.send("There are no goals to confirm.")
+                    return
+            except (IndexError, ValueError):
+                await ctx.send("You didn't provide the correct syntax. The syntax is `e!deleteGoals [name]`.")
+                return
+        else:
+            await ctx.send("Bruh, you can't do that!")
+    except AttributeError:
+        await ctx.send("Bruh, this isn't a server!?!")
+
+
 @bot.event
 async def on_command(ctx):
     global stonks
@@ -1180,7 +1231,7 @@ async def on_command(ctx):
         if args in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs", "save",
                     "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log', 'debug', 'spam',
                     'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals', 'setgoal', 'deletegoal',
-                    'addeggs', 'removeeggs'):
+                    'addeggs', 'removeeggs', 'confirmgoal'):
             pass
         else:
             oval = random.randrange(0, 10)
