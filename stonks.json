@@ -7,13 +7,29 @@
       "474328006588891157": {
         "global": 0,
         "674430988876775426": 4,
-        "notif": "False"
-
+        "notif": "False",
+        "inv": {
+          "children": 20,
+          "bacon": 360,
+          "penis": 69,
+          "a": 1,
+          "b": 2
+        }
       }
     }
   },
   "amazon": {
-    "global": ["bacon", 69, "a greasy piece of bacon", "eggs", 128, "one hundred and twenty eight eggs"],
-    "675750662058934324": ["i quit e!song", 999999999999999999]
+    "global": [
+      "bacon",
+      69,
+      "a greasy piece of bacon",
+      "eggs",
+      128,
+      "one hundred and twenty eight eggs"
+    ],
+    "675750662058934324": [
+      "i quit e!song",
+      999999999999999999
+    ]
   }
 }

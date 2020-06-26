@@ -33,6 +33,7 @@ bot.remove_command("help")
 @bot.event
 async def on_ready():
     print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
+    # write()
     await bot.change_presence(activity=discord.Game(name="e!help"))
 
 
@@ -164,7 +165,7 @@ def load(exclude):
 
 
 def setup():
-    """out of box setup function to configure the token and hosts, then package in the new json"""
+    """out of box setup function to configure the token and hosts, then package in a new json"""
     global token, hosts
     if token == "Improper token":
         token = input("Paste your token here.\n").strip(' ')
@@ -191,7 +192,6 @@ def setup():
     input("Configuration complete! Press enter to continue operations...")
 
 
-load(blacklist)
 eggC = 0
 on = True
 
@@ -242,15 +242,19 @@ async def on_message(message):
         else:
             oval = random.randrange(1, 3)
             try:
-                stonks["users"][str(message.author.id)][str(message.guild.id)] += oval
-                if stonks["users"][str(message.author.id)]["notif"] == "True":
+                userData = stonks["users"][str(message.author.id)]
+                try:
+                    userData[str(message.guild.id)] += oval
+                except KeyError:
+                    userData[str(message.guild.id)] = oval
+                if userData["notif"] == "True":
                     await message.channel.send("You got {e} {s} eggs!".format(e=str(oval), s=str(message.guild)))
                 else:
                     pass
             except KeyError:
                 try:
                     stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): oval,
-                                                               "notif": "False"}
+                                                               "notif": "False", 'inv': "None"}
                 except AttributeError:
                     pass
             except AttributeError:
@@ -1250,13 +1254,27 @@ async def shop(ctx):
 @bot.command()
 async def inv(ctx):
     try:
-        await ctx.send('plas work')
         inventory = stonks["users"][str(ctx.message.author.id)]["inv"]
-        await ctx.send(str(inventory))
-    except KeyError as e:
-        await asyncio.sleep(1)
-        # await inv(ctx)
-        raise e
+        if inventory == "None":
+            emb = discord.Embed(title="{u}'s Inventory:".format(u=str(ctx.author)), description="{u} owns no items!"
+                                .format(u=str(ctx.author)), color=0xff0000)
+        elif type(inventory) is dict:
+            emb = discord.Embed(title="{u}'s Inventory:".format(u=str(ctx.author)), color=0xfefefe)
+            for item in inventory:
+                emb.add_field(name=item, value=inventory[item], inline=True)
+        else:
+            stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                                   "inv": "None"}
+            emb = discord.Embed(title="{u}'s Inventory:".format(u=str(ctx.author)), description="{u}'s inventory "
+                                                                                                "appears to be "
+                                                                                                "corrupted! The "
+                                                                                                "user's inventory has "
+                                                                                                "been reset".format(
+                u=str(ctx.author)), color=0xff0000)
+    except KeyError:
+        emb = discord.Embed(title="Error:", description="There was an error loading your inventory. Check back later.",
+                            color=0xff0000)
+    await ctx.send(embed=emb)
 
 
 @bot.event
@@ -1283,7 +1301,7 @@ async def on_command(ctx):
                     pass
     except KeyError:
         stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
-                                               "inv": {"placeholder": 0}}
+                                               "inv": "None"}
     except AttributeError:
         pass
 
@@ -1390,6 +1408,7 @@ async def on_command_error(ctx, error):
 
 try:
     while on:
+        load(blacklist)
         bot.run(token)
 except (FileNotFoundError, NameError):
     input("The bot token was not found! Press enter to exit...")
