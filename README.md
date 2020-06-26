@@ -30,7 +30,21 @@ e!get_icon: Links to a copy of the current server's icon.
 
 e!admins: Lists the admins for the current copy of Eggbot.
 
+egg: egg
+
+e!eggCount: counts the day's eggs
+
+simp: SIMP
+
+### Economy Commands
+
 e!fridge: Shows the number of global and server eggs you own.
+
+e!shop: Displays the selection of items on sale.
+
+e!buy: Buys an item from the shop.
+
+e!inv: Shows your inventory.
 
 e!bank: Shows the current number of server eggs donated to the server.
 
@@ -39,12 +53,6 @@ e!goals: Displays the server goals. One can contribute to the funding of the goa
 e!donate {number}: Donates the specified number of eggs to the server.
 
 e!notifs {on/off}: Toggles notifications for eggs earned.
-
-egg: egg
-
-e!eggCount: counts the day's eggs
-
-simp: SIMP
 
 ### Server Admin-only Commands
 

@@ -962,14 +962,12 @@ async def economyHelp(ctx):
     emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.", inline=False)
     emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
     emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
-    emb.add_field(name="e!shop", value="work in progress, shut up, gus", inline=False)
+    emb.add_field(name="e!shop", value="Displays the selection of items on sale.", inline=False)
+    emb.add_field(name="e!buy", value="Buys an item from the shop.", inline=False)
     emb.add_field(name="e!inv", value="Shows your inventory.", inline=False)
-    emb.add_field(name="e!buy", value="work in progress, shut up, gus", inline=False)
     emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
     emb.add_field(name="e!goals", value="Displays the server goals. One can contribute to the funding of the goals by "
                                         "using e!donate.", inline=False)
-    # emb.add_field(name="e!setGoal", value="Sets a fundraising goal displayed in e!bank. "
-    #                                       "Use e!accept to deduct the balance from the bank.")
     emb.add_field(name="e!donate {number}", value="Donates the specified number of eggs to the server.", inline=False)
     emb.add_field(name="e!notifs {on/off}", value="Toggles notifications for eggs earned.", inline=False)
     emb.add_field(name="e!setGoal {cost} {name}", value="Sets a server goal. (admin only)", inline=False)
