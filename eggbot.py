@@ -1105,7 +1105,7 @@ async def setGoal(ctx, *args):
                 else:
                     await ctx.send("You have reached the limit of goals you can set. You can only have 5 goals.")
             except (IndexError, ValueError):
-                await ctx.send("You didn't provide the correct syntax. The syntax is `e!setGoals [cost] [name]`.")
+                await ctx.send("You didn't provide the correct syntax. The syntax is `e!setGoal [cost] [name]`.")
         else:
             await ctx.send("Bruh, you can't do that!")
     except AttributeError:
@@ -1133,7 +1133,7 @@ async def deleteGoal(ctx, *args):
                             a += 1
                     await ctx.send("There is no goal called `{g}` to delete.".format(g=name))
             except (IndexError, ValueError):
-                await ctx.send("You didn't provide the correct syntax. The syntax is `e!deleteGoals [name]`.")
+                await ctx.send("You didn't provide the correct syntax. The syntax is `e!deleteGoal [name]`.")
         else:
             await ctx.send("Bruh, you can't do that!")
     except AttributeError:
@@ -1214,12 +1214,49 @@ async def confirmgoal(ctx, *args):
                     await ctx.send("There are no goals to confirm.")
                     return
             except (IndexError, ValueError):
-                await ctx.send("You didn't provide the correct syntax. The syntax is `e!deleteGoals [name]`.")
+                await ctx.send("You didn't provide the correct syntax. The syntax is `e!confirmGoal [name]`.")
                 return
         else:
             await ctx.send("Bruh, you can't do that!")
     except AttributeError:
         await ctx.send("Bruh, this isn't a server!?!")
+
+
+@bot.command()
+async def shop(ctx):
+    await ctx.send("wip")
+    emb = discord.Embed(title="Eggbot Shop", color=0x00ff55)
+    a = warehouse["global"]
+    if len(a) > 0:
+        i = len(a) // 3
+        b = 0
+        c = 1
+        d = 2
+        while i > 0:
+            if a[c] == 1:
+                v = "1 egg"
+            else:
+                v = "{e} eggs".format(e=str(a[c]))
+            emb.add_field(name='{item} - {price}'.format(item=a[b], price=v), value=a[d], inline=False)
+            b += 3
+            c += 3
+            d += 3
+            i -= 1
+    else:
+        emb.add_field(name="None", value="There are no items in stock.")
+    await ctx.send(embed=emb)
+
+
+@bot.command()
+async def inv(ctx):
+    try:
+        await ctx.send('plas work')
+        inventory = stonks["users"][str(ctx.message.author.id)]["inv"]
+        await ctx.send(str(inventory))
+    except KeyError as e:
+        await asyncio.sleep(1)
+        # await inv(ctx)
+        raise e
 
 
 @bot.event
@@ -1245,7 +1282,8 @@ async def on_command(ctx):
                 else:
                     pass
     except KeyError:
-        stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False"}
+        stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                               "inv": {"placeholder": 0}}
     except AttributeError:
         pass
 
