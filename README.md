@@ -24,8 +24,6 @@ e!invite: Links to an invite link for Eggbot.
 
 e!server: DMs you an invite to the official Discord Server
 
-e!vacuum {number}: Mass deletes {number} messages. 
-
 e!timer {number} {time unit}: Creates a timer that pings the requesting user after a specified time.
 
 e!get_icon: Links to a copy of the current server's icon.
@@ -48,7 +46,9 @@ e!eggCount: counts the day's eggs
 
 simp: SIMP
 
-### Server or Eggbot Admin-only Commands
+### Server Admin-only Commands
+
+e!vacuum {number}: Mass deletes {number} messages. 
 
 e!setGoal {cost} {name}: Sets a server goal.
 
