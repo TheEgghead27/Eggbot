@@ -33,7 +33,7 @@ bot.remove_command("help")
 @bot.event
 async def on_ready():
     print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
-    # write()
+    write()
     await bot.change_presence(activity=discord.Game(name="e!help"))
 
 
@@ -396,14 +396,17 @@ async def about(ctx):
             user = user[0]
         else:
             args = ctx.message.content.split(' ')
-            if len(args[1]) == 18:
-                try:
-                    user = ctx.guild.get_member(int(args[1]))
-                except AttributeError:
-                    user = bot.get_user(int(args[1]))
-                if not user:
+            try:
+                if len(args[1]) == 18:
+                    try:
+                        user = ctx.guild.get_member(int(args[1]))
+                    except AttributeError:
+                        user = bot.get_user(int(args[1]))
+                    if not user:
+                        user = message.author
+                else:
                     user = message.author
-            else:
+            except IndexError:
                 user = message.author
         userColor = user.color
         emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
@@ -959,6 +962,9 @@ async def economyHelp(ctx):
     emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.", inline=False)
     emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
     emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
+    emb.add_field(name="e!shop", value="work in progress, shut up, gus", inline=False)
+    emb.add_field(name="e!inv", value="Shows your inventory.", inline=False)
+    emb.add_field(name="e!buy", value="work in progress, shut up, gus", inline=False)
     emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
     emb.add_field(name="e!goals", value="Displays the server goals. One can contribute to the funding of the goals by "
                                         "using e!donate.", inline=False)
@@ -1234,18 +1240,15 @@ async def shop(ctx):
     if len(a) > 0:
         i = len(a) // 3
         b = 0
-        c = 1
-        d = 2
         while i > 0:
-            if a[c] == 1:
+            if a[b + 1] == 1:
                 v = "1 egg"
             else:
-                v = "{e} eggs".format(e=str(a[c]))
-            emb.add_field(name='{item} - {price}'.format(item=a[b], price=v), value=a[d], inline=False)
+                v = "{e} eggs".format(e=str(a[b + 1]))
+            emb.add_field(name='{item} - {price}'.format(item=a[b], price=v), value=a[b + 2], inline=False)
             b += 3
-            c += 3
-            d += 3
             i -= 1
+        emb.add_field(name="4 eggs - 5 eggs", value="obligatory money sink")
     else:
         emb.add_field(name="None", value="There are no items in stock.")
     await ctx.send(embed=emb)
@@ -1277,18 +1280,57 @@ async def inv(ctx):
     await ctx.send(embed=emb)
 
 
+@bot.command()
+async def buy(ctx, *args):
+    args = list(args)
+    name = joinArgs(args)
+    del args
+    name = name.strip(' ').lower()
+    a = 0
+    for item in warehouse["global"]:
+        if name == item:
+            cost = warehouse["global"][a + 1]
+            try:
+                if cost <= stonks["users"][str(ctx.author.id)]["global"]:
+                    stonks["users"][str(ctx.author.id)]["global"] -= cost
+                    try:
+                        stonks["users"][str(ctx.author.id)]["inv"][item] += 1
+                    except KeyError:
+                        stonks["users"][str(ctx.author.id)]["inv"][item] = 1
+                    except TypeError:
+                        stonks["users"][str(ctx.author.id)]["inv"] = {item: 1}
+                    await ctx.send("Bought `{g}`.".format(g=item))
+                else:
+                    await ctx.send("You can't afford that item!?!")
+                return
+            except KeyError:
+                await ctx.send("You don't have any eggs to spend?!?")
+                return
+        a += 1
+    if name in ("4 eggs", "four eggs"):
+        try:
+            if 5 <= stonks["users"][str(ctx.author.id)]["global"]:
+                stonks["users"][str(ctx.author.id)]["global"] -= 1
+                await ctx.send("Bought `{g}` for `5 eggs`.".format(g=name))
+            else:
+                await ctx.send("You can't afford that item!?!")
+            return
+        except KeyError:
+            await ctx.send("You don't have any eggs to spend?!?")
+        return
+    await ctx.send("That item isn't on sale??? How do you buy something that isn't on sale???")
+
+
 @bot.event
 async def on_command(ctx):
     global stonks
     try:
         args = ctx.message.content.split(' ')[0]
         args = args[2:]
-        if args in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs", "save",
-                    "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log', 'debug', 'spam',
-                    'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals', 'setgoal', 'deletegoal',
-                    'addeggs', 'removeeggs', 'confirmgoal'):
-            pass
-        else:
+        if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs", "save",
+                        "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log', 'debug', 'spam',
+                        'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals', 'setgoal', 'deletegoal',
+                        'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop', 'save', 'notifs'):
             oval = random.randrange(0, 10)
             if oval >= 8:
                 pass
