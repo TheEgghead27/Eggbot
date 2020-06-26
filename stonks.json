@@ -1,1 +1,30 @@
-{"moneys": {"servers": {}, "users": {}}, "amazon": {"global": ["eggnog", 12, "ew eggnog", "a jar", 20, "a jar. its just a jar. what? did you expect something special?", "bacon", 500, "a greasy piece of bacon", "pencil", 1, "a cheap stick with a graphite center. nothing much", "name-brand pencil", 5, "a cheap stick with a graphite center, but it's expensive!"]}}
+{
+  "moneys": {
+    "servers": {
+    },
+    "users": {
+    }
+  },
+  "amazon": {
+    "global": [
+      "eggnog",
+      12,
+      "ew eggnog",
+      "a jar",
+      20,
+      "a jar. its just a jar. what? did you expect something special?",
+      "bacon",
+      500,
+      "a greasy piece of bacon",
+      "pencil",
+      1,
+      "a cheap stick with a graphite center. nothing much",
+      "name-brand pencil",
+      5,
+      "a cheap stick with a graphite center, but it's expensive!",
+      "golden egg",
+      1000000,
+      "i dunno where this came from, but that goose over there won't stop honking at me..."
+    ]
+  }
+}

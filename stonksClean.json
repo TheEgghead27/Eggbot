@@ -21,7 +21,10 @@
       "a cheap stick with a graphite center. nothing much",
       "name-brand pencil",
       5,
-      "a cheap stick with a graphite center, but it's expensive!"
+      "a cheap stick with a graphite center, but it's expensive!",
+      "golden egg",
+      1000000,
+      "i dunno where this came from, but that goose over there won't stop honking at me..."
     ]
   }
 }
