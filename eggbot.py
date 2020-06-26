@@ -952,7 +952,7 @@ def write():
 @bot.command()
 async def economyHelp(ctx):
     emb = discord.Embed(title="Eggbot Economy Commands", color=0x00ff55)
-    emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, and will eventually be useable in e!shop.", inline=False)
+    emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.", inline=False)
     emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
     emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
     emb.add_field(name="e!bank", value="Shows the current number of server eggs donated to the server.", inline=False)
