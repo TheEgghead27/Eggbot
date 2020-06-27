@@ -1,9 +1,6 @@
 # Eggbot
 Basic text pusher with embed message functionality
 
-## Branch Note
-This is the `master` branch, home of the raw code used by the developers.
-
 ## Discord
 [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
 
@@ -99,7 +96,7 @@ e!log: Toggles logging of admin commands
 
 
 ## Official Host (Only on when TheEgghead27 is online)
-https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permissions=271969345&scope=bot
+https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permissions=272104513&scope=bot
 
 ## Self-Host
 For self hosting instuctions, check https://github.com/TheEgghead27/Eggbot/blob/master/INSTALL.md

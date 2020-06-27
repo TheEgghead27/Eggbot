@@ -29,7 +29,7 @@
 10. Click these permissions \
 ![](tutorial/perms.png)
 
-11. Use this link to invite your bot to your server (like any other bot)\
+11. Use the generated link to invite your bot to your server (like any other bot)\
  ![](tutorial/getlink.png)
 
 12. Right click your Discord account in chat\
