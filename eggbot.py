@@ -228,7 +228,7 @@ async def joinRole(ctx):
                     if not len(str(role)) == 18:
                         await ctx.send('Role ID machine broken :(')
                         return
-                except ValueError:
+                except (ValueError, IndexError):
                     return
                 await ctx.send('There was no role mentioned?')
         else:
