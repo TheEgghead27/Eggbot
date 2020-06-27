@@ -56,6 +56,7 @@ spic = [' ']
 simp = ['simp']
 ohno = ['ohno']
 roles = {}
+joinRoles = {}
 colors = {}
 roleEmbeds = {}
 stonks = {}
@@ -65,7 +66,8 @@ blacklist = []
 
 def load(exclude):
     """read files for data"""
-    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist, stonks, warehouse
+    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist, stonks, \
+        warehouse, joinRoles
     # read all the files for variables
     file = "No file"
     try:
@@ -97,6 +99,10 @@ def load(exclude):
         if file not in exclude:
             with open(file, "r+") as roles:
                 roles = json.load(roles)
+                joinRoles = roles["join"]
+                roles = roles["reactions"]
+                print(joinRoles)
+                print(roles)
         file = 'stonks.json'
         if file not in exclude:
             with open(file, "r+") as money:
@@ -207,6 +213,38 @@ def host_check(ctx):
         return False
 
 
+@bot.command()
+async def joinRole(ctx):
+    if ctx.guild:
+        if ctx.author.guild_permissions.administrator:
+            global joinRoles
+            if ctx.message.role_mentions:
+                role = ctx.message.role_mentions[0]
+                joinRoles[str(ctx.guild.id)] = role.id
+                await ctx.send('@{r} was set as the role for new members.'.format(r=role.name))
+            else:
+                try:
+                    role = int(ctx.message.content.split(' ')[1])
+                    if not len(str(role)) == 18:
+                        await ctx.send('Role ID machine broken :(')
+                        return
+                except ValueError:
+                    return
+                await ctx.send('There was no role mentioned?')
+        else:
+            await ctx.send("You're not an admin, so no.")
+    else:
+        await ctx.send("This isn't a server! Who's gonna join this? What roles are there to assign? None. "
+                       "There is nothing to execute the command on.")
+
+
+@bot.event
+async def on_member_join(member):
+    if str(member.guild.id) in joinRoles:
+        role = member.guild.get_role(joinRoles[str(member.guild.id)])
+        await member.add_roles(role)
+
+
 # DM leaking & Egg and Simp commands due to special parsing
 @bot.event
 async def on_message(message):
@@ -311,6 +349,8 @@ async def help(ctx):
     emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
     emb.add_field(name="e!invite", value="Links to an invite link for Eggbot.", inline=False)
     emb.add_field(name="e!server", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
+    emb.add_field(name="e!joinRole [@role]", value="Sets a role that is automatically given to new users "
+                                                   "(when the bot is online).", inline=False)
     emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
     emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
                                                              "specified time.", inline=False)
@@ -950,7 +990,8 @@ async def save(ctx):
 
 def write():
     with open("roles.json", "w") as j:
-        json.dump(roles, j, encoding="utf-8")
+        dick = {"reactions": roles, "join": joinRoles}
+        json.dump(dick, j, encoding="utf-8")
     with open("stonks.json", "w") as j:
         dick = {"moneys": stonks, "amazon": warehouse}
         json.dump(dick, j, encoding="utf-8")

@@ -58,6 +58,8 @@ e!notifs {on/off}: Toggles notifications for eggs earned.
 
 e!vacuum {number}: Mass deletes {number} messages. 
 
+e!joinRole {@role}: Sets a role for automatic assignment when a member joins the server. (requires bot to be online)
+
 e!setGoal {cost} {name}: Sets a server goal.
 
 e!deleteGoal {name}: Deletes a server goal.
