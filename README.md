@@ -99,7 +99,7 @@ e!log: Toggles logging of admin commands
 
 
 ## Official Host (Only on when TheEgghead27 is online)
-https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&permissions=3537984&scope=bot
+https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permissions=271969345&scope=bot
 
 ## Self-Host
 For self hosting instuctions, check https://github.com/TheEgghead27/Eggbot/blob/master/INSTALL.md
