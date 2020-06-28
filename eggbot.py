@@ -101,8 +101,6 @@ def load(exclude):
                 roles = json.load(roles)
                 joinRoles = roles["join"]
                 roles = roles["reactions"]
-                print(joinRoles)
-                print(roles)
         file = 'stonks.json'
         if file not in exclude:
             with open(file, "r+") as money:
