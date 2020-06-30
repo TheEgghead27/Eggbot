@@ -47,11 +47,14 @@
 19. Place your token and host.txt's in the folder\
 ![](tutorial/setup1.png)
 
+22. Run convert.py\
+[IMAGE NOT FOUND]
+
 20. Go to\
  [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
 \
 and have a moderator add your bot with the bot invite link.
 
-21. Run the Python script.
+21. Run the eggbot.py Python script.
 
 Enjoy!
