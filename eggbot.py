@@ -450,7 +450,12 @@ async def about(ctx):
                     except AttributeError:
                         user = bot.get_user(int(args[1]))
                     if not user:
-                        user = message.author
+                        try:
+                            user = bot.get_user(int(args[1]))
+                        except AttributeError:
+                            user = message.author
+                        if not user:
+                            user = message.author
                 else:
                     user = message.author
             except IndexError:
@@ -465,26 +470,29 @@ async def about(ctx):
         emb.add_field(name="User Discriminator", value=user.discriminator, inline=True)
         emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
         if type(message.author) == discord.member.Member:
-            emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
             try:
-                name_roles = user.roles[0].name
-                for discord.role in user.roles:  # i don't know why, but the for loop does not log all roles
-                    del user.roles[0]
-                    name_roles = name_roles + ', ' + user.roles[0].name
-                    name_roles = name_roles + ', ' + user.roles[1].name
-                    del user.roles[0]
-                name_roles = name_roles + ', ' + user.roles[1].name  # these were the best solutions i could come up
-                name_roles = name_roles + ', ' + user.roles[2].name  # with
-            except IndexError:
-                name_roles = name_roles
-            emb.add_field(name="User's Roles", value=name_roles, inline=False)
-            if name_roles != "@everyone":
-                emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
-            if user.guild_permissions.administrator:
-                admin_state = "an admin."
-            else:
-                admin_state = "not an admin."
-            emb.add_field(name="User is", value=admin_state, inline=False)
+                emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
+                try:
+                    name_roles = user.roles[0].name
+                    for discord.role in user.roles:  # i don't know why, but the for loop does not log all roles
+                        del user.roles[0]
+                        name_roles = name_roles + ', ' + user.roles[0].name
+                        name_roles = name_roles + ', ' + user.roles[1].name
+                        del user.roles[0]
+                    name_roles = name_roles + ', ' + user.roles[1].name  # these were the best solutions i could come up
+                    name_roles = name_roles + ', ' + user.roles[2].name  # with
+                except IndexError:
+                    name_roles = name_roles
+                emb.add_field(name="User's Roles", value=name_roles, inline=False)
+                if name_roles != "@everyone":
+                    emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
+                if user.guild_permissions.administrator:
+                    admin_state = "an admin."
+                else:
+                    admin_state = "not an admin."
+                emb.add_field(name="User is", value=admin_state, inline=False)
+            except AttributeError:
+                pass
         if user.bot:
             emb.add_field(name="User is", value="a bot", inline=True)
         else:
