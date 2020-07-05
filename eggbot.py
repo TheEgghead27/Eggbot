@@ -25,8 +25,9 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 prefix = 'e!'
+status = '{p}help'.format(p=prefix)
 prefixLen = len(prefix)
-bot = commands.Bot(command_prefix=prefix, case_insensitive=True, description="e!help")
+bot = commands.Bot(command_prefix=prefix, case_insensitive=True, description=status)
 bot.remove_command("help")
 
 
@@ -34,7 +35,7 @@ bot.remove_command("help")
 async def on_ready():
     print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
     write()
-    await bot.change_presence(activity=discord.Game(name="e!help"))
+    await bot.change_presence(activity=discord.Game(name=status))
 
 
 # set this to False (with e!spam) to enable egg spamming (please no)
@@ -140,7 +141,8 @@ def load(exclude):
             "greyple": discord.Colour.greyple(),
             "grayple": discord.Colour.greyple(),
             "white": discord.Colour.from_rgb(254, 254, 254),
-            "black": discord.Colour.from_rgb(0, 0, 0)
+            "black": discord.Colour.from_rgb(0, 0, 0),
+            "light pink": discord.Colour.from_rgb(255, 182, 193)
         }
     except FileNotFoundError:
         if file == 'data.json':
@@ -739,6 +741,16 @@ async def print_emoji(ctx, *args):
     if host_check(ctx):
         print(args[0])
         await ctx.send('Check the console!')
+
+
+@bot.command()
+async def setStatus(ctx, *args):
+    if host_check(ctx):
+        global status
+        args = list(args)
+        status = joinArgs(args)
+        await bot.change_presence(activity=discord.Game(name=status))
+        await ctx.send('Status set to "{s}".'.format(s=status))
 
 
 @bot.command()
