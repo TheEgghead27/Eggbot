@@ -63,12 +63,13 @@ roleEmbeds = {}
 stonks = {}
 warehouse = {}
 blacklist = []
+insults = []
 
 
 def load(exclude):
     """read files for data"""
     global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist, stonks, \
-        warehouse, joinRoles
+        warehouse, joinRoles, insults
     # read all the files for variables
     file = "No file"
     try:
@@ -96,6 +97,7 @@ def load(exclude):
                 spic = tuple(data['spic'])
                 simp = tuple(data['simp'])
                 ohno = tuple(data['ohno'])
+                insults = tuple(data['insults'])
         file = 'roles.json'
         if file not in exclude:
             with open(file, "r+") as roles:
@@ -298,7 +300,7 @@ async def on_message(message):
             except AttributeError:
                 pass
         try:
-            if a[0] in eggTrigger or a[0].startswith(eggTrigger):
+            if a[0].startswith(eggTrigger):
                 sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
                 await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
                 try:
@@ -320,6 +322,9 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+            elif message.channel.id in [714873042794315857, 719022288443539456] or \
+                    a[0].startswith(('moyai', '🗿', ':moyai:', 'mooyai')):
+                await message.add_reaction('🗿')
             else:
                 await bot.process_commands(message)
         except IndexError:
@@ -354,11 +359,13 @@ async def help(ctx):
     emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
     emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
                                                              "specified time.", inline=False)
+    emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
     emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
     emb.add_field(name="e!admins", value="Lists the admins for this copy of Eggbot.", inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
+    emb.add_field(name="moyai", value="'🗿'", inline=False)
     emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
     await ctx.send(embed=emb)
 
@@ -658,6 +665,12 @@ async def admins(ctx):
         d += 1
         c -= 1
     await ctx.send(embed=emb)
+
+
+@bot.command()
+async def rateFood(ctx):
+    insultNumber = random.randrange(0, len(insults) - 1)
+    await ctx.send(insults[insultNumber])
 
 
 # Secret Admin-Only Commands
@@ -1402,6 +1415,10 @@ async def on_command(ctx):
 async def on_raw_reaction_add(payload):
     # get role configurations
     emoji = str(payload.emoji)
+    if emoji == '🗿':
+        channel = bot.get_channel(payload.channel_id)
+        message = await channel.fetch_message(payload.message_id)
+        await message.add_reaction('🗿')
     if str(payload.message_id) in roles:
         roleData = roles[str(payload.message_id)]
         if emoji in roleData:

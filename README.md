@@ -23,6 +23,8 @@ e!server: DMs you an invite to the official Discord Server
 
 e!timer {number} {time unit}: Creates a timer that pings the requesting user after a specified time.
 
+e!rateFood: Rates food. [beware foul language]
+
 e!get_icon: Links to a copy of the current server's icon.
 
 e!admins: Lists the admins for the current copy of Eggbot.
@@ -32,6 +34,8 @@ egg: egg
 e!eggCount: counts the day's eggs
 
 simp: SIMP
+
+moyai: 🗿
 
 ### Economy Commands
 
@@ -99,4 +103,4 @@ e!log: Toggles logging of admin commands
 https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permissions=272104513&scope=bot
 
 ## Self-Host
-For self hosting instuctions, check https://github.com/TheEgghead27/Eggbot/blob/master/INSTALL.md
+For self hosting instructions, check https://github.com/TheEgghead27/Eggbot/blob/master/INSTALL.md
