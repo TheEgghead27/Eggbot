@@ -733,6 +733,7 @@ def joinArgs(arghs):
     while arghs:
         echo = echo + " " + arghs[0]
         del arghs[0]
+    echo = echo.strip(' ')
     return echo
 
 
