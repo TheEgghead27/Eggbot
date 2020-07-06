@@ -322,6 +322,11 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+            elif a[0] == 'mk':
+                if message.author.id == bot.user.id:
+                    return
+                else:
+                    await message.channel.send('mk')
             elif message.channel.id in [714873042794315857, 719022288443539456] or \
                     a[0].startswith(('moyai', '🗿', ':moyai:', 'mooyai')):
                 await message.add_reaction('🗿')
