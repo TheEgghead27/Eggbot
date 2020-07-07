@@ -1,6 +1,7 @@
 import asyncio  # for asyncio.sleep
 import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
+from os import path
 
 try:  # in case discord.py or simplejson isn't installed
     import discord
@@ -156,9 +157,12 @@ def load(exclude):
             blacklist.append(file)
             load(blacklist)
         elif file == 'config.json':
-            input("Press enter to begin the setup process. \nIf you want to convert an old configuration, exit this "
-                  "window and open convert.py")
-            setup()
+            input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
+            import setup  # setup things
+            if path.exists("token.txt") or path.exists("host.txt"):
+                token, hosts = setup.convert()
+            else:
+                token, hosts = setup.setup(hosts=[])
             blacklist.append(file)
             load(blacklist)
     except (ValueError, KeyError):
@@ -170,34 +174,6 @@ def load(exclude):
                   "{}.".format(file, file))
             blacklist.append(file)
             load(blacklist)
-
-
-def setup():
-    """out of box setup function to configure the token and hosts, then package in a new json"""
-    global token, hosts
-    if token == "Improper token":
-        token = input("Paste your token here.\n").strip(' ')
-    if len(hosts) > 0:
-        hosts = []
-        a = input("Input your user ID.\n")
-        if len(a) == 18:
-            hosts.append(a)
-        else:
-            print('Invalid input.')
-            setup()
-    hostInput = True
-    while hostInput:
-        a = input('Enter the next user ID. If you wish to exit, type nothing.\n')
-        if len(a) == 18:
-            hosts.append(a)
-        elif len(a) in [0, 1]:
-            hostInput = False
-        else:
-            pass
-    data = {"hosts": hosts, "token": token}
-    with open("config.json", "w") as config:
-        json.dump(data, config)
-    input("Configuration complete! Press enter to continue operations...")
 
 
 eggC = 0
