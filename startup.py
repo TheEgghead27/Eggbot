@@ -45,16 +45,9 @@ def load(blacklist):
                 warehouse = stonks["amazon"]
                 stonks = stonks["moneys"]
     except FileNotFoundError:
-        if file == 'data.json':
-            input("It looks like {} is incomplete! You need to reinstall Eggbot!".format(file))
+        if file in ['roles.json', 'bee.txt', 'data.json']:
+            input("It looks like {} is missing! \nYou will have to reinstall Eggbot.")
             exit(1)
-        elif file in ['roles.json', 'bee.txt']:
-            input("It looks like a non-essential file, {}, is missing! \n"
-                  "You can safely press enter to ignore this if you do not intend to use the functions related to "
-                  "{}.".format(file, file))
-            blacklist.append(file)
-            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults = load(blacklist)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
             from os import path
@@ -151,6 +144,7 @@ def setup(hosts, token):
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
+    input("Configuration complete! Press enter to apply changes and continue operation...")
     return
 
 
@@ -169,6 +163,7 @@ def convert():
         with open("config.json", "w") as config:
             json.dump(data, config)
             cleanUp()
+        input("Conversion complete! Press enter to continue...")
         return
     except FileNotFoundError:
         input("Bruh {} is missing. Close this window if you intend to replace the file. "
