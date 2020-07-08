@@ -1,7 +1,8 @@
 def load(blacklist):
     """read files for data"""
     import json
-    import discord
+    # create a dictionary of colors
+    colors = loadColors()
     # read all the files for variables
     file = "No file"
     try:
@@ -43,43 +44,6 @@ def load(blacklist):
                 del money
                 warehouse = stonks["amazon"]
                 stonks = stonks["moneys"]
-        colors = {
-            "teal": discord.Colour.teal(),
-            "dark teal": discord.Colour.teal(),
-            "green": discord.Colour.from_rgb(0, 255, 0),
-            "dark green": discord.Colour.dark_green(),
-            "blue": discord.Colour.from_rgb(0, 0, 255),
-            "dark blue": discord.Colour.dark_blue(),
-            "purple": discord.Colour.purple(),
-            "dark purple": discord.Colour.dark_purple(),
-            "magenta": discord.Colour.magenta(),
-            "dark magenta": discord.Colour.dark_magenta(),
-            "yellow": discord.Colour.from_rgb(255, 255, 0),
-            "gold": discord.Colour.gold(),
-            "dark_gold": discord.Colour.dark_gold(),
-            "orange": discord.Colour.orange(),
-            "dark orange": discord.Colour.dark_orange(),
-            "red": discord.Colour.from_rgb(255, 0, 0),
-            "dark red": discord.Colour.dark_red(),
-            "lighter gray": discord.Colour.lighter_grey(),
-            "light gray": discord.Colour.light_grey(),
-            "dark gray": discord.Colour.dark_grey(),
-            "darker gray": discord.Colour.darker_grey(),
-            "gray": discord.Colour.from_rgb(128, 128, 128),
-            "lighter grey": discord.Colour.lighter_grey(),
-            "light grey": discord.Colour.light_grey(),
-            "dark grey": discord.Colour.dark_grey(),
-            "darker grey": discord.Colour.darker_grey(),
-            "grey": discord.Colour.from_rgb(128, 128, 128),
-            "blurple": discord.Colour.blurple(),
-            "greyple": discord.Colour.greyple(),
-            "grayple": discord.Colour.greyple(),
-            "white": discord.Colour.from_rgb(254, 254, 254),
-            "black": discord.Colour.from_rgb(0, 0, 0),
-            "light pink": discord.Colour.from_rgb(255, 182, 193)
-        }
-        return hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-            joinRoles, insults
     except FileNotFoundError:
         if file == 'data.json':
             input("It looks like {} is incomplete! You need to reinstall Eggbot!".format(file))
@@ -89,7 +53,8 @@ def load(blacklist):
                   "You can safely press enter to ignore this if you do not intend to use the functions related to "
                   "{}.".format(file, file))
             blacklist.append(file)
-            load(blacklist)
+            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+                joinRoles, insults = load(blacklist)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
             from os import path
@@ -97,8 +62,11 @@ def load(blacklist):
                 convert()
             else:
                 setup(hosts=[], token="Improper token")
-            input('Setup complete! Press enter to shutdown and apply your changes.')
-            exit(0)
+            input('Setup complete! Press enter to continue startup.')
+            # just load the config off of the config.json, it's more efficient than blacklisting
+            # and using *args to pass the data through
+            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+                joinRoles, insults = load(blacklist)
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
@@ -107,7 +75,51 @@ def load(blacklist):
                   "You can safely press enter to ignore this if you do not intend to use the functions related to "
                   "{}.".format(file, file))
             blacklist.append(file)
-            load(blacklist)
+            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+                joinRoles, insults = load(blacklist)
+    return hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+        joinRoles, insults
+
+
+def loadColors():
+    """use discord module to form a colors dictionary"""
+    import discord
+    colors = {
+        "teal": discord.Colour.teal(),
+        "dark teal": discord.Colour.teal(),
+        "green": discord.Colour.from_rgb(0, 255, 0),
+        "dark green": discord.Colour.dark_green(),
+        "blue": discord.Colour.from_rgb(0, 0, 255),
+        "dark blue": discord.Colour.dark_blue(),
+        "purple": discord.Colour.purple(),
+        "dark purple": discord.Colour.dark_purple(),
+        "magenta": discord.Colour.magenta(),
+        "dark magenta": discord.Colour.dark_magenta(),
+        "yellow": discord.Colour.from_rgb(255, 255, 0),
+        "gold": discord.Colour.gold(),
+        "dark_gold": discord.Colour.dark_gold(),
+        "orange": discord.Colour.orange(),
+        "dark orange": discord.Colour.dark_orange(),
+        "red": discord.Colour.from_rgb(255, 0, 0),
+        "dark red": discord.Colour.dark_red(),
+        "lighter gray": discord.Colour.lighter_grey(),
+        "light gray": discord.Colour.light_grey(),
+        "dark gray": discord.Colour.dark_grey(),
+        "darker gray": discord.Colour.darker_grey(),
+        "gray": discord.Colour.from_rgb(128, 128, 128),
+        "lighter grey": discord.Colour.lighter_grey(),
+        "light grey": discord.Colour.light_grey(),
+        "dark grey": discord.Colour.dark_grey(),
+        "darker grey": discord.Colour.darker_grey(),
+        "grey": discord.Colour.from_rgb(128, 128, 128),
+        "blurple": discord.Colour.blurple(),
+        "greyple": discord.Colour.greyple(),
+        "grayple": discord.Colour.greyple(),
+        "white": discord.Colour.from_rgb(254, 254, 254),
+        "black": discord.Colour.from_rgb(0, 0, 0),
+        "light pink": discord.Colour.from_rgb(255, 182, 193)
+    }
+    return colors
 
 
 def setup(hosts, token):
@@ -139,7 +151,6 @@ def setup(hosts, token):
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
-    input("Configuration complete! Press enter to apply changes and continue operation...")
     return
 
 
@@ -158,7 +169,6 @@ def convert():
         with open("config.json", "w") as config:
             json.dump(data, config)
             cleanUp()
-        input("Conversion complete! Press enter to continue...")
         return
     except FileNotFoundError:
         input("Bruh {} is missing. Close this window if you intend to replace the file. "
