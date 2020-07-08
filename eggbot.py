@@ -1,18 +1,15 @@
+from startup import load  # startup functions
 import asyncio  # for asyncio.sleep
 import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
-from os import path
-
 try:  # in case discord.py or simplejson isn't installed
     import discord
     from discord.ext import commands
     import simplejson as json  # to manage databases
 except ModuleNotFoundError:  # install the discord modules
     import subprocess
-    import sys
-
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', "discord.py"])
-    subprocess.check_call([sys.executable, '-m', 'pip', 'install', "simplejson"])
+    subprocess.check_call([system.executable, '-m', 'pip', 'install', "discord.py"])
+    subprocess.check_call([system.executable, '-m', 'pip', 'install', "simplejson"])
     import discord
     from discord.ext import commands
     import simplejson as json
@@ -48,133 +45,11 @@ debugMode = False
 # set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
 audit = True
 # set the placeholder variables
-hosts = [474328006588891157]
-token = "Improper token"
-Bee = ["Error", "The bee.txt data was not "]
-kirilist = ['https://cdn.discordapp.com/attachments/555165702395527178/719998472752726146/unknown.png']
-eggs = ['egg']
-eggTrigger = ['egg']
-spic = [' ']
-simp = ['simp']
-ohno = ['ohno']
-roles = {}
-joinRoles = {}
-colors = {}
+
 roleEmbeds = {}
-stonks = {}
-warehouse = {}
-blacklist = []
-insults = []
 
-
-def load(exclude):
-    """read files for data"""
-    global hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, blacklist, stonks, \
-        warehouse, joinRoles, insults
-    # read all the files for variables
-    file = "No file"
-    try:
-        file = "config.json"
-        if file not in exclude:
-            with open(file, "r") as config:
-                config = json.load(config)
-                hosts = config['hosts']
-                token = config['token']
-        file = 'bee.txt'
-        if file not in exclude:
-            with open(file, 'r') as Bee:
-                Bee = Bee.read().replace('\n', '🥚')
-                Bee = Bee.replace('[n]', '\n')
-                Bee = tuple(Bee.split('🥚'))
-        file = 'data.json'
-        if file not in exclude:
-            with open(file, 'r') as data:
-                data = json.load(data)
-                kirilist = tuple(data["kirilist"])
-                eggs = tuple(data["eggs"])
-                eggTrigger = data["eggTrigger"]
-                eggTrigger.append('🥚')  # workaround for user messages with ":egg:" not triggering it
-                eggTrigger = tuple(eggTrigger)
-                spic = tuple(data['spic'])
-                simp = tuple(data['simp'])
-                ohno = tuple(data['ohno'])
-                insults = tuple(data['insults'])
-        file = 'roles.json'
-        if file not in exclude:
-            with open(file, "r+") as roles:
-                roles = json.load(roles)
-                joinRoles = roles["join"]
-                roles = roles["reactions"]
-        file = 'stonks.json'
-        if file not in exclude:
-            with open(file, "r+") as money:
-                stonks = json.load(money)
-                del money
-                warehouse = stonks["amazon"]
-                stonks = stonks["moneys"]
-        colors = {
-            "teal": discord.Colour.teal(),
-            "dark teal": discord.Colour.teal(),
-            "green": discord.Colour.from_rgb(0, 255, 0),
-            "dark green": discord.Colour.dark_green(),
-            "blue": discord.Colour.from_rgb(0, 0, 255),
-            "dark blue": discord.Colour.dark_blue(),
-            "purple": discord.Colour.purple(),
-            "dark purple": discord.Colour.dark_purple(),
-            "magenta": discord.Colour.magenta(),
-            "dark magenta": discord.Colour.dark_magenta(),
-            "yellow": discord.Colour.from_rgb(255, 255, 0),
-            "gold": discord.Colour.gold(),
-            "dark_gold": discord.Colour.dark_gold(),
-            "orange": discord.Colour.orange(),
-            "dark orange": discord.Colour.dark_orange(),
-            "red": discord.Colour.from_rgb(255, 0, 0),
-            "dark red": discord.Colour.dark_red(),
-            "lighter gray": discord.Colour.lighter_grey(),
-            "light gray": discord.Colour.light_grey(),
-            "dark gray": discord.Colour.dark_grey(),
-            "darker gray": discord.Colour.darker_grey(),
-            "gray": discord.Colour.from_rgb(128, 128, 128),
-            "lighter grey": discord.Colour.lighter_grey(),
-            "light grey": discord.Colour.light_grey(),
-            "dark grey": discord.Colour.dark_grey(),
-            "darker grey": discord.Colour.darker_grey(),
-            "grey": discord.Colour.from_rgb(128, 128, 128),
-            "blurple": discord.Colour.blurple(),
-            "greyple": discord.Colour.greyple(),
-            "grayple": discord.Colour.greyple(),
-            "white": discord.Colour.from_rgb(254, 254, 254),
-            "black": discord.Colour.from_rgb(0, 0, 0),
-            "light pink": discord.Colour.from_rgb(255, 182, 193)
-        }
-    except FileNotFoundError:
-        if file == 'data.json':
-            input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
-        elif file in ['roles.json', 'bee.txt']:
-            input("It looks like a non-essential file, {}, is missing! \n"
-                  "You can safely press enter to ignore this if you do not intend to use the functions related to "
-                  "{}.".format(file, file))
-            blacklist.append(file)
-            load(blacklist)
-        elif file == 'config.json':
-            input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
-            import setup  # setup things
-            if path.exists("token.txt") or path.exists("host.txt"):
-                token, hosts = setup.convert()
-            else:
-                token, hosts = setup.setup(hosts=[])
-            blacklist.append(file)
-            load(blacklist)
-    except (ValueError, KeyError):
-        if file == 'data.json':
-            input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
-        elif file in ['roles.json', 'bee.txt', 'stonks.json']:
-            input("It looks like a non-essential file, {}, is corrupted! \n"
-                  "You can safely press enter to ignore this if you do not intend to use the functions related to "
-                  "{}.".format(file, file))
-            blacklist.append(file)
-            load(blacklist)
-
+hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults \
+    = load(blacklist=[])
 
 eggC = 0
 on = True
@@ -346,7 +221,7 @@ async def help(ctx):
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
-    emb.add_field(name="moyai", value="'🗿'", inline=False)
+    emb.add_field(name="moyai", value="🗿", inline=False)
     emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
     await ctx.send(embed=emb)
 
@@ -1286,7 +1161,6 @@ async def confirmgoal(ctx, *args):
 
 @bot.command()
 async def shop(ctx):
-    await ctx.send("wip")
     emb = discord.Embed(title="Eggbot Shop", color=0x00ff55)
     a = warehouse["global"]
     if len(a) > 0:
@@ -1303,6 +1177,7 @@ async def shop(ctx):
         emb.add_field(name="4 eggs - 5 eggs", value="obligatory money sink")
     else:
         emb.add_field(name="None", value="There are no items in stock.")
+    emb.set_footer(text="We only take global eggs.")
     await ctx.send(embed=emb)
 
 
@@ -1506,7 +1381,6 @@ async def on_command_error(ctx, error):
 
 try:
     while on:
-        load(blacklist)
         bot.run(token)
 except (FileNotFoundError, NameError):
     input("The bot token was not found! Press enter to exit...")
