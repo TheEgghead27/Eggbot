@@ -2719,7 +2719,8 @@ Mom! The bees are back!
 Adam 
 (Putting on his Krelman hat) If anybody needs to make a call, now's the time.
 Adam
-I got a feeling we'll be working late tonight! (The bee honey factories are back up and running) Meanwhile 
+I got a feeling we'll be working late tonight! (The bee honey factories are back up and running) 
+Meanwhile 
 (at Vanessa's shop)
 Vanessa 
 (To customer) Here's your change. Have a great afternoon! Can I help who's next?
@@ -2729,6 +2730,7 @@ There is a room in the shop
 (where Barry does legal work for other animals. He is currently talking with a Cow)
 Cow
 Milk, cream, cheese, it's all me.
+Cow
 And I don't see a nickel! Sometimes I just feel like a piece of meat!
 Barry 
 I had no idea.
