@@ -98,6 +98,7 @@ def load(blacklist):
             else:
                 setup(hosts=[], token="Improper token")
             input('Setup complete! Press enter to shutdown and apply your changes.')
+            exit(0)
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
