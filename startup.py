@@ -46,7 +46,7 @@ def load(blacklist):
                 stonks = stonks["moneys"]
     except FileNotFoundError:
         if file in ['roles.json', 'bee.txt', 'data.json']:
-            input("It looks like {} is missing! \nYou will have to reinstall Eggbot.")
+            input("It looks like {} is missing! \nYou will have to reinstall Eggbot.".format(file))
             exit(1)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
@@ -133,7 +133,6 @@ def setup(hosts, token):
             setup(hosts, token)
     hostInput = True
     while hostInput:
-        print('give me the rice')
         a = input('Enter the next user ID. If you wish to exit, type nothing.\n')
         if len(a) == 18:
             hosts.append(a)
@@ -144,7 +143,6 @@ def setup(hosts, token):
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
-    input("Configuration complete! Press enter to apply changes and continue operation...")
     return
 
 
