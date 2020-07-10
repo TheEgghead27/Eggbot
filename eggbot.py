@@ -235,19 +235,28 @@ async def help_error(ctx, error):
 
 
 @bot.command()
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def kiri(ctx, *args):
-    if host_check(ctx):
-        try:
-            send_amount = args[0]
-            send_amount = int(send_amount)
-            while send_amount > 0:
-                await kiriContent(ctx)
-                await asyncio.sleep(1)
-                send_amount = send_amount - 1
-        except (ValueError, IndexError):
+    try:
+        send_amount = args[0]
+        send_amount = int(send_amount)
+        if send_amount > 10:
+            await ctx.send("wowowoah, you gotta chill, we don't need spam on our hands!")
+            send_amount = 10
+        while send_amount > 0:
             await kiriContent(ctx)
-    else:
+            await asyncio.sleep(1)
+            send_amount = send_amount - 1
+    except (ValueError, IndexError):
         await kiriContent(ctx)
+
+
+@kiri.error
+async def kiri_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("I get that you're excited about the anime guy, but chill, k?")
+    else:
+        raise error
 
 
 async def kiriContent(ctx):
