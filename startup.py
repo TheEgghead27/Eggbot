@@ -1,6 +1,7 @@
 def load(blacklist):
     """read files for data"""
     import json
+    from ast import literal_eval
     # create a dictionary of colors
     colors = loadColors()
     # read all the files for variables
@@ -31,6 +32,7 @@ def load(blacklist):
                 simp = tuple(data['simp'])
                 ohno = tuple(data['ohno'])
                 insults = tuple(data['insults'])
+                beeEmbed = literal_eval(data['bee'])
         file = 'roles.json'
         if file not in blacklist:
             with open(file, "r+") as roles:
@@ -59,7 +61,7 @@ def load(blacklist):
             # just load the config off of the config.json, it's more efficient than blacklisting
             # and using *args to pass the data through
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults = load(blacklist)
+                joinRoles, insults, beeEmbed = load(blacklist)
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
@@ -69,9 +71,9 @@ def load(blacklist):
                   "{}.".format(file, file))
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults = load(blacklist)
+                joinRoles, insults, beeEmbed = load(blacklist)
     return hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-        joinRoles, insults
+        joinRoles, insults, beeEmbed
 
 
 def loadColors():

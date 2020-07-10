@@ -48,8 +48,8 @@ audit = True
 
 roleEmbeds = {}
 
-hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults \
-    = load(blacklist=[])
+hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
+    beeEmbed = load(blacklist=[])
 
 eggC = 0
 on = True
@@ -632,7 +632,32 @@ async def setStatus(ctx, *args):
 
 
 @bot.command()
+# @commands.cooldown(1, 7.5, commands.BucketType.user)
 async def bee(ctx):
+    args = ctx.message.content.split(' ')
+    try:
+        page = int(args[1]) - 1
+        if 0 <= page < 56:
+            emb = discord.Embed.from_dict(beeEmbed[page])
+            await ctx.send(embed=emb)
+        else:
+            await ctx.send('Invalid page number. There are only pages 1 to 56.')
+    except (ValueError, IndexError):
+        await ctx.send('I needa set up pagination one sec')
+        if host_check(ctx):
+            pass
+
+
+@bee.error
+async def bee_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("Come on, you can't read *that* quickly!")
+    else:
+        raise error
+
+
+@bot.command()
+async def beeGen(ctx):
     if host_check(ctx):
         beetime = False
         script = list(Bee)
@@ -640,15 +665,16 @@ async def bee(ctx):
         limitcheck = 25
         messno = 1
         color_list = [0xffff00, 0x000000]
-        emb = discord.Embed(title="The Bee Movie Script (1)", color=color_list[0])
+        bs = []
+        emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
         for _ in range(beelen):  # why did i do this?!?!
             if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
                 limitcheck = 0
                 if beetime:  # don't send an empty embed
+                    bs.append(emb.to_dict())
                     await ctx.send(embed=emb)
-                emb = discord.Embed(title="The Bee Movie Script (" + str(messno) + ")", color=color_list[0])
-                emb.set_footer(text="TheEgghead27's conversion of https://www.scripts.com/script/bee_movie_"
-                                    "313")
+                emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
+                emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messno)))
                 # alternate colors
                 color_list.append(color_list[0])
                 del color_list[0]
@@ -659,7 +685,9 @@ async def bee(ctx):
             emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
             limitcheck = limitcheck + 1
+        bs.append(emb.to_dict())
         await ctx.send(embed=emb)
+        print(bs)
 
 
 @bot.command()
