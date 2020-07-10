@@ -2,12 +2,14 @@ from startup import load  # startup functions
 import asyncio  # for asyncio.sleep
 import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
+
 try:  # in case discord.py or simplejson isn't installed
     import discord
     from discord.ext import commands
     import simplejson as json  # to manage databases
 except ModuleNotFoundError:  # install the discord modules
     import subprocess
+
     subprocess.check_call([system.executable, '-m', 'pip', 'install', "discord.py"])
     subprocess.check_call([system.executable, '-m', 'pip', 'install', "simplejson"])
     import discord
@@ -234,14 +236,17 @@ async def help_error(ctx, error):
 
 @bot.command()
 async def kiri(ctx, *args):
-    try:
-        send_amount = args[0]
-        send_amount = int(send_amount)
-        while send_amount > 0:
+    if host_check(ctx):
+        try:
+            send_amount = args[0]
+            send_amount = int(send_amount)
+            while send_amount > 0:
+                await kiriContent(ctx)
+                await asyncio.sleep(1)
+                send_amount = send_amount - 1
+        except (ValueError, IndexError):
             await kiriContent(ctx)
-            await asyncio.sleep(1)
-            send_amount = send_amount - 1
-    except (ValueError, IndexError):
+    else:
         await kiriContent(ctx)
 
 
@@ -410,9 +415,10 @@ async def server_error(ctx, error):
 
 @bot.command()
 async def eggCount(ctx):
-    emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-    emb.add_field(name="Egg count:", value=str(eggC), inline=False)
-    await ctx.send(embed=emb)
+    if host_check(ctx):
+        emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
+        emb.add_field(name="Egg count:", value=str(eggC), inline=False)
+        await ctx.send(embed=emb)
 
 
 @bot.command()
@@ -587,7 +593,7 @@ async def say(ctx, *args):
                 del arghs[0]
             else:
                 raise ValueError
-        except ValueError:
+        except (ValueError, IndexError):
             channel = ctx.channel
         finally:
             echo = joinArgs(arghs)
@@ -636,12 +642,16 @@ async def setStatus(ctx, *args):
 async def bee(ctx):
     args = ctx.message.content.split(' ')
     try:
+        if len(beeEmbed) <= 1:
+            emb = discord.Embed.from_dict(beeEmbed[0])
+            await ctx.send(embed=emb)
+            return
         page = int(args[1]) - 1
-        if 0 <= page < 56:
+        if 0 <= page < len(beeEmbed):
             emb = discord.Embed.from_dict(beeEmbed[page])
             await ctx.send(embed=emb)
         else:
-            await ctx.send('Invalid page number. There are only pages 1 to 56.')
+            await ctx.send('Invalid page number. There are only pages 1 to {t}.'.format(t=str(len(beeEmbed) - 1)))
     except (ValueError, IndexError):
         await ctx.send('I needa set up pagination one sec')
         if host_check(ctx):
@@ -1280,22 +1290,26 @@ async def buy(ctx, *args):
 async def on_command(ctx):
     global stonks
     try:
-        args = ctx.message.content.split(' ')[0]
-        args = args[2:]
-        if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs", "save",
-                        "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log', 'debug', 'spam',
-                        'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals', 'setgoal', 'deletegoal',
-                        'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop', 'save', 'notifs'):
-            oval = random.randrange(0, 10)
-            if oval >= 8:
-                pass
-            else:
-                oval = random.randrange(1, 3)
-                stonks["users"][str(ctx.author.id)]["global"] += oval
-                if stonks["users"][str(ctx.author.id)]["notif"] == "True":
-                    await ctx.send("You got {e} eggs!".format(e=str(oval)))
-                else:
+        if str(ctx.author.id) in stonks["users"]:
+            args = ctx.message.content.split(' ')[0]
+            args = args[2:]
+            if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
+                            "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
+                            'debug', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
+                            'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
+                            'save', 'notifs'):
+                oval = random.randrange(0, 10)
+                if oval >= 8:
                     pass
+                else:
+                    oval = random.randrange(1, 3)
+                    stonks["users"][str(ctx.author.id)]["global"] += oval
+                    if stonks["users"][str(ctx.author.id)]["notif"] == "True":
+                        await ctx.send("You got {e} eggs!".format(e=str(oval)))
+                    else:
+                        pass
+        else:
+            raise KeyError
     except KeyError:
         stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
                                                "inv": "None"}
@@ -1405,6 +1419,13 @@ async def on_command_error(ctx, error):
     except discord.Forbidden:
         return
     raise error
+
+
+@bot.command()
+async def embedTest(ctx):
+    embed = discord.Embed(title='Go to YouTube', url='https://www.youtube.com/',
+                          description='New video guys click on the title')
+    await ctx.send(embed=embed)
 
 
 try:

@@ -2,6 +2,8 @@ def load(blacklist):
     """read files for data"""
     import json
     from ast import literal_eval
+    hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
+        stonks, warehouse, insults = placeholders()
     # create a dictionary of colors
     colors = loadColors()
     # read all the files for variables
@@ -49,7 +51,10 @@ def load(blacklist):
     except FileNotFoundError:
         if file in ['roles.json', 'bee.txt', 'data.json']:
             input("It looks like {} is missing! \nYou will have to reinstall Eggbot.".format(file))
-            exit(1)
+            print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
+            blacklist.append(file)
+            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+                joinRoles, insults, beeEmbed = load(blacklist)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
             from os import path
@@ -64,7 +69,11 @@ def load(blacklist):
                 joinRoles, insults, beeEmbed = load(blacklist)
     except (ValueError, KeyError):
         if file == 'data.json':
-            input("It looks like {} is incomplete! It is highly recommended you reinstall Eggbot!".format(file))
+            input("It looks like {} is incomplete! It is *highly* recommended you reinstall Eggbot!".format(file))
+            print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
+            blacklist.append(file)
+            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+                joinRoles, insults, beeEmbed = load(blacklist)
         elif file in ['roles.json', 'bee.txt', 'stonks.json']:
             input("It looks like a non-essential file, {}, is corrupted! \n"
                   "You can safely press enter to ignore this if you do not intend to use the functions related to "
@@ -127,6 +136,7 @@ def setup(hosts, token):
             print(token)
             setup(hosts, token)
     if not len(hosts) > 0:
+        print(token)
         a = input("Input your user ID.\n")
         if len(a) == 18:
             hosts.append(a)
@@ -181,3 +191,27 @@ def cleanUp():
     file = "host.txt"
     if os.path.exists(file):
         os.remove(file)
+
+
+def placeholders():
+    """set placeholder variables"""
+    hosts = [474328006588891157]
+    token = "Improper token"
+    Bee = ["Error", "The bee.txt data was not loaded"]
+    beeEmbed = [{'footer': {'text': 'Page [NULL]'}, 'color': 16776960, 'type': 'rich',
+                 'title': 'Error: Bee embed data was not found.'}]
+    kirilist = ['https://cdn.discordapp.com/attachments/555165702395527178/719998472752726146/unknown.png']
+    eggs = ['egg']
+    eggTrigger = ['egg']
+    eggTrigger = tuple(eggTrigger)
+    spic = [' ']
+    simp = ['simp']
+    ohno = ['ohno']
+    roles = {}
+    joinRoles = {}
+    colors = {}
+    stonks = {}
+    warehouse = {}
+    insults = ['Your food was so bad, I forgot my insults!']
+    return hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
+        stonks, warehouse, insults
