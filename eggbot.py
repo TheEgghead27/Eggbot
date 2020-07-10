@@ -241,7 +241,8 @@ async def kiri(ctx, *args):
         send_amount = args[0]
         send_amount = int(send_amount)
         if send_amount > 10:
-            await ctx.send("wowowoah, you gotta chill, we don't need spam on our hands!")
+            await ctx.send("wowowoah, you gotta chill, we don't need spam on our hands! "
+                           "We've limited you to 10 images.")
             send_amount = 10
         while send_amount > 0:
             await kiriContent(ctx)
