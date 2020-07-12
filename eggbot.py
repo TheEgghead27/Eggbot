@@ -390,7 +390,7 @@ async def github(ctx):
 async def invite(ctx):
     emb = discord.Embed(title="Bot Invite",
                         description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
-                                    "permissions=3537984&scope=bot", color=0xffffff)
+                                    "permissions=271969345&scope=bot", color=0xffffff)
     await ctx.send(embed=emb)
 
 
@@ -913,7 +913,8 @@ async def reloadRoles(ctx):
 async def backupRoles(ctx):
     if host_check(ctx):
         with open("roles.json.bak", "w") as j:
-            json.dump(roles, j, encoding="utf-8")
+            dick = {"reactions": roles, "join": joinRoles}
+            json.dump(dick, j, encoding="utf-8")
         await ctx.send("Backed up the current role database!")
 
 
@@ -1434,7 +1435,7 @@ async def on_command_error(ctx, error):
 @bot.command()
 async def embedTest(ctx):
     embed = discord.Embed(title='Go to YouTube', url='https://www.youtube.com/',
-                          description='New video guys click on the title')
+                          description='New video guys click on the title or click [here](https://www.youtube.com/)')
     await ctx.send(embed=embed)
 
 
