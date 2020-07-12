@@ -235,19 +235,29 @@ async def help_error(ctx, error):
 
 
 @bot.command()
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def kiri(ctx, *args):
-    if host_check(ctx):
-        try:
-            send_amount = args[0]
-            send_amount = int(send_amount)
-            while send_amount > 0:
-                await kiriContent(ctx)
-                await asyncio.sleep(1)
-                send_amount = send_amount - 1
-        except (ValueError, IndexError):
+    try:
+        send_amount = args[0]
+        send_amount = int(send_amount)
+        if send_amount > 10:
+            await ctx.send("wowowoah, you gotta chill, we don't need spam on our hands! "
+                           "We've limited you to 10 images.")
+            send_amount = 10
+        while send_amount > 0:
             await kiriContent(ctx)
-    else:
+            await asyncio.sleep(1)
+            send_amount = send_amount - 1
+    except (ValueError, IndexError):
         await kiriContent(ctx)
+
+
+@kiri.error
+async def kiri_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send("I get that you're excited about the anime guy, but chill, k?")
+    else:
+        raise error
 
 
 async def kiriContent(ctx):
@@ -380,7 +390,7 @@ async def github(ctx):
 async def invite(ctx):
     emb = discord.Embed(title="Bot Invite",
                         description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
-                                    "permissions=3537984&scope=bot", color=0xffffff)
+                                    "permissions=271969345&scope=bot", color=0xffffff)
     await ctx.send(embed=emb)
 
 
@@ -903,7 +913,8 @@ async def reloadRoles(ctx):
 async def backupRoles(ctx):
     if host_check(ctx):
         with open("roles.json.bak", "w") as j:
-            json.dump(roles, j, encoding="utf-8")
+            dick = {"reactions": roles, "join": joinRoles}
+            json.dump(dick, j, encoding="utf-8")
         await ctx.send("Backed up the current role database!")
 
 
@@ -1424,7 +1435,7 @@ async def on_command_error(ctx, error):
 @bot.command()
 async def embedTest(ctx):
     embed = discord.Embed(title='Go to YouTube', url='https://www.youtube.com/',
-                          description='New video guys click on the title')
+                          description='New video guys click on the title or click [here](https://www.youtube.com/)')
     await ctx.send(embed=embed)
 
 
