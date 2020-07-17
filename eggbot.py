@@ -429,6 +429,8 @@ async def eggCount(ctx):
         emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
         emb.add_field(name="Egg count:", value=str(eggC), inline=False)
         await ctx.send(embed=emb)
+    else:
+        await ctx.send("This command has been disabled.")
 
 
 @bot.command()
@@ -899,17 +901,17 @@ async def reloadRoles(ctx):
         try:
             with open("roles.json.bak", "r+") as roles:
                 roles = json.load(roles)
-                joinRoles = roles["join"]
+                join = roles["join"]
                 roles = roles["reactions"]
         except FileNotFoundError:
             await ctx.send("There is no backup, it is highly recommended that you use `e!backupRoles` to create one.")
             with open("roles.json", "r+") as roles:
                 roles = json.load(roles)
-                joinRoles = roles["join"]
+                join = roles["join"]
                 roles = roles["reactions"]
         await asyncio.sleep(1)
         with open("roles.json", "w") as J:
-            dick = {"reactions": roles, "join": joinRoles}
+            dick = {"reactions": roles, "join": join}
             json.dump(dick, J, encoding="utf-8")
         await ctx.send("Restored role database from backup.")
 
@@ -1058,8 +1060,10 @@ async def donate(ctx, arg1):
         return
     try:
         if wallet < arg1:
-            # stonks["users"][str(ctx.author.id)][str(ctx.guild.id)] = 0
             await ctx.send("Don't be cheeky, you don't have that many eggs to donate!")
+            return
+        elif arg1 <= 0:
+            await ctx.send("bruh how do you donate less than 1 egg the heck")
             return
         stonks["servers"][str(ctx.guild.id)] += arg1
     except KeyError:
@@ -1360,16 +1364,16 @@ async def on_raw_reaction_add(payload):
                     emb = discord.Embed(title="Role Confirmed!", description=mess, color=0x0ac845)
                     await react_user.send(embed=emb)
                 except discord.Forbidden:
-                    emb = discord.Embed(title="Error: Missing Permissions", description="I don't have permission to give you "
-                                                                                        "that role! Please notify a moderator "
-                                                                                        "so I can get the `Manage Roles` "
+                    emb = discord.Embed(title="Error: Missing Permissions", description="I don't have permission to "
+                                                                                        "give you that role! Please "
+                                                                                        "notify a moderator so I can "
+                                                                                        "get the `Manage Roles` "
                                                                                         "permission!", color=0xbc1a00)
                     await react_user.send(embed=emb)
         else:
             return
     else:
         return
-    
 
 
 @bot.event
