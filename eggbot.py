@@ -16,12 +16,12 @@ except ModuleNotFoundError:  # install the discord modules
     from discord.ext import commands
     import simplejson as json
 
-import logging
+import logging as logs
 
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger = logs.getLogger('discord')
+logger.setLevel(logs.DEBUG)
+handler = logs.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logs.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 prefix = 'e!'
@@ -42,8 +42,8 @@ async def on_ready():
 safeguard = True
 # use e!botSpam to disable unintentional egg spamming with 2 eggbots
 botSafeguard = True
-# set this to True (with e!debug) to enable debug mode (it just prints the messages)
-debugMode = False
+# set this to True (with e!log) to enable terminal message logging
+logging = False
 # set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
 audit = True
 # set the placeholder variables
@@ -103,9 +103,16 @@ async def on_member_join(member):
 # DM leaking & Egg and Simp commands due to special parsing
 @bot.event
 async def on_message(message):
-    if str(message.channel.type) == "private" or debugMode:
-        if not message.author.id == bot.user.id:  # don't let the bot echo its own dms
-            print(str(message.author) + ' says:\n' + message.content)
+    # message logging
+    if str(message.channel.type) == "private" or logging:
+        if not message.author.id == bot.user.id:  # don't let the bot echo itself
+            if len(message.content) > 0:
+                content = "\n" + message.content
+            else:
+                content = message.content
+            print(str('{a} says:'.format(a=str(message.author)) + content))
+            if len(message.attachments) > 0:
+                print("Attachments: {}".format(str(message.attachments)))
     global stonks  # make economy things happen
     # allows for text formatting stuff to be parsed
     mess = message.content.lower()
@@ -871,20 +878,20 @@ async def botSpam(ctx):
 
 
 @bot.command()
-async def debug(ctx):
+async def log(ctx):
     print(roleEmbeds)
     print(roles)
     if host_check(ctx):
-        global debugMode
-        if debugMode:
-            debugMode = False
+        global logging
+        if logging:
+            logging = False
         else:
-            debugMode = True
-        await ctx.send("Set debug state to " + str(debugMode) + '.')
+            logging = True
+        await ctx.send("Set logging parameter to " + str(logging) + '.')
 
 
 @bot.command()
-async def log(ctx):
+async def auditLog(ctx):
     if host_check(ctx):
         global audit
         if audit:
@@ -1315,7 +1322,7 @@ async def on_command(ctx):
             args = args[2:]
             if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
                             "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
-                            'debug', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
+                            'log', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
                             'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
                             'save', 'notifs'):
                 oval = random.randrange(0, 10)
@@ -1335,6 +1342,23 @@ async def on_command(ctx):
                                                "inv": "None"}
     except AttributeError:
         pass
+
+
+@bot.event
+async def on_raw_message_delete(payload):
+    """Deleted message logging"""
+    print('In the channel with ID {p.channel_id}, a message with ID {p.message_id} was deleted.'.format(p=payload))
+    if payload.cached_message:
+        message = payload.cached_message
+        if len(message.content) > 0:
+            content = "\n" + message.content
+        else:
+            content = message.content
+        print(str('{a} said:'.format(a=str(message.author)) + content))
+        if len(message.attachments) > 0:
+            print("Attachments: {}".format(str(message.attachments)))
+    else:
+        print('The message could not be retrieved.')
 
 
 @bot.event

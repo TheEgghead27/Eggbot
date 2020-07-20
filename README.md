@@ -93,9 +93,9 @@ e!spam: Toggles spam mode for "egg" command
 
 e!botSpam: Toggles processing of bot commands for "egg" and "simp" commands (recommended ON when with multiple instances of Eggbot) 
 
-e!debug: Toggles debug mode
+e!log: Toggles message logging
 
-e!log: Toggles logging of admin commands
+e!auditLog: Toggles logging of admin commands
 
 
 
