@@ -3,7 +3,7 @@ def load(blacklist):
     import json
     from ast import literal_eval
     hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
-        stonks, warehouse, insults = placeholders()
+        stonks, warehouse, insults, logging, dmLog, audit, deleteLog = placeholders()
     # create a dictionary of colors
     colors = loadColors()
     # read all the files for variables
@@ -15,12 +15,27 @@ def load(blacklist):
                 config = json.load(config)
                 hosts = config['hosts']
                 token = config['token']
+                if 'logging' in config:
+                    logging = numToBool(config['logging'])
+                    dmLog = numToBool(config['dmLog'])
+                    audit = numToBool(config['audit'])
+                    deleteLog = numToBool(config['deleteLog'])
+                else:
+                    import settings
+                    with open(file, "r") as configNested:
+                        configNested = json.load(configNested)
+                        logging = numToBool(configNested['logging'])
+                        dmLog = numToBool(configNested['dmLog'])
+                        audit = numToBool(configNested['audit'])
+                        deleteLog = numToBool(configNested['deleteLog'])
+
         file = 'bee.txt'
         if file not in blacklist:
             with open(file, 'r') as Bee:
                 Bee = Bee.read().replace('\n', '🥚')
                 Bee = Bee.replace('[n]', '\n')
                 Bee = tuple(Bee.split('🥚'))
+
         file = 'data.json'
         if file not in blacklist:
             with open(file, 'r') as data:
@@ -35,12 +50,14 @@ def load(blacklist):
                 ohno = tuple(data['ohno'])
                 insults = tuple(data['insults'])
                 beeEmbed = literal_eval(data['bee'])
+
         file = 'roles.json'
         if file not in blacklist:
             with open(file, "r+") as roles:
                 roles = json.load(roles)
                 joinRoles = roles["join"]
                 roles = roles["reactions"]
+
         file = 'stonks.json'
         if file not in blacklist:
             with open(file, "r+") as money:
@@ -48,13 +65,14 @@ def load(blacklist):
                 del money
                 warehouse = stonks["amazon"]
                 stonks = stonks["moneys"]
+
     except FileNotFoundError:
         if file in ['roles.json', 'bee.txt', 'data.json']:
             input("It looks like {} is missing! \nYou will have to reinstall Eggbot.".format(file))
             print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
             from os import path
@@ -62,27 +80,30 @@ def load(blacklist):
                 convert()
             else:
                 setup(hosts=[], token="Improper token")
+            print('mh')
+            import settings
+            print('You are always allowed to run settings.py to edit your settings again.')
             input('Setup complete! Press enter to continue startup.')
             # just load the config off of the config.json, it's more efficient than blacklisting
             # and using *args to pass the data through
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is *highly* recommended you reinstall Eggbot!".format(file))
             print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
         elif file in ['roles.json', 'bee.txt', 'stonks.json']:
             input("It looks like a non-essential file, {}, is corrupted! \n"
                   "You can safely press enter to ignore this if you do not intend to use the functions related to "
                   "{}.".format(file, file))
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
     return hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-        joinRoles, insults, beeEmbed
+        joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog
 
 
 def loadColors():
@@ -213,5 +234,19 @@ def placeholders():
     stonks = {}
     warehouse = {}
     insults = ['Your food was so bad, I forgot my insults!']
+    logging = False
+    dmLog = True
+    audit = True
+    deleteLog = True
     return hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
-        stonks, warehouse, insults
+        stonks, warehouse, insults, logging, dmLog, audit, deleteLog
+
+
+def numToBool(num):
+    if num == 1:
+        num = True
+    elif num == 0:
+        num = False
+    else:
+        num = num
+    return num

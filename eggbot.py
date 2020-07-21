@@ -43,21 +43,11 @@ safeguard = True
 # use e!botSpam to disable unintentional egg spamming with 2 eggbots
 botSafeguard = True
 
-# Static Settings
-# set this to True (with e!log) to enable terminal message logging
-logging = False
-# logging state for DMs to the bot
-dmLog = False
-# set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
-audit = True
-# deleted message logging
-deleteLog = True
-
 # set the placeholder variables
 roleEmbeds = {}
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
-    beeEmbed = load(blacklist=[])
+    beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist=[])
 
 eggC = 0
 on = True
@@ -882,30 +872,6 @@ async def botSpam(ctx):
 
 
 @bot.command()
-async def log(ctx):
-    print(roleEmbeds)
-    print(roles)
-    if host_check(ctx):
-        global logging
-        if logging:
-            logging = False
-        else:
-            logging = True
-        await ctx.send("Set logging parameter to " + str(logging) + '.')
-
-
-@bot.command()
-async def auditLog(ctx):
-    if host_check(ctx):
-        global audit
-        if audit:
-            audit = False
-        else:
-            audit = True
-        await ctx.send("Set audit log logging to " + str(audit) + '.')
-
-
-@bot.command()
 async def settings(ctx):
     emb = discord.Embed(title="Settings on this instance of Eggbot",
                         description="The state of certain options in Eggbot", color=0xdddddd)
@@ -1369,7 +1335,7 @@ async def on_command(ctx):
 @bot.event
 async def on_raw_message_delete(payload):
     """Deleted message logging"""
-    if deleteLog:
+    if deleteLog is True:
         print('In the channel with ID {p.channel_id}, a message with ID {p.message_id} was deleted.'.format(p=payload))
         if payload.cached_message:
             message = payload.cached_message
