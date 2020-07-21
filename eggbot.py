@@ -226,10 +226,15 @@ async def help(ctx):
     emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
     emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
     emb.add_field(name="e!admins", value="Lists the admins for this copy of Eggbot.", inline=False)
+    emb.add_field(name="e!settings", value="Displays the logging configuration for the current instance of Eggbot.",
+                  inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
     emb.add_field(name="moyai", value="🗿", inline=False)
+    emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
+                                               "(https://github.com/TheEgghead27/Eggbot/blob/pagination/PRIVACY.md)",
+                  inline=False)
     emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
     await ctx.send(embed=emb)
 

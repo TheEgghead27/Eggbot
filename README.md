@@ -29,6 +29,8 @@ e!get_icon: Links to a copy of the current server's icon.
 
 e!admins: Lists the admins for the current copy of Eggbot.
 
+e!settings: Displays the logging configuration for the current instance of Eggbot.
+
 egg: egg
 
 e!eggCount: counts the day's eggs

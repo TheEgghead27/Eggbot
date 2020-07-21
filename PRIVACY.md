@@ -8,7 +8,7 @@ For the official instance of Eggbot, a user or server administrator may request 
 
 If you are considered an Involved User, you may request that your attribution is removed in the code or from the official configuration. 
 
-We recommend that hosters abide by these policies for their own instances, but we cannot guarantee that these standards will be followed.
+We recommend that hosts abide by these policies for their own instances, but we cannot guarantee that these standards will be followed.
 
 ## What we always collect
 
