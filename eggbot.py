@@ -62,7 +62,10 @@ def host_check(ctx):
     if str(ctx.message.author.id) in hosts:
         if audit:
             mess = ctx.message.content.split(' ')
-            print(str(ctx.message.author) + ' used ' + mess[0] + '!')
+            try:
+                print(str(ctx.message.author) + ' used ' + mess[0] + '!')
+            except OSError:
+                pass
         return True
     else:
         return False
@@ -512,7 +515,7 @@ async def timer(ctx, *args):
                 await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
             return
         if 30 >= time or time >= 1800:
-            await ctx.send('The timer may be inaccurate or unable to alert you due to the unit of time '
+            await ctx.send('The timer may be inaccurate or unable to alert you due to the amount of time '
                            'the timer is set to.')
         await ctx.send("Timer set for " + args[0] + ' ' + args[1] + '.')
         await asyncio.sleep(time)
