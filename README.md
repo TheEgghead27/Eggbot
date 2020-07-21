@@ -29,6 +29,8 @@ e!get_icon: Links to a copy of the current server's icon.
 
 e!admins: Lists the admins for the current copy of Eggbot.
 
+e!settings: Displays the logging configuration for the current instance of Eggbot.
+
 egg: egg
 
 e!eggCount: counts the day's eggs
@@ -93,9 +95,9 @@ e!spam: Toggles spam mode for "egg" command
 
 e!botSpam: Toggles processing of bot commands for "egg" and "simp" commands (recommended ON when with multiple instances of Eggbot) 
 
-e!debug: Toggles debug mode
+e!log: Toggles message logging
 
-e!log: Toggles logging of admin commands
+e!auditLog: Toggles logging of admin commands
 
 
 

@@ -16,12 +16,12 @@ except ModuleNotFoundError:  # install the discord modules
     from discord.ext import commands
     import simplejson as json
 
-import logging
+import logging as logs
 
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger = logs.getLogger('discord')
+logger.setLevel(logs.DEBUG)
+handler = logs.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logs.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 prefix = 'e!'
@@ -37,21 +37,17 @@ async def on_ready():
     write()
     await bot.change_presence(activity=discord.Game(name=status))
 
-
+# Command-Alterable Settings
 # set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
 # use e!botSpam to disable unintentional egg spamming with 2 eggbots
 botSafeguard = True
-# set this to True (with e!debug) to enable debug mode (it just prints the messages)
-debugMode = False
-# set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
-audit = True
-# set the placeholder variables
 
+# set the placeholder variables
 roleEmbeds = {}
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
-    beeEmbed = load(blacklist=[])
+    beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist=[])
 
 eggC = 0
 on = True
@@ -62,7 +58,10 @@ def host_check(ctx):
     if str(ctx.message.author.id) in hosts:
         if audit:
             mess = ctx.message.content.split(' ')
-            print(str(ctx.message.author) + ' used ' + mess[0] + '!')
+            try:
+                print(str(ctx.message.author) + ' used ' + mess[0] + '!')
+            except OSError:
+                pass
         return True
     else:
         return False
@@ -103,9 +102,16 @@ async def on_member_join(member):
 # DM leaking & Egg and Simp commands due to special parsing
 @bot.event
 async def on_message(message):
-    if str(message.channel.type) == "private" or debugMode:
-        if not message.author.id == bot.user.id:  # don't let the bot echo its own dms
-            print(str(message.author) + ' says:\n' + message.content)
+    # message logging
+    if str(message.channel.type) == "private" and dmLog or logging:
+        if not message.author.id == bot.user.id:  # don't let the bot echo itself
+            if len(message.content) > 0:
+                content = "\n" + message.content
+            else:
+                content = message.content
+            print(str('{a} says:'.format(a=str(message.author)) + content))
+            if len(message.attachments) > 0:
+                print("Attachments: {}".format(str(message.attachments)))
     global stonks  # make economy things happen
     # allows for text formatting stuff to be parsed
     mess = message.content.lower()
@@ -220,10 +226,15 @@ async def help(ctx):
     emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
     emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
     emb.add_field(name="e!admins", value="Lists the admins for this copy of Eggbot.", inline=False)
+    emb.add_field(name="e!settings", value="Displays the logging configuration for the current instance of Eggbot.",
+                  inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
     emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
     emb.add_field(name="moyai", value="🗿", inline=False)
+    emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
+                                               "(https://github.com/TheEgghead27/Eggbot/blob/pagination/PRIVACY.md)",
+                  inline=False)
     emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
     await ctx.send(embed=emb)
 
@@ -429,6 +440,8 @@ async def eggCount(ctx):
         emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
         emb.add_field(name="Egg count:", value=str(eggC), inline=False)
         await ctx.send(embed=emb)
+    else:
+        await ctx.send("This command has been disabled.")
 
 
 @bot.command()
@@ -495,15 +508,10 @@ async def timer(ctx, *args):
             return
         time = number * unit
         if time <= 0:
-            await ctx.send('bruh')
-            await asyncio.sleep(0.5)
-            await ctx.send('no')
-            async with ctx.typing():
-                await asyncio.sleep(2)
-                await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
+            await ctx.send('No.')
             return
         if 30 >= time or time >= 1800:
-            await ctx.send('The timer may be inaccurate or unable to alert you due to the unit of time '
+            await ctx.send('The timer may be inaccurate or unable to alert you due to the amount of time '
                            'the timer is set to.')
         await ctx.send("Timer set for " + args[0] + ' ' + args[1] + '.')
         await asyncio.sleep(time)
@@ -869,27 +877,21 @@ async def botSpam(ctx):
 
 
 @bot.command()
-async def debug(ctx):
-    print(roleEmbeds)
-    print(roles)
-    if host_check(ctx):
-        global debugMode
-        if debugMode:
-            debugMode = False
-        else:
-            debugMode = True
-        await ctx.send("Set debug state to " + str(debugMode) + '.')
+async def settings(ctx):
+    emb = discord.Embed(title="Settings on this instance of Eggbot",
+                        description="The state of certain options in Eggbot", color=0xdddddd)
+    emb.add_field(name="All Message Logging", value=settingCheck(logging), inline=False)
+    emb.add_field(name="DM Logging", value=settingCheck(dmLog), inline=False)
+    emb.add_field(name="Locked Command Logging (Audit Logging)", value=settingCheck(audit), inline=False)
+    emb.add_field(name="Deleted Message Logging", value=settingCheck(deleteLog), inline=False)
+    await ctx.send(embed=emb)
 
 
-@bot.command()
-async def log(ctx):
-    if host_check(ctx):
-        global audit
-        if audit:
-            audit = False
-        else:
-            audit = True
-        await ctx.send("Set audit log logging to " + str(audit) + '.')
+def settingCheck(setting):
+    if setting:
+        return "✅ On"
+    else:
+        return "❌ Off"
 
 
 @bot.command()
@@ -899,13 +901,18 @@ async def reloadRoles(ctx):
         try:
             with open("roles.json.bak", "r+") as roles:
                 roles = json.load(roles)
+                join = roles["join"]
+                roles = roles["reactions"]
         except FileNotFoundError:
             await ctx.send("There is no backup, it is highly recommended that you use `e!backupRoles` to create one.")
             with open("roles.json", "r+") as roles:
                 roles = json.load(roles)
+                join = roles["join"]
+                roles = roles["reactions"]
         await asyncio.sleep(1)
         with open("roles.json", "w") as J:
-            json.dump(roles, J, encoding="utf-8")
+            dick = {"reactions": roles, "join": join}
+            json.dump(dick, J, encoding="utf-8")
         await ctx.send("Restored role database from backup.")
 
 
@@ -1053,8 +1060,10 @@ async def donate(ctx, arg1):
         return
     try:
         if wallet < arg1:
-            # stonks["users"][str(ctx.author.id)][str(ctx.guild.id)] = 0
             await ctx.send("Don't be cheeky, you don't have that many eggs to donate!")
+            return
+        elif arg1 <= 0:
+            await ctx.send("bruh how do you donate less than 1 egg the heck")
             return
         stonks["servers"][str(ctx.guild.id)] += arg1
     except KeyError:
@@ -1306,7 +1315,7 @@ async def on_command(ctx):
             args = args[2:]
             if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
                             "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
-                            'debug', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
+                            'auditlog', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
                             'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
                             'save', 'notifs'):
                 oval = random.randrange(0, 10)
@@ -1329,6 +1338,24 @@ async def on_command(ctx):
 
 
 @bot.event
+async def on_raw_message_delete(payload):
+    """Deleted message logging"""
+    if deleteLog is True:
+        print('In the channel with ID {p.channel_id}, a message with ID {p.message_id} was deleted.'.format(p=payload))
+        if payload.cached_message:
+            message = payload.cached_message
+            if len(message.content) > 0:
+                content = "\n" + message.content
+            else:
+                content = message.content
+            print(str('{a} said:'.format(a=str(message.author)) + content))
+            if len(message.attachments) > 0:
+                print("Attachments: {}".format(str(message.attachments)))
+        else:
+            print('The message could not be retrieved.')
+
+
+@bot.event
 async def on_raw_reaction_add(payload):
     # get role configurations
     emoji = str(payload.emoji)
@@ -1340,30 +1367,31 @@ async def on_raw_reaction_add(payload):
         roleData = roles[str(payload.message_id)]
         if emoji in roleData:
             roleData = roleData[emoji]
+            react_guild = bot.get_guild(payload.guild_id)
+            react_user = react_guild.get_member(payload.user_id)
+            if react_user.id == bot.user.id:  # don't let the bot count its own reactions
+                return
+            else:
+                role = react_guild.get_role(roleData['role'])
+                try:
+                    await react_user.add_roles(role)  # edit role
+                    if 'addMessage' in roleData:
+                        mess = roleData['addMessage']
+                    else:
+                        mess = "You now have the @{} role.".format(role.name)
+                    emb = discord.Embed(title="Role Confirmed!", description=mess, color=0x0ac845)
+                    await react_user.send(embed=emb)
+                except discord.Forbidden:
+                    emb = discord.Embed(title="Error: Missing Permissions", description="I don't have permission to "
+                                                                                        "give you that role! Please "
+                                                                                        "notify a moderator so I can "
+                                                                                        "get the `Manage Roles` "
+                                                                                        "permission!", color=0xbc1a00)
+                    await react_user.send(embed=emb)
         else:
             return
     else:
         return
-    react_guild = bot.get_guild(payload.guild_id)
-    react_user = react_guild.get_member(payload.user_id)
-    if react_user.id == bot.user.id:  # don't let the bot count its own reactions
-        return
-    else:
-        role = react_guild.get_role(roleData['role'])
-        try:
-            await react_user.add_roles(role)  # edit role
-            if 'addMessage' in roleData:
-                mess = roleData['addMessage']
-            else:
-                mess = "You now have the @{} role.".format(role.name)
-            emb = discord.Embed(title="Role Confirmed!", description=mess, color=0x0ac845)
-            await react_user.send(embed=emb)
-        except discord.Forbidden:
-            emb = discord.Embed(title="Error: Missing Permissions", description="I don't have permission to give you "
-                                                                                "that role! Please notify a moderator "
-                                                                                "so I can get the `Manage Roles` "
-                                                                                "permission!", color=0xbc1a00)
-            await react_user.send(embed=emb)
 
 
 @bot.event
