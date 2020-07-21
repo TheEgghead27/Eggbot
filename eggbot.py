@@ -37,17 +37,23 @@ async def on_ready():
     write()
     await bot.change_presence(activity=discord.Game(name=status))
 
-
+# Command-Alterable Settings
 # set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
 # use e!botSpam to disable unintentional egg spamming with 2 eggbots
 botSafeguard = True
+
+# Static Settings
 # set this to True (with e!log) to enable terminal message logging
 logging = False
+# logging state for DMs to the bot
+dmLog = False
 # set this to False (with e!log) to enable mod command logging (it logs who used what mod command)
 audit = True
-# set the placeholder variables
+# deleted message logging
+deleteLog = True
 
+# set the placeholder variables
 roleEmbeds = {}
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
@@ -107,7 +113,7 @@ async def on_member_join(member):
 @bot.event
 async def on_message(message):
     # message logging
-    if str(message.channel.type) == "private" or logging:
+    if str(message.channel.type) == "private" and dmLog or logging:
         if not message.author.id == bot.user.id:  # don't let the bot echo itself
             if len(message.content) > 0:
                 content = "\n" + message.content
@@ -507,12 +513,7 @@ async def timer(ctx, *args):
             return
         time = number * unit
         if time <= 0:
-            await ctx.send('bruh')
-            await asyncio.sleep(0.5)
-            await ctx.send('no')
-            async with ctx.typing():
-                await asyncio.sleep(2)
-                await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
+            await ctx.send('No.')
             return
         if 30 >= time or time >= 1800:
             await ctx.send('The timer may be inaccurate or unable to alert you due to the amount of time '
@@ -902,6 +903,24 @@ async def auditLog(ctx):
         else:
             audit = True
         await ctx.send("Set audit log logging to " + str(audit) + '.')
+
+
+@bot.command()
+async def settings(ctx):
+    emb = discord.Embed(title="Settings on this instance of Eggbot",
+                        description="The state of certain options in Eggbot", color=0xdddddd)
+    emb.add_field(name="All Message Logging", value=settingCheck(logging), inline=False)
+    emb.add_field(name="DM Logging", value=settingCheck(dmLog), inline=False)
+    emb.add_field(name="Locked Command Logging (Audit Logging)", value=settingCheck(audit), inline=False)
+    emb.add_field(name="Deleted Message Logging", value=settingCheck(deleteLog), inline=False)
+    await ctx.send(embed=emb)
+
+
+def settingCheck(setting):
+    if setting:
+        return "✅ On"
+    else:
+        return "❌ Off"
 
 
 @bot.command()
@@ -1325,7 +1344,7 @@ async def on_command(ctx):
             args = args[2:]
             if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
                             "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
-                            'log', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
+                            'auditlog', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate', 'goals',
                             'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
                             'save', 'notifs'):
                 oval = random.randrange(0, 10)
@@ -1350,18 +1369,19 @@ async def on_command(ctx):
 @bot.event
 async def on_raw_message_delete(payload):
     """Deleted message logging"""
-    print('In the channel with ID {p.channel_id}, a message with ID {p.message_id} was deleted.'.format(p=payload))
-    if payload.cached_message:
-        message = payload.cached_message
-        if len(message.content) > 0:
-            content = "\n" + message.content
+    if deleteLog:
+        print('In the channel with ID {p.channel_id}, a message with ID {p.message_id} was deleted.'.format(p=payload))
+        if payload.cached_message:
+            message = payload.cached_message
+            if len(message.content) > 0:
+                content = "\n" + message.content
+            else:
+                content = message.content
+            print(str('{a} said:'.format(a=str(message.author)) + content))
+            if len(message.attachments) > 0:
+                print("Attachments: {}".format(str(message.attachments)))
         else:
-            content = message.content
-        print(str('{a} said:'.format(a=str(message.author)) + content))
-        if len(message.attachments) > 0:
-            print("Attachments: {}".format(str(message.attachments)))
-    else:
-        print('The message could not be retrieved.')
+            print('The message could not be retrieved.')
 
 
 @bot.event
