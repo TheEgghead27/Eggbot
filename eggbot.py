@@ -856,24 +856,26 @@ async def roleProcess(ctx, args):
 async def spam(ctx):
     if host_check(ctx):
         global safeguard
-        if safeguard:
-            safeguard = False
-            await ctx.send("Set spam mode to ON.")
-        else:
-            safeguard = True
-            await ctx.send("Set spam mode to OFF.")
+        safeguard, state = reverseBool(safeguard)
+        await ctx.send("Set spam mode to {}.".format(state.upper()))
 
 
 @bot.command()
 async def botSpam(ctx):
     if host_check(ctx):
         global botSafeguard
-        if botSafeguard:
-            botSafeguard = False
-            await ctx.send("Set bot message processing to ON.")
-        else:
-            botSafeguard = True
-            await ctx.send("Set bot message processing to OFF.")
+        botSafeguard, state = reverseBool(botSafeguard)
+        await ctx.send("Set bot message processing to {}.".format(state.upper()))
+
+
+def reverseBool(boolean):
+    if boolean:
+        boolean = False
+        state = 'off'
+    else:
+        boolean = True
+        state = 'on'
+    return boolean, state
 
 
 @bot.command()
