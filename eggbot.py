@@ -233,7 +233,7 @@ async def help(ctx):
     emb.add_field(name="simp", value="SIMP", inline=False)
     emb.add_field(name="moyai", value="🗿", inline=False)
     emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
-                                               "(https://github.com/TheEgghead27/Eggbot/blob/pagination/PRIVACY.md)",
+                                               "(https://github.com/TheEgghead27/Eggbot/blob/master/PRIVACY.md)",
                   inline=False)
     emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
     await ctx.send(embed=emb)
