@@ -93,13 +93,7 @@ e!backupRoles: Backs up the roles to a "roles.json.bak" file.
 
 e!spam: Toggles spam mode for "egg" command
 
-e!botSpam: Toggles processing of bot commands for "egg" and "simp" commands (recommended ON when with multiple instances of Eggbot) 
-
-e!log: Toggles message logging
-
-e!auditLog: Toggles logging of admin commands
-
-
+e!botSpam: Toggles processing of bot commands for "egg" and "simp" commands (recommended ON when with multiple instances of Eggbot)
 
 ## Official Host (Only on when TheEgghead27 is online)
 https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permissions=272104513&scope=bot

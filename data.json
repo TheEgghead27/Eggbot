@@ -207,5 +207,19 @@
     "Are you dumb? Stupid? Or just dumb.",
     "I didn't realize this dish had to specify your brain as a fucking step",
     "What are you? You're a fucking idiot sandwich"
-  ]
+  ],
+  "times": {
+    "second": 1,
+    "minute": 60,
+    "hour": 3600,
+    "day": 0,
+    "week": 0,
+    "month": 0,
+    "year": 0,
+    "decade": 0,
+    "century": 0,
+    "centuries": 0,
+    "millennium": 0,
+    "millennia": 0
+  }
 }
