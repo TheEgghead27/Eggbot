@@ -47,9 +47,10 @@ botSafeguard = True
 roleEmbeds = {}
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
-    beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist=[])
+    beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist=[])
 
 eggC = 0
+timerUsers = []
 on = True
 
 
@@ -135,6 +136,8 @@ async def on_message(message):
     if botSafeguard and message.author.bot and not message.author.id == bot.user.id:
         return
     else:
+        if bot.user.mentioned_in(message):
+            await on_client_mention(message)
         oval = random.randrange(0, 6)
         if oval <= 2:
             pass
@@ -193,6 +196,11 @@ async def on_message(message):
                 await bot.process_commands(message)
         except IndexError:
             return
+
+
+# unofficial bot event
+async def on_client_mention(message):
+    await message.channel.send(message.author.mention)
 
 
 # @bot.event
@@ -481,41 +489,50 @@ async def vaccum(ctx):
 async def timer(ctx, *args):
     try:
         unit = args[1].lower()
-        if unit in ['minute', 'minutes']:
-            unit = 60
-        elif unit in ['hour', 'hours']:
-            unit = 3600
-        elif unit in ['day', 'days', 'week', 'weeks', 'month', 'year', 'months', 'years', 'decade', 'decades',
-                      'century', 'centuries', 'millennia', 'millennium']:
-            await ctx.send('No.')
-            return
-        elif unit in ['seconds', 'second']:
-            unit = 1
+        if unit in times:
+            unit = times[unit]
+        elif unit[:-1] in times:
+            unit = times[unit[:-1]]
         elif unit[-7:] in ['seconds', 'isecond']:
-            await ctx.send('No.')
-            return
+            unit = 0
         else:
-            await ctx.send('You did not provide a valid unit of time. The available units of time are `seconds` '
-                           '(likely inaccurate), `minutes`, and `hours`.')
+            await ctx.send('You did not provide a known unit of time. The available units of time are `seconds` , '
+                           '`minutes`, and `hours`.')
             return
         try:
-            number = int(args[0])
+            number = float(args[0])
         except ValueError:
-            await ctx.send('You did not input a valid number! The number of ' + args[1] + ' your timer '
-                                                                                          'will be set to is '
-                                                                                          'meant to be '
-                                                                                          'the first argument!')
+            # test this tomorrow when theres some magik patch for d.py tomorrow
+            await ctx.send('You did not input a valid number! The number of {unit} your timer will be set to is meant '
+                           'to be the first argument!'.format(unit=args[1]))
             return
         time = number * unit
-        if time <= 0:
+        if time == 0:
             await ctx.send('No.')
             return
-        if 30 >= time or time >= 1800:
-            await ctx.send('The timer may be inaccurate or unable to alert you due to the amount of time '
-                           'the timer is set to.')
-        await ctx.send("Timer set for " + args[0] + ' ' + args[1] + '.')
+        elif time < 0:
+            await ctx.send('bruh')
+            await asyncio.sleep(0.5)
+            await ctx.send('no')
+            async with ctx.typing():
+                await asyncio.sleep(2)
+                await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
+            return
+        # disclaimer code
+        # if 30 >= time or time >= 1800:
+        #     await ctx.send('The timer may be inaccurate or unable to alert you due to the amount of time '
+        #                    'the timer is set to.')
+        await ctx.send("Timer set for {a[0]} {a[1]}.".format(a=args))
+        global timerUsers
+        timerUsers.append(ctx.message.author)  # add user to the list of current timers
         await asyncio.sleep(time)
-        await ctx.send(ctx.message.author.mention + ', your ' + args[0] + ' ' + args[1] + ' timer is up!')
+        await ctx.send('{mention}, your {a[0]} {a[1]} timer is up!'.format(mention=ctx.message.author.mention, a=args))
+        a = 0
+        for i in timerUsers:
+            if i == ctx.message.author:
+                del timerUsers[a]
+                return
+            a += 1
     except IndexError:
         await ctx.send('You did not provide all the arguments. The format for e!timer is `e!timer [number] '
                        '[time unit]`.')
@@ -574,6 +591,8 @@ async def shutdown(ctx):
                             color=0xff0000)
         await message.channel.send(embed=emb)
         await bot.change_presence(activity=discord.Game(name='Shutting down...'))
+        for i in timerUsers:
+            await i.send('The bot is shutting down. Your timer has been cancelled.')
         on = False
         exit(0)
     else:

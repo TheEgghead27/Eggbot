@@ -3,7 +3,7 @@ def load(blacklist):
     import json
     from ast import literal_eval
     hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
-        stonks, warehouse, insults, logging, dmLog, audit, deleteLog = placeholders()
+        stonks, warehouse, insults, logging, dmLog, audit, deleteLog, times = placeholders()
     # create a dictionary of colors
     colors = loadColors()
     # read all the files for variables
@@ -50,7 +50,7 @@ def load(blacklist):
                 ohno = tuple(data['ohno'])
                 insults = tuple(data['insults'])
                 beeEmbed = literal_eval(data['bee'])
-
+                times = data['times']
         file = 'roles.json'
         if file not in blacklist:
             with open(file, "r+") as roles:
@@ -72,7 +72,7 @@ def load(blacklist):
             print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
             from os import path
@@ -87,23 +87,23 @@ def load(blacklist):
             # just load the config off of the config.json, it's more efficient than blacklisting
             # and using *args to pass the data through
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist)
     except (ValueError, KeyError):
         if file == 'data.json':
             input("It looks like {} is incomplete! It is *highly* recommended you reinstall Eggbot!".format(file))
             print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist)
         elif file in ['roles.json', 'bee.txt', 'stonks.json']:
             input("It looks like a non-essential file, {}, is corrupted! \n"
                   "You can safely press enter to ignore this if you do not intend to use the functions related to "
                   "{}.".format(file, file))
             blacklist.append(file)
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog = load(blacklist)
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist)
     return hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-        joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog
+        joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times
 
 
 def loadColors():
@@ -238,8 +238,11 @@ def placeholders():
     dmLog = True
     audit = True
     deleteLog = True
+    times = {"second": 1,
+             "minute": 60,
+             "hour": 3600, }
     return hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
-        stonks, warehouse, insults, logging, dmLog, audit, deleteLog
+        stonks, warehouse, insults, logging, dmLog, audit, deleteLog, times
 
 
 def numToBool(num):
