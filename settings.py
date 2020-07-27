@@ -55,7 +55,7 @@ def configure():
 
     four = True
     while four:
-        logging = input('Do you want the terminal to log usage of Eggbot admin commands? (y/n)\n').lower()
+        logging = input('Do you want the terminal to log deleted messages? (y/n)\n').lower()
         if logging in ('y', 'n', ''):
             if logging == 'y':
                 config["deleteLog"] = 1
@@ -69,7 +69,7 @@ def configure():
             four = False
     with open('config.json', 'w') as cfg:
         json.dump(config, cfg)
-    print("Settings have been saved. Press enter to proceed.")
+    input("Settings have been saved. Press enter to proceed.")
     return config
 
 
