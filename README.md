@@ -100,3 +100,7 @@ https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permission
 
 ## Self-Host
 For self hosting instructions, check https://github.com/TheEgghead27/Eggbot/blob/master/INSTALL.md
+
+or
+
+[![Run on Repl.it](https://repl.it/badge/github/TheEgghead27/Eggbot)](https://repl.it/github/TheEgghead27/Eggbot)
