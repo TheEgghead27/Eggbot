@@ -184,11 +184,11 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-            elif a[0] == 'mk':
+            elif a[0] in ('mk', 'bruh'):
                 if message.author.id == bot.user.id:
                     return
                 else:
-                    await message.channel.send('mk')
+                    await message.channel.send(a[0])
             elif message.channel.id in [714873042794315857, 719022288443539456] or \
                     a[0].startswith(('moyai', '🗿', ':moyai:', 'mooyai')):
                 await message.add_reaction('🗿')
@@ -237,7 +237,7 @@ async def help(ctx):
     emb.add_field(name="e!settings", value="Displays the logging configuration for the current instance of Eggbot.",
                   inline=False)
     emb.add_field(name="egg", value="egg", inline=False)
-    emb.add_field(name="e!eggCount", value="Counts the day's eggs!", inline=False)
+    emb.add_field(name="e!eggCount", value="[depreciated] ||Counts the day's eggs!||", inline=False)
     emb.add_field(name="simp", value="SIMP", inline=False)
     emb.add_field(name="moyai", value="🗿", inline=False)
     emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
