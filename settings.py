@@ -72,5 +72,5 @@ def configure():
     input("Settings have been saved. Press enter to proceed.")
     return config
 
-
+# use if __name__ == "__main__": to make it not autodo the thing when you import the script, but youll need to redo some function calls
 configure()
