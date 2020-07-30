@@ -890,10 +890,10 @@ async def botSpam(ctx):
 def reverseBool(boolean):
     if boolean:
         boolean = False
-        state = 'off'
+        state = 'on'
     else:
         boolean = True
-        state = 'on'
+        state = 'off'
     return boolean, state
 
 
