@@ -622,6 +622,23 @@ async def shutdown(ctx):
 
 
 @bot.command()
+async def restart(ctx):
+    if host_check(ctx):
+        import os
+        global on
+        write()
+        emb = discord.Embed(title="Rebooting...", description="Please wait...",
+                            color=0xffff00)
+        await ctx.send(embed=emb)
+        await bot.change_presence(activity=discord.Game(name='Rebooting...'))
+        for i in timerUsers:
+            await i.send('The bot is restarting. Your timer has been cancelled.')
+        on = False
+        os.execv(system.executable, ['python'] + system.argv)  # Windows only
+        # Use `os.execv(__file__, sys.argv)` for Unix (Linux/MacOS)
+
+
+@bot.command()
 async def say(ctx, *args):
     if host_check(ctx):
         try:
