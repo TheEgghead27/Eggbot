@@ -549,6 +549,17 @@ async def wrongAdmins(ctx, wrongAdmin):
 
 
 @bot.command()
+async def ping(ctx):
+    """Stole the basic code off of Ear Tensifier lol"""
+    msg = await ctx.send('Pinging...')
+    emb = discord.Embed(title="Pong!", color=0x000000)
+    messLatency = round((msg.created_at.timestamp() - ctx.message.created_at.timestamp()) * 1000, 3)
+    emb.add_field(name="Message Latency", value=f"{messLatency} ms")
+    emb.add_field(name="API Latency", value=f"{round(bot.latency * 1000, 3)} ms")
+    await msg.edit(content=None, embed=emb)
+
+
+@bot.command()
 async def admins(ctx):
     c = len(hosts)
     d = 0
@@ -706,32 +717,32 @@ async def bee_error(ctx, error):
 @bot.command()
 async def beeGen(ctx):
     if host_check(ctx):
-        beetime = False
+        beeTime = False
         script = list(Bee)
-        beelen = len(script) // 2  # know how many sets of text (name & dialogue) there are
-        limitcheck = 25
-        messno = 1
+        beeLen = len(script) // 2  # know how many sets of text (name & dialogue) there are
+        limitCheck = 25
+        messNo = 1
         color_list = [0xffff00, 0x000000]
         bs = []
         emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
-        for _ in range(beelen):  # why did i do this?!?!
-            if limitcheck == 25:  # make sure the embed limits don't cut off the dialogue
-                limitcheck = 0
-                if beetime:  # don't send an empty embed
+        for _ in range(beeLen):  # why did i do this?!?!
+            if limitCheck == 25:  # make sure the embed limits don't cut off the dialogue
+                limitCheck = 0
+                if beeTime:  # don't send an empty embed
                     bs.append(emb.to_dict())
                     await ctx.send(embed=emb)
                 emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
-                emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messno)))
+                emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messNo)))
                 # alternate colors
                 color_list.append(color_list[0])
                 del color_list[0]
-                messno = messno + 1  # keep the message numbers rising
+                messNo = messNo + 1  # keep the message numbers rising
                 async with ctx.typing():
-                    beetime = True
+                    beeTime = True
                     await asyncio.sleep(1)
             emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
-            limitcheck = limitcheck + 1
+            limitCheck = limitCheck + 1
         bs.append(emb.to_dict())
         await ctx.send(embed=emb)
         print(bs)
