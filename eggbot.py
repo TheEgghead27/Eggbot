@@ -37,6 +37,7 @@ async def on_ready():
     write()
     await bot.change_presence(activity=discord.Game(name=status))
 
+
 # Command-Alterable Settings
 # set this to False (with e!spam) to enable egg spamming (please no)
 safeguard = True
@@ -229,8 +230,10 @@ async def help(ctx):
     emb.add_field(name="e!joinRole [@role]", value="Sets a role that is automatically given to new users "
                                                    "(when the bot is online).", inline=False)
     emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
-    emb.add_field(name="e!timer [number] [time unit]", value="Creates a timer that pings the requesting user after a "
-                                                             "specified time.", inline=False)
+    # good lord I fucked up the timer syntax badly
+    emb.add_field(name="e!timer \"name\" (quotes mandatory) [time format] (and if you want more units of time) and "
+                       "[time format]", value="Creates a timer that pings the requesting user after a specified time.",
+                  inline=False)
     emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
     emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
     emb.add_field(name="e!admins", value="Lists the admins for this copy of Eggbot.", inline=False)
@@ -488,39 +491,77 @@ async def vaccum(ctx):
 @bot.command()
 async def timer(ctx, *args):
     try:
-        time = await parseTimeText(args)
-        if time.__class__ == str:
-            await ctx.send(time)
+        # TODO: Test all these changes before commit
+        a = []
+        name = []
+        time = []
+        timeAmount = 0
+        indexNo = 0
+        for i in args:
+            if isNumber(i) or i in times or i[:-1] in times:
+                a.append(i)
+                time.append(i)
+                if len(a) == 2:
+                    timeOutput = await parseTimeText(a)
+                    a.clear()
+                    if timeOutput.__class__ == str:
+                        await ctx.send(timeAmount)
+                        return
+                    elif timeOutput.__class__ in (int, float):
+                        # noinspection PyTypeChecker
+                        timeAmount += float(timeOutput)
+            elif i.lower().strip(' ') in ("and", "&"):
+                time.append(i)
+                pass
+            else:
+                name.append(i)
+            indexNo += 1
+        name = joinArgs(name)
+        time = joinArgs(time)
+
+        if timeAmount == 0:
+            await ctx.send('No.')
             return
-        elif time.__class__ in (int, float):
-            # noinspection PyTypeChecker
-            time = float(time)
-            if time == 0:
-                await ctx.send('No.')
+        elif timeAmount < 0:
+            await ctx.send('bruh')
+            await asyncio.sleep(0.5)
+            await ctx.send('no')
+            async with ctx.typing():
+                await asyncio.sleep(2)
+                await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
+            return
+        if len(name) == 0:
+            default = True
+        else:
+            default = False
+
+        # wait fuck we need to create a time thing coz args[0] and [1] wont do fuck fuck
+        if default:
+            await ctx.send(f"Timer set for {time}.")
+        else:
+            await ctx.send(f'"{name}" timer set for {time}.')
+        global timerUsers
+        timerUsers.append(ctx.message.author)  # add user to the list of current timers
+        await asyncio.sleep(timeAmount)
+        if default:
+            await ctx.send(f'{ctx.message.author.mention}, your {time} timer is up!')
+        else:
+            await ctx.send(f'{ctx.message.author.mention}, your "{name}" timer, set at {time}, is up!')
+        a = 0
+        for i in timerUsers:
+            if i == ctx.message.author:
+                del timerUsers[a]
                 return
-            elif time < 0:
-                await ctx.send('bruh')
-                await asyncio.sleep(0.5)
-                await ctx.send('no')
-                async with ctx.typing():
-                    await asyncio.sleep(2)
-                    await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
-                return
-            await ctx.send("Timer set for {a[0]} {a[1]}.".format(a=args))
-            global timerUsers
-            timerUsers.append(ctx.message.author)  # add user to the list of current timers
-            await asyncio.sleep(time)
-            await ctx.send('{mention}, your {a[0]} {a[1]} timer is up!'.format(mention=ctx.message.author.mention,
-                                                                               a=args))
-            a = 0
-            for i in timerUsers:
-                if i == ctx.message.author:
-                    del timerUsers[a]
-                    return
-                a += 1
+            a += 1
     except IndexError:
-        await ctx.send('You did not provide all the arguments. The format for e!timer is `e!timer [number] '
-                       '[time unit]`.')
+        # this will rarely get called, but...
+        await ctx.send('You did not provide the correct syntax.')
+        await asyncio.sleep(0.5)
+        await ctx.send('The time format used by Eggbot is [number] (numerical symbol, not word)[time unit] '
+                       '(with exceptions).')
+        await asyncio.sleep(0.75)
+        await ctx.send('The recommended format for e!timer is `e!timer "name" (quotes mandatory) [time format] '
+                       '(and if you want more units of time) and [time format]" `.')
 
 
 async def parseTimeText(args):
@@ -532,15 +573,22 @@ async def parseTimeText(args):
     elif unit[-7:] in ['seconds', 'isecond']:
         unit = 0
     else:
-        return 'You did not provide a known unit of time. The available units of time are `seconds` , ' \
-                '`minutes`, and `hours`.'
-    try:
-        number = float(args[0])
-    except ValueError:
-        return 'You did not input a valid number! The number of {unit} your timer will be set to is meant ' \
-                       'to be the first argument!'.format(unit=args[1])
+        return 'A known unit of time was not passed in. The available units of time are `seconds` , `minutes`, and ' \
+               '`hours`.'
+    if unit == 0:
+        return "No."
+    number = float(args[0])
     time = number * unit
     return time
+
+
+def isNumber(string):
+    try:
+        float(string)
+        isNo = True
+    except ValueError:
+        isNo = False
+    return isNo
 
 
 @bot.command()
@@ -623,6 +671,7 @@ async def shutdown(ctx):
 
 @bot.command()
 async def restart(ctx):
+    """Big idiot restart command that doesn't even generate a terminal, leading to OSError"""
     if host_check(ctx):
         import os
         global on
