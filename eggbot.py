@@ -491,7 +491,6 @@ async def vaccum(ctx):
 @bot.command()
 async def timer(ctx, *args):
     try:
-        # TODO: Test all these changes before commit
         a = []
         name = []
         time = []
