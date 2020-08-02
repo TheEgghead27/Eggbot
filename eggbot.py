@@ -27,7 +27,7 @@ logger.addHandler(handler)
 prefix = 'e!'
 status = '{p}help'.format(p=prefix)
 prefixLen = len(prefix)
-bot = commands.Bot(command_prefix=prefix, case_insensitive=True, description=status)
+bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status)
 bot.remove_command("help")
 
 
@@ -642,8 +642,6 @@ async def rateFood(ctx):
 
 
 # Secret Admin-Only Commands
-
-
 @bot.command()
 async def shutdown(ctx):
     message = ctx.message
@@ -653,9 +651,9 @@ async def shutdown(ctx):
         emb = discord.Embed(title="Shutting down...", description="Please wait...",
                             color=0xff0000)
         await message.channel.send(embed=emb)
-        await bot.change_presence(activity=discord.Game(name='Shutting down...'))
         for i in timerUsers:
             await i.send('The bot is shutting down. Your timer has been cancelled.')
+        await bot.close()
         on = False
         exit(0)
     else:
@@ -670,7 +668,8 @@ async def shutdown(ctx):
 
 @bot.command()
 async def restart(ctx):
-    """Big idiot restart command that doesn't even generate a terminal, leading to OSError"""
+    """Big idiot restart command that generates a dumb default terminal,
+    leading to things being frozen if the terminal is needed and you have text selected"""
     if host_check(ctx):
         import os
         global on
@@ -678,12 +677,12 @@ async def restart(ctx):
         emb = discord.Embed(title="Rebooting...", description="Please wait...",
                             color=0xffff00)
         await ctx.send(embed=emb)
-        await bot.change_presence(activity=discord.Game(name='Rebooting...'))
         for i in timerUsers:
             await i.send('The bot is restarting. Your timer has been cancelled.')
+        os.startfile("eggbot.py")
+        await bot.close()
         on = False
-        os.execv(system.executable, ['python'] + system.argv)  # Windows only
-        # Use `os.execv(__file__, sys.argv)` for Unix (Linux/MacOS)
+        exit(0)
 
 
 @bot.command()
