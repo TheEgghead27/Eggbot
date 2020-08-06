@@ -185,7 +185,7 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-            elif a[0] in ('mk', 'bruh'):
+            elif a[0] in ('mk', 'bruh', 'lol'):
                 if message.author.id == bot.user.id:
                     return
                 else:
@@ -262,10 +262,10 @@ async def kiri(ctx, *args):
     try:
         send_amount = args[0]
         send_amount = int(send_amount)
-        if send_amount > 10:
+        if send_amount > 5:
             await ctx.send("wowowoah, you gotta chill, we don't need spam on our hands! "
-                           "We've limited you to 10 images.")
-            send_amount = 10
+                           "We've limited you to 5 images.")
+            send_amount = 5
         while send_amount > 0:
             await kiriContent(ctx)
             await asyncio.sleep(1)
@@ -541,6 +541,7 @@ async def timer(ctx, *args):
             await ctx.send(f'"{name}" timer set for {time}.')
         global timerUsers
         timerUsers.append(ctx.message.author)  # add user to the list of current timers
+        # the timer with no brim
         await asyncio.sleep(timeAmount)
         if default:
             await ctx.send(f'{ctx.message.author.mention}, your {time} timer is up!')
