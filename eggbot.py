@@ -69,8 +69,17 @@ def host_check(ctx):
         return False
 
 
+@bot.event
+async def on_member_join(member):
+    """Assign role on member joining server, if a role is set."""
+    if str(member.guild.id) in joinRoles:
+        role = member.guild.get_role(joinRoles[str(member.guild.id)])
+        await member.add_roles(role)
+
+
 @bot.command()
 async def joinRole(ctx):
+    """Command to set role for new server members"""
     if ctx.guild:
         if ctx.author.guild_permissions.administrator:
             global joinRoles
@@ -92,13 +101,6 @@ async def joinRole(ctx):
     else:
         await ctx.send("This isn't a server! Who's gonna join this? What roles are there to assign? None. "
                        "There is nothing to execute the command on.")
-
-
-@bot.event
-async def on_member_join(member):
-    if str(member.guild.id) in joinRoles:
-        role = member.guild.get_role(joinRoles[str(member.guild.id)])
-        await member.add_roles(role)
 
 
 # DM leaking & Egg and Simp commands due to special parsing
@@ -210,9 +212,9 @@ async def on_client_mention(message):
 # await member.add_roles(bot_role)
 
 
-@bot.command()
+@bot.command(name="help")
 @commands.cooldown(1, 10, commands.BucketType.user)
-async def help(ctx):
+async def documentation(ctx):
     kiriPerson = bot.get_user(255070100325924864)
     owner = bot.get_user(int(hosts[0]))
     emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
@@ -250,7 +252,7 @@ async def help(ctx):
     await ctx.send(embed=emb)
 
 
-@help.error
+@documentation.error
 async def help_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("bro this is all I have, no need to spam me for more")
@@ -673,15 +675,16 @@ async def restart(ctx):
     leading to things being frozen if the terminal is needed and you have text selected"""
     if host_check(ctx):
         import os
-        global on
+        global on, status
         write()
         emb = discord.Embed(title="Rebooting...", description="Please wait...",
                             color=0xffff00)
         await ctx.send(embed=emb)
+        status = 'Rebooting'
+        await bot.change_presence(activity=discord.Game(name=status))
         for i in timerUsers:
             await i.send('The bot is restarting. Your timer has been cancelled.')
         os.startfile("eggbot.py")
-        await bot.close()
         on = False
         exit(0)
 
