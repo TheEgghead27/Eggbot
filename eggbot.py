@@ -187,7 +187,7 @@ async def on_message(message):
                 else:
                     sno = random.randrange(0, len(spic))
                     await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-            elif a[0] in ('mk', 'bruh', 'lol'):
+            elif a[0] in ('mk', 'bruh', 'lol', 'oof'):  # TODO: Make this list a part of data.json
                 if message.author.id == bot.user.id:
                     return
                 else:
@@ -256,6 +256,9 @@ async def documentation(ctx):
 async def help_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send("bro this is all I have, no need to spam me for more")
+        return
+    else:
+        raise error
 
 
 @bot.command()
@@ -1173,7 +1176,7 @@ async def donate(ctx, arg1):
         stonks["servers"][str(ctx.guild.id)] += arg1
     except KeyError:
         stonks["servers"][str(ctx.guild.id)] = arg1
-    wallet -= arg1
+    stonks["users"][str(ctx.author.id)][str(ctx.guild.id)] -= arg1
     emb = discord.Embed(title="👍 Donated {e} eggs to {s} Server".format(e=str(arg1), s=str(ctx.guild)),
                         color=0x00ff55)
     await ctx.send(embed=emb)
