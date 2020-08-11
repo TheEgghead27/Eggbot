@@ -210,8 +210,11 @@
   ],
   "times": {
     "second": 1,
+	"s": 1,
     "minute": 60,
+	"m": 60,
     "hour": 3600,
+	"h": 3600,
     "day": 0,
     "week": 0,
     "month": 0,
