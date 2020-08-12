@@ -54,6 +54,8 @@ def write():
 
 
 if __name__ == '__main__':
+    from cogs.commands.economy import addServerEgg
+
     import logging as logs
 
     logger = logs.getLogger('discord')
@@ -130,24 +132,7 @@ if __name__ == '__main__':
                 pass
             else:
                 oval = random.randrange(1, 3)
-                try:
-                    userData = stonks["users"][str(message.author.id)]
-                    try:
-                        userData[str(message.guild.id)] += oval
-                    except KeyError:
-                        userData[str(message.guild.id)] = oval
-                    if userData["notif"] == "True":
-                        await message.channel.send("You got {e} {s} eggs!".format(e=str(oval), s=str(message.guild)))
-                    else:
-                        pass
-                except KeyError:
-                    try:
-                        stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): oval,
-                                                                   "notif": "False", 'inv': "None"}
-                    except AttributeError:
-                        pass
-                except AttributeError:
-                    pass
+                await addServerEgg(message, oval)
             try:
                 if a[0].startswith(eggTrigger):
                     sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides

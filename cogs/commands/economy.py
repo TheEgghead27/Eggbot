@@ -371,5 +371,26 @@ class Economy(commands.Cog):
         await ctx.send("That item isn't on sale??? How do you buy something that isn't on sale???")
 
 
+async def addServerEgg(message, eggs):
+    try:
+        userData = stonks["users"][str(message.author.id)]
+        try:
+            userData[str(message.guild.id)] += eggs
+        except KeyError:
+            userData[str(message.guild.id)] = eggs
+        if userData["notif"] == "True":
+            await message.channel.send("You got {e} {s} eggs!".format(e=str(eggs), s=str(message.guild)))
+        else:
+            pass
+    except KeyError:
+        try:
+            stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): eggs,
+                                                       "notif": "False", 'inv': "None"}
+        except AttributeError:
+            pass
+    except AttributeError:
+        pass
+
+
 def setup(bot):
     bot.add_cog(Economy(bot))
