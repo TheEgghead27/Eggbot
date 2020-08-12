@@ -68,14 +68,6 @@ if __name__ == '__main__':
     bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status)
     bot.remove_command("help")
 
-
-    @bot.event
-    async def on_ready():
-        print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
-        write()
-        await bot.change_presence(activity=discord.Game(name=status))
-
-
     # Command-Alterable Settings #
     # set this to False (with e!spam) to enable egg spamming (please no)
     safeguard = True
@@ -90,43 +82,15 @@ if __name__ == '__main__':
 
 
     @bot.event
-    async def on_member_join(member):
-        """Assign role on member joining server, if a role is set."""
-        if str(member.guild.id) in joinRoles:
-            role = member.guild.get_role(joinRoles[str(member.guild.id)])
-            await member.add_roles(role)
+    async def on_ready():
+        print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
+        write()
+        await bot.change_presence(activity=discord.Game(name=status))
 
 
-    @bot.command()
-    async def joinRole(ctx):
-        """Command to set role for new server members"""
-        if ctx.guild:
-            if ctx.author.guild_permissions.administrator:
-                global joinRoles
-                if ctx.message.role_mentions:
-                    role = ctx.message.role_mentions[0]
-                    joinRoles[str(ctx.guild.id)] = role.id
-                    await ctx.send('@{r} was set as the role for new members.'.format(r=role.name))
-                else:
-                    try:
-                        role = int(ctx.message.content.split(' ')[1])
-                        if not len(str(role)) == 18:
-                            await ctx.send('Role ID machine broken :(')
-                            return
-                    except (ValueError, IndexError):
-                        return
-                    await ctx.send('There was no role mentioned?')
-            else:
-                await ctx.send("You're not an admin, so no.")
-        else:
-            await ctx.send("This isn't a server! Who's gonna join this? What roles are there to assign? None. "
-                           "There is nothing to execute the command on.")
-
-
-    # DM leaking & Egg and Simp commands due to special parsing
     @bot.event
     async def on_message(message):
-        # message logging
+        """Core function of the bot"""
         if str(message.channel.type) == "private" and dmLog or logging:
             if not message.author.id == bot.user.id:  # don't let the bot echo itself
                 if len(message.content) > 0:
@@ -221,16 +185,10 @@ if __name__ == '__main__':
             except IndexError:
                 return
 
-
-    # unofficial bot event
     async def on_client_mention(message):
+        """Stuff to execute when the bot is mentioned"""
         await message.channel.send(message.author.mention)
 
-
-    # @bot.event
-    # async def on_member_join(member):
-    # if member.bot:
-    # await member.add_roles(bot_role)
 
     @bot.command(name="help")
     @commands.cooldown(1, 10, commands.BucketType.user)
@@ -313,7 +271,7 @@ if __name__ == '__main__':
         kiriPerson = bot.get_user(255070100325924864)
         emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
         emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
-        emb.set_footer(text="This command, and its related images were requested and sourced from {kiriPerson}")
+        emb.set_footer(text=f"This command, and its related images were requested and sourced from {kiriPerson}")
         await ctx.send(embed=emb)
 
 
@@ -668,7 +626,6 @@ if __name__ == '__main__':
         insultNumber = random.randrange(0, len(insults) - 1)
         await ctx.send(insults[insultNumber])
 
-
     # Secret Admin-Only Commands
     @bot.command()
     async def say(ctx, *args):
@@ -995,6 +952,40 @@ if __name__ == '__main__':
                 dick = {"reactions": roles, "join": join}
                 json.dump(dick, J, encoding="utf-8")
             await ctx.send("Restored role database from backup.")
+
+
+    @bot.event
+    async def on_member_join(member):
+        """Assign role on member joining server, if a role is set."""
+        if str(member.guild.id) in joinRoles:
+            role = member.guild.get_role(joinRoles[str(member.guild.id)])
+            await member.add_roles(role)
+
+
+    @bot.command()
+    async def joinRole(ctx):
+        """Command to set role for new server members"""
+        if ctx.guild:
+            if ctx.author.guild_permissions.administrator:
+                global joinRoles
+                if ctx.message.role_mentions:
+                    role = ctx.message.role_mentions[0]
+                    joinRoles[str(ctx.guild.id)] = role.id
+                    await ctx.send('@{r} was set as the role for new members.'.format(r=role.name))
+                else:
+                    try:
+                        role = int(ctx.message.content.split(' ')[1])
+                        if not len(str(role)) == 18:
+                            await ctx.send('Role ID machine broken :(')
+                            return
+                    except (ValueError, IndexError):
+                        return
+                    await ctx.send('There was no role mentioned?')
+            else:
+                await ctx.send("You're not an admin, so no.")
+        else:
+            await ctx.send("This isn't a server! Who's gonna join this? What roles are there to assign? None. "
+                           "There is nothing to execute the command on.")
 
 
     @bot.command()
