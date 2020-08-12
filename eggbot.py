@@ -20,7 +20,7 @@ hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, 
     beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist=[])
 
 
-def host_check(ctx):
+def host_check(ctx):  # TODO: replace with is_owner() lib function
     """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
     if str(ctx.message.author.id) in hosts:
         if audit:
@@ -43,17 +43,21 @@ def joinArgs(args):
     return echo
 
 
-def write():
-    """Will be edited soon due to variable scopes"""
-    with open("roles.json", "w") as j:
-        dick = {"reactions": roles, "join": joinRoles}
-        json.dump(dick, j, encoding="utf-8")
-    with open("stonks.json", "w") as j:
-        dick = {"moneys": stonks, "amazon": warehouse}
-        json.dump(dick, j, encoding="utf-8")
+def reverseBool(boolean):
+    if boolean:
+        boolean = False
+        state = 'on'
+    else:
+        boolean = True
+        state = 'off'
+    return boolean, state
+
+
+eggC = 0
 
 
 if __name__ == '__main__':
+    from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
 
     import logging as logs
@@ -78,7 +82,7 @@ if __name__ == '__main__':
 
     # set the global variables
     roleEmbeds = {}
-    eggC = 0
+
     timerUsers = []
     on = True
 
@@ -175,107 +179,7 @@ if __name__ == '__main__':
         await message.channel.send(message.author.mention)
 
 
-    @bot.command(name="help")
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def documentation(ctx):
-        kiriPerson = bot.get_user(255070100325924864)
-        owner = bot.get_user(int(hosts[0]))
-        emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
-        emb.add_field(name="e!help", value="Displays this manual", inline=False)
-        emb.add_field(name="e!economyHelp", value="Displays the economy manual", inline=False)
-        emb.add_field(name="e!kiri [number]",
-                      value="Displays an image of Eijiro Kirishima from My Hero Academia. You can "
-                            "specify the number of images you want to be sent. "
-                            "[request from {user}]".format(user=kiriPerson), inline=False)
-        emb.add_field(name="e!test_args [words go here]", value="Test arguments", inline=False)
-        emb.add_field(name="e!about [blank for self, mention a user/type the user id to target the specified user]",
-                      value="Reveals basically everything (legal) I can get on you", inline=False)
-        emb.add_field(name="e!github", value="Links to Eggbot's repo", inline=False)
-        emb.add_field(name="e!invite", value="Links to an invite link for Eggbot.", inline=False)
-        emb.add_field(name="e!server", value="DMs you an invite to the Eggbot Discord Server.", inline=False)
-        emb.add_field(name="e!joinRole [@role]", value="Sets a role that is automatically given to new users "
-                                                       "(when the bot is online).", inline=False)
-        emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
-        # good lord I fucked up the timer syntax badly
-        emb.add_field(name="e!timer \"name\" (quotes mandatory) [time format] (and if you want more units of time) and "
-                           "[time format]",
-                      value="Creates a timer that pings the requesting user after a specified time.",
-                      inline=False)
-        emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
-        emb.add_field(name="e!get_icon", value="Links to a copy of the server icon.", inline=False)
-        emb.add_field(name="e!admins", value="Lists the admins for this copy of Eggbot.", inline=False)
-        emb.add_field(name="e!settings", value="Displays the logging configuration for the current instance of Eggbot.",
-                      inline=False)
-        emb.add_field(name="egg", value="egg", inline=False)
-        emb.add_field(name="e!eggCount", value="[depreciated] ||Counts the day's eggs!||", inline=False)
-        emb.add_field(name="simp", value="SIMP", inline=False)
-        emb.add_field(name="moyai", value="🗿", inline=False)
-        emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
-                                                   "(https://github.com/TheEgghead27/Eggbot/blob/master/PRIVACY.md)",
-                      inline=False)
-        emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
-        await ctx.send(embed=emb)
 
-
-    @documentation.error
-    async def help_error(ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("bro this is all I have, no need to spam me for more")
-            return
-        else:
-            raise error
-
-
-    @bot.command()
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def kiri(ctx, *args):
-        try:
-            send_amount = args[0]
-            send_amount = int(send_amount)
-            if send_amount > 5:
-                await ctx.send("wowowoah, you gotta chill, we don't need spam on our hands! "
-                               "We've limited you to 5 images.")
-                send_amount = 5
-            while send_amount > 0:
-                await kiriContent(ctx)
-                await asyncio.sleep(1)
-                send_amount = send_amount - 1
-        except (ValueError, IndexError):
-            await kiriContent(ctx)
-
-
-    @kiri.error
-    async def kiri_error(ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("I get that you're excited about the anime guy, but chill, k?")
-        else:
-            raise error
-
-
-    async def kiriContent(ctx):
-        kiriPerson = bot.get_user(255070100325924864)
-        emb = discord.Embed(title="Here's a picture of Eijiro Kirishima, our beloved Red Riot~", color=0xc60004)
-        emb.set_image(url=kirilist[random.randrange(0, len(kirilist))])  # randomly uploads an image from the list
-        emb.set_footer(text=f"This command, and its related images were requested and sourced from {kiriPerson}")
-        await ctx.send(embed=emb)
-
-
-    @bot.command()
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def song(ctx):
-        micheal = await ctx.message.author.voice.channel.connect(timeout=60.0, reconnect=True)
-        await asyncio.sleep(5)
-        await micheal.disconnect()
-
-
-    @song.error
-    async def song_error(ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("The damned have a limited amount of bandwidth. Ask again later.")
-        elif isinstance(error, commands.CommandInvokeError):
-            await ctx.send("The damned get only one vessel per server. Try again when this one expires.")
-        else:
-            raise error
 
 
     @bot.command()
@@ -368,61 +272,6 @@ if __name__ == '__main__':
             emb.add_field(name="User Color", value=userColor, inline=True)
             emb.set_image(url=user.avatar_url)
         await message.channel.send(embed=emb)
-
-
-    @bot.command()
-    async def github(ctx):
-        emb = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
-                            color=0x26a343)
-        await ctx.send(embed=emb)
-
-
-    @bot.command()
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def invite(ctx):
-        emb = discord.Embed(title="Bot Invite",
-                            description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
-                                        "permissions=271969345&scope=bot", color=0xffffff)
-        await ctx.send(embed=emb)
-
-
-    @invite.error
-    async def invite_error(ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("Bruh, you don't need that many bot invites. Ask again later.")
-        else:
-            raise error
-
-
-    @bot.command()
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def server(ctx):
-        egg_guild = bot.get_guild(675750662058934324)
-        if ctx.guild != egg_guild:
-            emb = discord.Embed(title="Official Eggbot Discord Server", description="https://discord.gg/rTfkdvX",
-                                color=0x000000)
-            await ctx.message.author.send(embed=emb)
-            await ctx.send("Sent server invite to your DMs!")
-        else:
-            await ctx.send("You're already in the Eggbot Server!")
-
-
-    @server.error
-    async def server_error(ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("Bro, you don't need that many invite links. Ask again later.")
-        else:
-            raise error
-
-
-    @bot.command()
-    async def eggCount(ctx):
-        if host_check(ctx):
-            emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-            emb.add_field(name="Egg count:", value=str(eggC), inline=False)
-            await ctx.send(embed=emb)
-        else:
-            await ctx.send("This command has been disabled.")
 
 
     @bot.command()
@@ -566,51 +415,6 @@ if __name__ == '__main__':
         await ctx.send("This server's icon can be found at " + str(ctx.guild.icon_url))
 
 
-    async def wrongAdmins(ctx, wrongAdmin):
-        await ctx.send('There is an unsolved reference in the hosts list, {}.'.format(wrongAdmin))
-        await asyncio.sleep(0.75)
-
-
-    @bot.command()
-    async def ping(ctx):
-        """Stole the basic code off of Ear Tensifier lol"""
-        msg = await ctx.send('Pinging...')
-        emb = discord.Embed(title="Pong!", color=0x000000)
-        messLatency = round((msg.created_at.timestamp() - ctx.message.created_at.timestamp()) * 1000, 3)
-        emb.add_field(name="Message Latency", value=f"{messLatency} ms")
-        emb.add_field(name="API Latency", value=f"{round(bot.latency * 1000, 3)} ms")
-        await msg.edit(content=None, embed=emb)
-
-
-    @bot.command()
-    async def admins(ctx):
-        c = len(hosts)
-        d = 0
-        e = 0
-        emb = discord.Embed(title='Admins for this Eggbot:')
-        while c > 0:
-            try:
-                user = bot.get_user(int(hosts[d]))
-                if str(user) != 'None':
-                    if e == 0:
-                        emb.add_field(name="Owner", value=str(user), inline=False)
-                    else:
-                        emb.add_field(name="Admin {}".format(str(e)), value=str(user), inline=False)
-                    e += 1
-                else:
-                    await wrongAdmins(ctx, hosts[d])
-            except ValueError:
-                await wrongAdmins(ctx, hosts[d])
-            d += 1
-            c -= 1
-        await ctx.send(embed=emb)
-
-
-    @bot.command()
-    async def rateFood(ctx):
-        insultNumber = random.randrange(0, len(insults) - 1)
-        await ctx.send(insults[insultNumber])
-
     # Secret Admin-Only Commands
     @bot.command()
     async def say(ctx, *args):
@@ -673,79 +477,19 @@ if __name__ == '__main__':
 
 
     @bot.command()
-    # @commands.cooldown(1, 7.5, commands.BucketType.user)
-    async def bee(ctx):
-        args = ctx.message.content.split(' ')
-        try:
-            if len(beeEmbed) <= 1:
-                emb = discord.Embed.from_dict(beeEmbed[0])
-                await ctx.send(embed=emb)
-                return
-            page = int(args[1]) - 1
-            if 0 <= page < len(beeEmbed):
-                emb = discord.Embed.from_dict(beeEmbed[page])
-                await ctx.send(embed=emb)
-            else:
-                await ctx.send('Invalid page number. There are only pages 1 to {t}.'.format(t=str(len(beeEmbed) - 1)))
-        except (ValueError, IndexError):
-            await ctx.send('I needa set up pagination one sec')
-            if host_check(ctx):
-                pass
-
-
-    @bee.error
-    async def bee_error(ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("Come on, you can't read *that* quickly!")
-        else:
-            raise error
-
-
-    @bot.command()
-    async def beeGen(ctx):
+    async def spam(ctx):
         if host_check(ctx):
-            beeTime = False
-            script = list(Bee)
-            beeLen = len(script) // 2  # know how many sets of text (name & dialogue) there are
-            limitCheck = 25
-            messNo = 1
-            color_list = [0xffff00, 0x000000]
-            bs = []
-            emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
-            for _ in range(beeLen):  # why did i do this?!?!
-                if limitCheck == 25:  # make sure the embed limits don't cut off the dialogue
-                    limitCheck = 0
-                    if beeTime:  # don't send an empty embed
-                        bs.append(emb.to_dict())
-                        await ctx.send(embed=emb)
-                    emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
-                    emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messNo)))
-                    # alternate colors
-                    color_list.append(color_list[0])
-                    del color_list[0]
-                    messNo = messNo + 1  # keep the message numbers rising
-                    async with ctx.typing():
-                        beeTime = True
-                        await asyncio.sleep(1)
-                emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
-                del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
-                limitCheck = limitCheck + 1
-            bs.append(emb.to_dict())
-            await ctx.send(embed=emb)
-            print(bs)
+            global safeguard
+            safeguard, state = reverseBool(safeguard)
+            await ctx.send("Set spam mode to {}.".format(state.upper()))
 
 
     @bot.command()
-    async def pp(ctx):
-        if ctx.message.channel.is_nsfw():
-            await ctx.send("Here's the good stuff.")
-            await asyncio.sleep(2)
-            try:
-                await ctx.send(file=discord.File(filename="pp.png", fp="pp.png"))
-            except FileNotFoundError:
-                await ctx.send("Oops! pp not found! It's probably too small! xD")
-        else:
-            await ctx.send("This content is NSFW, ya dingus!")
+    async def botSpam(ctx):
+        if host_check(ctx):
+            global botSafeguard
+            botSafeguard, state = reverseBool(botSafeguard)
+            await ctx.send("Set bot message processing to {}.".format(state.upper()))
 
 
     @bot.command()
@@ -873,81 +617,6 @@ if __name__ == '__main__':
 
 
     @bot.command()
-    async def spam(ctx):
-        if host_check(ctx):
-            global safeguard
-            safeguard, state = reverseBool(safeguard)
-            await ctx.send("Set spam mode to {}.".format(state.upper()))
-
-
-    @bot.command()
-    async def botSpam(ctx):
-        if host_check(ctx):
-            global botSafeguard
-            botSafeguard, state = reverseBool(botSafeguard)
-            await ctx.send("Set bot message processing to {}.".format(state.upper()))
-
-
-    def reverseBool(boolean):
-        if boolean:
-            boolean = False
-            state = 'on'
-        else:
-            boolean = True
-            state = 'off'
-        return boolean, state
-
-
-    @bot.command()
-    async def settings(ctx):
-        emb = discord.Embed(title="Settings on this instance of Eggbot",
-                            description="The state of certain options in Eggbot", color=0xdddddd)
-        emb.add_field(name="All Message Logging", value=settingCheck(logging), inline=False)
-        emb.add_field(name="DM Logging", value=settingCheck(dmLog), inline=False)
-        emb.add_field(name="Locked Command Logging (Audit Logging)", value=settingCheck(audit), inline=False)
-        emb.add_field(name="Deleted Message Logging", value=settingCheck(deleteLog), inline=False)
-        await ctx.send(embed=emb)
-
-
-    def settingCheck(setting):
-        if setting:
-            return "✅ On"
-        else:
-            return "❌ Off"
-
-
-    @bot.command()
-    async def reloadRoles(ctx):
-        if host_check(ctx):
-            global roles
-            try:
-                with open("roles.json.bak", "r+") as roles:
-                    roles = json.load(roles)
-                    join = roles["join"]
-                    roles = roles["reactions"]
-            except FileNotFoundError:
-                await ctx.send(
-                    "There is no backup, it is highly recommended that you use `e!backupRoles` to create one.")
-                with open("roles.json", "r+") as roles:
-                    roles = json.load(roles)
-                    join = roles["join"]
-                    roles = roles["reactions"]
-            await asyncio.sleep(1)
-            with open("roles.json", "w") as J:
-                dick = {"reactions": roles, "join": join}
-                json.dump(dick, J, encoding="utf-8")
-            await ctx.send("Restored role database from backup.")
-
-
-    @bot.event
-    async def on_member_join(member):
-        """Assign role on member joining server, if a role is set."""
-        if str(member.guild.id) in joinRoles:
-            role = member.guild.get_role(joinRoles[str(member.guild.id)])
-            await member.add_roles(role)
-
-
-    @bot.command()
     async def joinRole(ctx):
         """Command to set role for new server members"""
         if ctx.guild:
@@ -973,78 +642,24 @@ if __name__ == '__main__':
                            "There is nothing to execute the command on.")
 
 
-    @bot.command()
-    async def backupRoles(ctx):
-        if host_check(ctx):
-            with open("roles.json.bak", "w") as j:
-                dick = {"reactions": roles, "join": joinRoles}
-                json.dump(dick, j, encoding="utf-8")
-            await ctx.send("Backed up the current role database!")
-
-
-    @bot.command()
-    async def save(ctx):
-        if host_check(ctx):
-            write()
-            await ctx.send("Saved the roles and economy database!")
-
-
     @bot.event
-    async def on_command(ctx):
-        global stonks
-        try:
-            if str(ctx.author.id) in stonks["users"]:
-                args = ctx.message.content.split(' ')[0]
-                args = args[2:]
-                if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
-                                "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
-                                'auditlog', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate',
-                                'goals',
-                                'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
-                                'save', 'notifs'):
-                    oval = random.randrange(0, 10)
-                    if oval >= 8:
-                        pass
-                    else:
-                        oval = random.randrange(1, 3)
-                        stonks["users"][str(ctx.author.id)]["global"] += oval
-                        if stonks["users"][str(ctx.author.id)]["notif"] == "True":
-                            await ctx.send("You got {e} eggs!".format(e=str(oval)))
-                        else:
-                            pass
-            else:
-                raise KeyError
-        except KeyError:
-            stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
-                                                   "inv": "None"}
-        except AttributeError:
-            pass
-
-
-    @bot.event
-    async def on_raw_message_delete(payload):
-        """Deleted message logging"""
-        if deleteLog is True:
-            print('In the channel with ID {p.channel_id}, a message with ID {p.message_id} was deleted.'.format(
-                p=payload))
-            if payload.cached_message:
-                message = payload.cached_message
-                if len(message.content) > 0:
-                    content = "\n" + message.content
-                else:
-                    content = message.content
-                print(str('{a} said:'.format(a=str(message.author)) + content))
-                if len(message.attachments) > 0:
-                    print("Attachments: {}".format(str(message.attachments)))
-            else:
-                print('The message could not be retrieved.')
+    async def on_member_join(member):
+        """Assign role on member joining server, if a role is set."""
+        if str(member.guild.id) in joinRoles:
+            role = member.guild.get_role(joinRoles[str(member.guild.id)])
+            await member.add_roles(role)
 
 
     # TODO: Convert things to cogs and then add to bot
-    # load cogs
-    cogs = ['cogs.commands.economy', 'cogs.commands.shutdown', 'cogs.listeners.reactions', 'cogs.listeners.exceptions']
-    for cog in cogs:
-        bot.load_extension(cog)
+    # load all commands and listeners
+    from os import listdir
+    for cog in listdir('cogs/commands/'):
+        if cog.endswith('.py'):
+            bot.load_extension(f'cogs.commands.{cog[:-3]}')
+
+    for cog in listdir('cogs/listeners/'):
+        if cog.endswith('.py'):
+            bot.load_extension(f'cogs.listeners.{cog[:-3]}')
 
 
     @bot.command()

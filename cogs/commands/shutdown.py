@@ -7,7 +7,7 @@ from eggbot import host_check
 from asyncio import sleep
 
 
-class InstanceManagement(commands.Cog):
+class InstanceManagement(commands.Cog, name="Instance Management"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -35,8 +35,7 @@ class InstanceManagement(commands.Cog):
 
     @commands.command(name="restart", aliases=["reboot"])
     async def restart(self, ctx):
-        """Big idiot restart command that generates a dumb default terminal,
-        leading to things being frozen if the terminal is needed and you have text selected"""
+        """Big idiot restart command that generates a dumb default terminal, tons of potential issues there"""
         if host_check(ctx):
             import os
             write()

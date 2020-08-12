@@ -1,4 +1,5 @@
 from asyncio import sleep
+from random import randrange
 
 import discord
 from discord.ext import commands
@@ -369,6 +370,36 @@ class Economy(commands.Cog):
                 await ctx.send("You don't have any eggs to spend?!?")
             return
         await ctx.send("That item isn't on sale??? How do you buy something that isn't on sale???")
+
+    @commands.Cog.listener()
+    async def on_command(self, ctx):
+        try:
+            if str(ctx.author.id) in stonks["users"]:
+                args = ctx.message.content.split(' ')[0]
+                args = args[2:]
+                if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
+                                "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
+                                'auditlog', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate',
+                                'goals',
+                                'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
+                                'save', 'notifs'):
+                    oval = randrange(0, 10)
+                    if oval >= 8:
+                        pass
+                    else:
+                        oval = randrange(1, 3)
+                        stonks["users"][str(ctx.author.id)]["global"] += oval
+                        if stonks["users"][str(ctx.author.id)]["notif"] == "True":
+                            await ctx.send("You got {e} eggs!".format(e=str(oval)))
+                        else:
+                            pass
+            else:
+                raise KeyError
+        except KeyError:
+            stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                                   "inv": "None"}
+        except AttributeError:
+            pass
 
 
 async def addServerEgg(message, eggs):

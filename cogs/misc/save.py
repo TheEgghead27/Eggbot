@@ -1,6 +1,6 @@
 import simplejson as json
 from cogs.commands.economy import stonks, warehouse
-# TODO Update this
+# TODO Update this for roles when that is cogged
 from eggbot import roles, joinRoles
 
 
