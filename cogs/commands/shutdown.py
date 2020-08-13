@@ -3,7 +3,7 @@ from discord.ext import commands
 
 from cogs.misc.save import write
 from eggbot import host_check
-# import timerUsers when that is fixed
+from cogs.commands.utility import timerUsers
 from asyncio import sleep
 
 
@@ -19,9 +19,8 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             emb = discord.Embed(title="Shutting down...", description="Please wait...",
                                 color=0xff0000)
             await message.channel.send(embed=emb)
-            # TODO un-comment this
-            # for i in timerUsers:
-            #     await i.send('The bot is shutting down. Your timer has been cancelled.')
+            for i in timerUsers:
+                await i.send('The bot is shutting down. Your timer has been cancelled.')
             await self.bot.close()
             exit(0)
         else:
@@ -44,9 +43,8 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             await ctx.send(embed=emb)
             status = 'Rebooting'
             await self.bot.change_presence(activity=discord.Game(name=status))
-            # TODO uncomment this code too
-            # for i in timerUsers:
-            #     await i.send('The bot is restarting. Your timer has been cancelled.')
+            for i in timerUsers:
+                await i.send('The bot is restarting. Your timer has been cancelled.')
             os.startfile("eggbot.py")
             exit(0)
 

@@ -1,6 +1,6 @@
 def load(blacklist):
     """read files for data"""
-    import json
+    import simplejson as json
     from ast import literal_eval
     hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
         stonks, warehouse, insults, logging, dmLog, audit, deleteLog, times = placeholders()
@@ -149,7 +149,7 @@ def loadColors():
 
 def setup(hosts, token):
     """out of box setup function to configure the token and hosts, then package in a new json"""
-    import json
+    import simplejson as json
     if token == "Improper token":
         token = input("Paste your token here.\n").strip(' ')
         if not len(token) >= 50:
@@ -181,7 +181,7 @@ def setup(hosts, token):
 
 def convert():
     """convert old config system to the new json"""
-    import json
+    import simplejson as json
     file = 'no file'
     try:
         file = "host.txt"

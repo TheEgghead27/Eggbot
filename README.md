@@ -87,8 +87,6 @@ e!roleGiver {@role/role id} {emoji} {color name}: Creates an automatic role give
 
 e!addRole {@role/role id} {emoji}: Adds a role to a recently made role giver (in the same channel).
 
-e!reloadRoles: Reloads the role database from a backup.
-
 e!backupRoles: Backs up the roles to a "roles.json.bak" file.
 
 e!spam: Toggles spam mode for "egg" command

@@ -141,10 +141,6 @@ class Info(commands.Cog, name="Bot Info"):
             c -= 1
         await ctx.send(embed=emb)
 
-    # @commands.Cog.listener() for a listener event
-
-    # @commands.command() for a command
-
 
 def setup(bot):
     bot.add_cog(Info(bot))
