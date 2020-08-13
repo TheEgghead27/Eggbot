@@ -172,7 +172,7 @@ if __name__ == '__main__':
         """Stuff to execute when the bot is mentioned"""
         await message.channel.send(message.author.mention)
 
-    # Secret Admin-Only Commands
+    # The One Command to rule them all
     @bot.command()
     async def say(ctx, *args):
         if host_check(ctx):
@@ -216,7 +216,6 @@ if __name__ == '__main__':
             return
 
 
-    # TODO: Convert things to cogs
     # load all commands and listeners
     from os import listdir
     for cog in listdir('cogs/commands/'):
