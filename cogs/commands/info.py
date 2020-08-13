@@ -10,6 +10,7 @@ class Info(commands.Cog, name="Bot Info"):
     def __init__(self, bot):
         self.bot = bot
 
+    # TODO Use lib helpCommand
     @commands.command(name="help")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def documentation(self, ctx):
