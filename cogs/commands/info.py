@@ -110,16 +110,6 @@ class Info(commands.Cog, name="Bot Info"):
             await ctx.send("This command has been disabled.")
 
     @commands.command()
-    async def ping(self, ctx):
-        """Stole the basic code off of Ear Tensifier lol"""
-        msg = await ctx.send('Pinging...')
-        emb = discord.Embed(title="Pong!", color=0x000000)
-        messLatency = round((msg.created_at.timestamp() - ctx.message.created_at.timestamp()) * 1000, 3)
-        emb.add_field(name="Message Latency", value=f"{messLatency} ms")
-        emb.add_field(name="API Latency", value=f"{round(self.bot.latency * 1000, 3)} ms")
-        await msg.edit(content=None, embed=emb)
-
-    @commands.command()
     async def admins(self, ctx):
         c = len(hosts)
         d = 0
