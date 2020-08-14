@@ -201,12 +201,7 @@ class Utility(commands.Cog):
                 await ctx.send(f'{ctx.message.author.mention}, your {time} timer is up!')
             else:
                 await ctx.send(f'{ctx.message.author.mention}, your "{name}" timer, set at {time}, is up!')
-            a = 0
-            for i in timerUsers:
-                if i == ctx.message.author:
-                    del timerUsers[a]
-                    return
-                a += 1
+            timerUsers.remove(ctx.message.author)
         except IndexError:
             # this will rarely get called, but...
             await ctx.send('You did not provide the correct syntax.')

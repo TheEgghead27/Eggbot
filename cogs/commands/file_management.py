@@ -8,7 +8,7 @@ from cogs.misc.save import write
 from eggbot import host_check
 
 
-class Name(commands.Cog):
+class Files(commands.Cog, name="File Management"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -36,4 +36,4 @@ class Name(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Name(bot))
+    bot.add_cog(Files(bot))
