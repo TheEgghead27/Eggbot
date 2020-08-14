@@ -216,15 +216,14 @@ if __name__ == '__main__':
             return
 
 
-    # load all commands and listeners
+    # load commands and listeners
     from os import listdir
-    for cog in listdir('cogs/commands/'):
-        if cog.endswith('.py'):
-            bot.load_extension(f'cogs.commands.{cog[:-3]}')
-
-    for cog in listdir('cogs/listeners/'):
-        if cog.endswith('.py'):
-            bot.load_extension(f'cogs.listeners.{cog[:-3]}')
+    cogDirectories = ['cogs/commands/', 'cogs/listeners/']  # bot will look for python files in these directories
+    for cogDir in cogDirectories:
+        loadDir = cogDir.replace('/', '.')
+        for cog in listdir(cogDir):
+            if cog.endswith('.py'):  # bot tries to load all .py files in said folders, use cogs/misc for non-cog things
+                bot.load_extension(loadDir + cog[:-3])
 
     try:
         bot.run(token)
