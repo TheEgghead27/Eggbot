@@ -3,6 +3,7 @@ from asyncio import sleep
 import discord
 from discord.ext import commands
 
+import mdbed
 from eggbot import hosts, host_check, eggC
 
 
@@ -47,7 +48,8 @@ class Info(commands.Cog, name="Bot Info"):
         emb.add_field(name="simp", value="SIMP", inline=False)
         emb.add_field(name="moyai", value="🗿", inline=False)
         emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
-                                                   "(https://github.com/TheEgghead27/Eggbot/blob/master/PRIVACY.md)",
+                                                   "(https://github.com/TheEgghead27/Eggbot/blob/master/PRIVACY.md)"
+                                                   "or in e!privacy",
                       inline=False)
         emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
         await ctx.send(embed=emb)
@@ -131,6 +133,15 @@ class Info(commands.Cog, name="Bot Info"):
             d += 1
             c -= 1
         await ctx.send(embed=emb)
+
+    @commands.command()
+    async def privacy(self, ctx):
+        try:
+            privacy = self.bot.privacy
+        except (NameError, AttributeError):
+            self.bot.privacy = mdbed.uh()
+            privacy = self.bot.privacy
+        await ctx.send(embed=privacy)
 
 
 def setup(bot):
