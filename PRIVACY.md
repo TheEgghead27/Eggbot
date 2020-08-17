@@ -36,18 +36,18 @@ This log is seldom looked at, and is overwritten with every reboot of the bot.
 Mainly for debugging purposes, this setting will log the message author and content (text and attachments).
 
 ### Direct Messages to an active instance of the bot
-The bot can log direct messages to itself in order to allow for manual managing and viewing of the private messages sent to the bot.
+The bot can log direct messages to itself, allowing for viewing of any private messages sent to the bot.
 ### Locked Command Usage
 If a command locked to Eggbot Administrators is used, the terminal will log the username and identifier of the invoker.
 
 ### Deleted Messages
-The bot can log deleted message IDs, the ID of the channel the message originated from, and, if cached, the message content (text and attachments).
-This is intended to be used in personal server administration, in order to preserve information that would be inaccessible otherwise.
+The bot can log deleted message IDs, the channel ID the message originated from, and, if cached, the message content (text and attachments).
+This is used for moderation of deleted messages.
 
 #### Using the e!settings command, you can check the state of these settings.
 
 ### Emoji Names
 If an Eggbot Administrator uses the "print_emoji" command, the raw emoji text will be printed to the terminal.
 
-#### Note: We reserve the right to revise this privacy policy without notice, as needed.
+##### Note: We reserve the right to revise this privacy policy without notice, as needed.
  

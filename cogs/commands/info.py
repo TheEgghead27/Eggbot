@@ -3,7 +3,7 @@ from asyncio import sleep
 import discord
 from discord.ext import commands
 
-import mdbed
+from cogs.misc import mdbed
 from eggbot import hosts, host_check, eggC
 
 
