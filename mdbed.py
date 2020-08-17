@@ -45,9 +45,7 @@ def uh():
             temp = []
 
     print('footer?')
-    print(temp)
-    if len(temp) == 1:
-        embed.set_footer(text=temp[0])
+    embed.set_footer(text=f"{a[-2:][:1][0][5:]}")  # fuck it this mainly supports the Note: line from Eggbot
 
     print(f'\n{embed.to_dict()}')
     return embed

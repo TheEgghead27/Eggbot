@@ -49,6 +49,5 @@ This is intended to be used in personal server administration, in order to prese
 ### Emoji Names
 If an Eggbot Administrator uses the "print_emoji" command, the raw emoji text will be printed to the terminal.
 
-## Note:
-We reserve the right to revise this privacy policy without notice, as needed.
+#### Note: We reserve the right to revise this privacy policy without notice, as needed.
  
