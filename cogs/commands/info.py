@@ -20,6 +20,8 @@ class Info(commands.Cog, name="Bot Info"):
         emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
         emb.add_field(name="e!help", value="Displays this manual", inline=False)
         emb.add_field(name="e!economyHelp", value="Displays the economy manual", inline=False)
+        emb.add_field(name="e!bee", value="e!bee {OPTIONAL: page number}: "
+                                          "Displays (a portion of) The Bee Movie script.", inline=False)
         emb.add_field(name="e!kiri [number]",
                       value="Displays an image of Eijiro Kirishima from My Hero Academia. You can "
                             "specify the number of images you want to be sent. "

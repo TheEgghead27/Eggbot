@@ -11,6 +11,8 @@ e!about {OPTIONAL: @user or user id}: about the speaking/tagged user
 
 e!test_args {arguments}: list of args
 
+e!bee {OPTIONAL: page number}: Displays (a portion of) The Bee Movie script.
+
 e!kiri: displays an image of Eijiro Kirishima from My Hero Academia [request from Franky Morrison#6669]
 
 e!song: The screams of the damned (WIP)
@@ -77,7 +79,11 @@ e!confirmGoal {name}: Confirms goal completion. (Deducts eggs from the server ba
 
 e!say: says whatever you tell it to say
 
-e!shutdown: shuts the bot down without needing to manually stop the script
+e!shutdown: shuts the bot down
+
+e!restart: reopens Eggbot in a separate python instance
+
+e!reload: reloads the cogs of Eggbot
 
 e!print_emoji {emoji}: prints the emoji code in terminal
 
