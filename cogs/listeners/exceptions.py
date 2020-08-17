@@ -25,7 +25,15 @@ class Exceptions(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if type(error) == discord.ext.commands.errors.CommandNotFound:
+        if type(error) == commands.errors.CommandNotFound:
+            return
+        elif type(error) == commands.CommandOnCooldown:
+            owner = self.bot.get_user(int(hosts[0]))
+            command = ctx.message.content.split(' ')[0].lower()
+            emb = discord.Embed(title=f'You are on cooldown for command "{command}":', description=str(error),
+                                color=0xbc1a00)
+            emb.set_footer(text=f'Don\'t tell {owner} "hey idiot, bot broken", because this should happen.')
+            await ctx.send(embed=emb)
             return
         try:
             owner = self.bot.get_user(int(hosts[0]))

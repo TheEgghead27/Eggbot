@@ -48,6 +48,30 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             os.startfile("eggbot.py")
             exit(0)
 
+    @commands.command(hidden=True)
+    async def reload(self, ctx):
+        """Reloads the bot commands and listeners. Only runnable by admins."""
+        if host_check(ctx):
+            print(f"Reload initiated by {str(ctx.author)} ({ctx.author.id})")
+            embed = discord.Embed(title="Reloading...",
+                                  description="Eggbot will reload shortly. Check the bot's status for updates.",
+                                  color=0xffff00)
+            embed.set_footer(
+                text=f"Reload initiated by {str(ctx.author)} ({ctx.author.id})")
+            await ctx.send(embed=embed)
+            await self.bot.change_presence(activity=discord.Game("Reloading..."))
+            self.bot.cmds = []
+            # *reload commands and listeners
+            from os import listdir
+            cogDirectories = ['cogs/commands/',
+                              'cogs/listeners/']  # bot will look for python files in these directories
+            for cogDir in cogDirectories:
+                loadDir = cogDir.replace('/', '.')
+                for cog in listdir(cogDir):
+                    if cog.endswith('.py'):  # tries to reload all .py files in the folders, use cogs/misc instead
+                        self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
+            await self.bot.change_presence(activity=discord.Game(self.bot.status))
+
 
 def setup(bot):
     bot.add_cog(InstanceManagement(bot))

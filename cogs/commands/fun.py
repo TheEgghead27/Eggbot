@@ -16,27 +16,21 @@ class Fun(commands.Cog):
     async def bee(self, ctx):
         args = ctx.message.content.split(' ')
         try:
-            if len(beeEmbed) <= 1:
-                emb = discord.Embed.from_dict(beeEmbed[0])
-                await ctx.send(embed=emb)
-                return
             page = int(args[1]) - 1
             if 0 <= page < len(beeEmbed):
                 emb = discord.Embed.from_dict(beeEmbed[page])
-                await ctx.send(embed=emb)
+                beeMess = await ctx.send(embed=emb)
+                await beeMess.add_reaction('◀')
+                await beeMess.add_reaction('▶')
+                self.bot.paginated[beeMess.id] = [beeMess, [beeEmbed], page]
             else:
-                await ctx.send('Invalid page number. There are only pages 1 to {t}.'.format(t=str(len(beeEmbed) - 1)))
+                raise ValueError
         except (ValueError, IndexError):
-            await ctx.send('I needa set up pagination one sec')
-            if host_check(ctx):
-                pass
-
-    @bee.error
-    async def bee_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("Come on, you can't read *that* quickly!")
-        else:
-            raise error
+            emb = discord.Embed.from_dict(beeEmbed[0])
+            beeMess = await ctx.send(embed=emb)
+            await beeMess.add_reaction('◀')
+            await beeMess.add_reaction('▶')
+            self.bot.paginated[beeMess.id] = [beeMess, [beeEmbed], 0]
 
     @commands.command()
     async def beeGen(self, ctx):
