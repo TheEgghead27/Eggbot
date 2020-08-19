@@ -107,7 +107,7 @@ if __name__ == '__main__':
         global stonks  # make economy things happen
         # new markdown parser utilizing replace
         mess = message.content.lower()
-        for i in ['||', '~~', '`', '*', '_']:
+        for i in spic:
             mess = mess.replace(i, '')
         a = mess.split()
         if mess in ohno:  # check if emotes are screwed up
