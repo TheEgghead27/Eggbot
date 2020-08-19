@@ -33,9 +33,9 @@ eggC = 0
 
 
 # create functions imported by cogs
-def host_check(ctx):
+async def host_check(ctx):
     """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
-    if bot.is_owner(ctx.author):
+    if await bot.is_owner(ctx.author):
         if audit:
             try:
                 print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")

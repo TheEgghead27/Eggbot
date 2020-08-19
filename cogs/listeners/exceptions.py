@@ -35,6 +35,9 @@ class Exceptions(commands.Cog):
             emb.set_footer(text=f'Don\'t tell {owner} "hey idiot, bot broken", because this should happen.')
             await ctx.send(embed=emb)
             return
+        elif type(error) == commands.CheckFailure:
+            await ctx.send("nah fam")
+            return
         try:
             owner = self.bot.get_user(int(hosts[0]))
             command = ctx.message.content.split(' ')[0].lower()

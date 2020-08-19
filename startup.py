@@ -14,7 +14,11 @@ def load(blacklist):
         if file not in blacklist:
             with open(file, "r") as config:
                 config = json.load(config)
-                hosts = config['hosts']
+                hostsTemp = config['hosts']
+                hosts = []
+                for i in hostsTemp:
+                    hosts.append(int(i))
+                del hostsTemp
                 token = config['token']
                 if 'logging' in config:
                     logging = numToBool(config['logging'])
