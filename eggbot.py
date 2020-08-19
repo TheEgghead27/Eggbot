@@ -1,6 +1,7 @@
 from startup import load  # startup functions
 import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
+import re
 
 try:  # in case discord.py or simplejson isn't installed
     import discord
@@ -105,6 +106,7 @@ if __name__ == '__main__':
         if bot.botSafeguard and message.author.bot and not message.author.id == bot.user.id:
             return
         global stonks  # make economy things happen
+
         # allows for text formatting stuff to be parsed
         mess = message.content.lower()
         if mess[:-len(mess) + 2] in ("||", "~~"):
@@ -117,6 +119,7 @@ if __name__ == '__main__':
             mess = mess[2:-2]
         elif mess[:-len(mess) + 4] in ("***e", "***<", "***:"):
             mess = mess[3:-3]
+
         a = mess.split()
         if mess in ohno:  # check if emotes are screwed up
             if message.author.id == bot.user.id:
