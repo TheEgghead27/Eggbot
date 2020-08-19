@@ -67,7 +67,7 @@ if __name__ == '__main__':
     handler.setFormatter(logs.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
 
-    prefix = 'e!'
+    prefix = ['e!', 'E!', 'e! ', 'e! ']
     status = '{p}help'.format(p=prefix)
     prefixLen = len(prefix)
     bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status)

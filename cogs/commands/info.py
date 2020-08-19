@@ -56,14 +56,6 @@ class Info(commands.Cog, name="Bot Info"):
         emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
         await ctx.send(embed=emb)
 
-    @documentation.error
-    async def help_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("bro this is all I have, no need to spam me for more")
-            return
-        else:
-            raise error
-
     @commands.command()
     async def github(self, ctx):
         emb = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
