@@ -18,14 +18,27 @@ except ModuleNotFoundError:  # install the discord modules
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
     beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes = load(blacklist=[])
 
+# initialize a bunch of variables used in places
+prefix = ['e!', 'E!', 'e! ', 'e! ']
+status = '{p}help'.format(p=prefix[0])
+prefixLen = len(prefix)
+bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts)
+bot.remove_command("help")
+bot.safeguard = True
+bot.botSafeguard = True
+bot.status = status
+bot.paginated = {}
+del status
+eggC = 0
 
-def host_check(ctx):  # TODO: replace with is_owner() lib function
+
+# create functions imported by cogs
+def host_check(ctx):
     """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
-    if str(ctx.message.author.id) in hosts:
+    if bot.is_owner(ctx.author):
         if audit:
-            mess = ctx.message.content.split(' ')
             try:
-                print(str(ctx.message.author) + ' used ' + mess[0] + '!')
+                print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")
             except OSError:
                 pass
         return True
@@ -52,9 +65,6 @@ def reverseBool(boolean):
     return boolean, state
 
 
-eggC = 0
-
-
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
@@ -66,17 +76,6 @@ if __name__ == '__main__':
     handler = logs.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
     handler.setFormatter(logs.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
-
-    prefix = ['e!', 'E!', 'e! ', 'e! ']
-    status = '{p}help'.format(p=prefix)
-    prefixLen = len(prefix)
-    bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status)
-    bot.remove_command("help")
-    bot.safeguard = True
-    bot.botSafeguard = True
-    bot.status = status
-    bot.paginated = {}
-    del status
 
     # turn the bot "on"
     on = True
