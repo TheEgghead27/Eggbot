@@ -1,5 +1,9 @@
+from asyncio import sleep
+
 import discord
 from discord.ext import commands
+
+from eggbot import beeEmbed
 
 
 class Pagination(commands.Cog):
@@ -7,30 +11,49 @@ class Pagination(commands.Cog):
     # { "message id": [message, [embeds], number]
     def __init__(self, bot):
         self.bot = bot
-        self.bot.paginated = {}
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
         if reaction.message.id in self.bot.paginated:
             if user.id != self.bot.user.id:
                 data = self.bot.paginated[reaction.message.id]
-                print(reaction.emoji)
                 if reaction.emoji == '▶':
                     try:
                         await reaction.remove(user)
                     except (discord.Forbidden, discord.NotFound):
                         pass
+                    if data[1] == 'bee':  # bee gets special metadata treatment because it's static
+                        embeds = beeEmbed
+                    else:
+                        embeds = data[1]
                     data[2] += 1
-                    await data[0].edit(embed=discord.Embed.from_dict(data[1][0][data[2]]))
+                    if data[2] >= len(embeds):
+                        data[2] = 0
+                    await data[0].edit(embed=discord.Embed.from_dict(embeds[data[2]]))
                 if reaction.emoji == '◀':
                     try:
                         await reaction.remove(user)
                     except (discord.Forbidden, discord.NotFound):
                         pass
+                    if data[1] == 'bee':
+                        embeds = beeEmbed
+                    else:
+                        embeds = data[1]
                     data[2] -= 1
-                    await data[0].edit(embed=discord.Embed.from_dict(data[1][0][data[2]]))
+                    if data[2] < 0:
+                        data[2] = len(embeds) - 1
+                    await data[0].edit(embed=discord.Embed.from_dict(embeds[data[2]]))
             else:
                 return
+
+    async def paginate(self, message, embeds, number, timeout):
+        self.bot.paginated[message.id] = [message, embeds, number]
+        await message.add_reaction('◀')
+        await message.add_reaction('▶')
+        await sleep(timeout)
+        del self.bot.paginated[message.id]
+        await message.remove_reaction('◀', self.bot.user)
+        await message.remove_reaction('▶', self.bot.user)
 
 
 def setup(bot):

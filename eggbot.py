@@ -16,7 +16,7 @@ except ModuleNotFoundError:  # install the discord modules
     import simplejson as json
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
-    beeEmbed, logging, dmLog, audit, deleteLog, times = load(blacklist=[])
+    beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes = load(blacklist=[])
 
 
 def host_check(ctx):  # TODO: replace with is_owner() lib function
@@ -75,6 +75,7 @@ if __name__ == '__main__':
     bot.safeguard = True
     bot.botSafeguard = True
     bot.status = status
+    bot.paginated = {}
     del status
 
     # turn the bot "on"
@@ -155,7 +156,7 @@ if __name__ == '__main__':
                     else:
                         sno = random.randrange(0, len(spic))
                         await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-                elif a[0] in ('mk', 'bruh', 'lol', 'oof'):  # TODO: Make this list a part of data.json
+                elif a[0] in mmyes:
                     if message.author.id == bot.user.id:
                         return
                     else:

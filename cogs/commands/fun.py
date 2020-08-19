@@ -5,11 +5,13 @@ import discord
 from discord.ext import commands
 
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults
+from cogs.listeners.pagination import Pagination
 
 
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.pagination = Pagination(self.bot)
 
     @commands.command()
     @commands.cooldown(1, 7.5, commands.BucketType.user)
@@ -20,17 +22,13 @@ class Fun(commands.Cog):
             if 0 <= page < len(beeEmbed):
                 emb = discord.Embed.from_dict(beeEmbed[page])
                 beeMess = await ctx.send(embed=emb)
-                await beeMess.add_reaction('◀')
-                await beeMess.add_reaction('▶')
-                self.bot.paginated[beeMess.id] = [beeMess, [beeEmbed], page]
+                await self.pagination.paginate(beeMess, 'bee', page, 1200)
             else:
                 raise ValueError
         except (ValueError, IndexError):
             emb = discord.Embed.from_dict(beeEmbed[0])
             beeMess = await ctx.send(embed=emb)
-            await beeMess.add_reaction('◀')
-            await beeMess.add_reaction('▶')
-            self.bot.paginated[beeMess.id] = [beeMess, [beeEmbed], 0]
+            await self.pagination.paginate(beeMess, 'bee', 0, 1200)
 
     @commands.command()
     async def beeGen(self, ctx):

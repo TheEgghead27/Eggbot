@@ -3,7 +3,8 @@ from asyncio import sleep
 import discord
 from discord.ext import commands
 
-from eggbot import times, joinArgs
+from eggbot import times, joinArgs, activityTypes, flagFields
+from cogs.listeners.pagination import Pagination
 
 timerUsers = []
 
@@ -38,6 +39,7 @@ async def parseTimeText(args):
 class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.pagination = Pagination(self.bot)
 
     @commands.command()
     async def about(self, ctx):
@@ -66,50 +68,63 @@ class Utility(commands.Cog):
                 except IndexError:
                     user = message.author
             userColor = user.color
-            emb = discord.Embed(title="About " + str(user), description="All about " + user.name,
-                                color=0x03f4fc)
+            embeds = []
+            emb = discord.Embed(title="About " + str(user), description="User info for " + user.name, color=0x03f4fc)
+            emb.set_thumbnail(url=user.avatar_url)
             if user.display_name != str(user.name):  # doesn't need to use the member/user check
                 emb.add_field(name="User Nickname", value=user.display_name, inline=True)
+            if user.activity:
+                try:
+                    activity = activityTypes[str(user.activity.type)]
+                except KeyError:
+                    activity = "Playing"
+                emb.add_field(name=activity, value=user.activity.name, inline=False)
             emb.add_field(name="User ID", value=str(user.id), inline=True)
-            emb.add_field(name="User Creation Date", value=user.created_at, inline=False)
-            emb.add_field(name="User Discriminator", value=user.discriminator, inline=True)
             emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
+            emb.add_field(name="User Discriminator", value=user.discriminator, inline=False)
+            emb.add_field(name="User Creation Date", value=user.created_at, inline=False)
+
+            flags = user.public_flags
+            userIs = ''
+            for i in flags.all():
+                print(i.name)
+                try:
+                    userIs += flagFields[i.name] + '\n'
+                except KeyError:
+                    pass
+            if user.bot and not flags.verified_bot:
+                userIs += "A bot" + '\n'
+            if len(userIs) > 0:
+                emb.add_field(name='User is', value=userIs)
+
+            emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
+            embeds.append(emb.to_dict())
             if type(message.author) == discord.member.Member:
+                emb = discord.Embed(title=f"About {str(user)}", description=f"Member info for {user.name}",
+                                    color=0x03f4fc)
+                emb.set_thumbnail(url=user.avatar_url)
                 try:
                     emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
-                    try:
-                        name_roles = user.roles[0].name
-                        for discord.role in user.roles:  # i don't know why, but the for loop does not log all roles
-                            del user.roles[0]
-                            name_roles = name_roles + ', ' + user.roles[0].name
-                            name_roles = name_roles + ', ' + user.roles[1].name
-                            del user.roles[0]
-                        name_roles = name_roles + ', ' + user.roles[1].name  # these were the best solutions i could
-                        name_roles = name_roles + ', ' + user.roles[2].name  # come up with
-                    except IndexError:
-                        name_roles = name_roles
-                    emb.add_field(name="User's Roles", value=name_roles, inline=False)
+                    name_roles = ''
+                    for role in user.roles:  # i don't know why, but the for loop does not log all roles
+                        name_roles += f'{role.name}, '
+                    emb.add_field(name="User's Roles", value=name_roles.rstrip(', '), inline=False)
                     if name_roles != "@everyone":
                         emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
                     if user.guild_permissions.administrator:
                         admin_state = "an admin."
                     else:
                         admin_state = "not an admin."
-                    emb.add_field(name="User is", value=admin_state, inline=False)
+                    emb.add_field(name="User is", value=admin_state, inline=True)
+                    emb.add_field(name="User Color", value=userColor, inline=True)
+                    embeds.append(emb.to_dict())
                 except AttributeError:
                     pass
-            if user.bot:
-                emb.add_field(name="User is", value="a bot", inline=True)
-            else:
-                emb.add_field(name="User is", value="not a bot", inline=True)
-            if user.system:
-                emb.add_field(name="User is", value="a Discord VIP", inline=True)
-            else:
-                emb.add_field(name="User is", value="not a Discord VIP", inline=True)
-            emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
-            emb.add_field(name="User Color", value=userColor, inline=True)
+            emb = discord.Embed(title=f"{user.name}'s Profile Picture", color=0x03f4fc)
             emb.set_image(url=user.avatar_url)
-        await message.channel.send(embed=emb)
+            embeds.append(emb.to_dict())
+        aboutMess = await ctx.send(embed=discord.Embed.from_dict(embeds[0]))
+        await self.pagination.paginate(aboutMess, embeds, 0, 300)
 
     @commands.command()
     async def vacuum(self, ctx, *args):

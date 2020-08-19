@@ -11,6 +11,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     def __init__(self, bot):
         self.bot = bot
 
+    # TODO papate function
     @commands.command()
     async def shutdown(self, ctx):
         message = ctx.message
