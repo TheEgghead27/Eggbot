@@ -1,7 +1,6 @@
 from startup import load  # startup functions
 import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
-import re
 
 try:  # in case discord.py or simplejson isn't installed
     import discord
@@ -106,26 +105,10 @@ if __name__ == '__main__':
         if bot.botSafeguard and message.author.bot and not message.author.id == bot.user.id:
             return
         global stonks  # make economy things happen
-
-        # allows for text formatting stuff to be parsed
+        # new markdown parser utilizing replace
         mess = message.content.lower()
-
-        # CatLamp Code
-        # expressions = []
-        # for i in ['img', 'image', 'gif', 'g.f', 'gf']:
-        #     for ex in regex.findall(i, randPost.url):
-        #         expressions.append(ex)
-
-        markedDowns = []
         for i in ['||', '~~', '`', '*', '_']:
-            for ex in re.findall(i, mess):
-                try:
-                    markedDowns.append(ex)
-                except re.error as error:
-                    print(error)
-        for i in markedDowns:
-            mess.remove(i)
-        print(mess)
+            mess = mess.replace(i, '')
         a = mess.split()
         if mess in ohno:  # check if emotes are screwed up
             if message.author.id == bot.user.id:
@@ -224,8 +207,8 @@ if __name__ == '__main__':
 
 
     @bot.event  # this is here because fuck you on_error doesn't get to be in a cog
-    async def on_error(self, event, *args):
-        owner = self.bot.get_user(int(hosts[0]))
+    async def on_error(event, *args):
+        owner = bot.get_user(int(hosts[0]))
         if not str(event) == 'on_command_error':
             title = 'Error in event "{e}":'.format(e=event)
             emb = discord.Embed(title=title, description=str(system.exc_info()[1]), color=0xbc1a00)
