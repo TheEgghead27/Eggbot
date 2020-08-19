@@ -109,17 +109,23 @@ if __name__ == '__main__':
 
         # allows for text formatting stuff to be parsed
         mess = message.content.lower()
-        if mess[:-len(mess) + 2] in ("||", "~~"):
-            mess = mess[2:-2]
-        if mess.startswith("> "):
-            mess = mess[2:]
-        if mess[:-len(mess) + 2] in ("`e", "*e", "*<", "*:", "`:", "`<"):
-            mess = mess[1:-1]
-        elif mess[:-len(mess) + 3] in ("**e", "**<", "**:"):
-            mess = mess[2:-2]
-        elif mess[:-len(mess) + 4] in ("***e", "***<", "***:"):
-            mess = mess[3:-3]
 
+        # CatLamp Code
+        # expressions = []
+        # for i in ['img', 'image', 'gif', 'g.f', 'gf']:
+        #     for ex in regex.findall(i, randPost.url):
+        #         expressions.append(ex)
+
+        markedDowns = []
+        for i in ['||', '~~', '`', '*', '_']:
+            for ex in re.findall(i, mess):
+                try:
+                    markedDowns.append(ex)
+                except re.error as error:
+                    print(error)
+        for i in markedDowns:
+            mess.remove(i)
+        print(mess)
         a = mess.split()
         if mess in ohno:  # check if emotes are screwed up
             if message.author.id == bot.user.id:
@@ -215,6 +221,21 @@ if __name__ == '__main__':
                     await channel.send(echo)
                 except AttributeError:
                     await ctx.send(echo)
+
+
+    @bot.event  # this is here because fuck you on_error doesn't get to be in a cog
+    async def on_error(self, event, *args):
+        owner = self.bot.get_user(int(hosts[0]))
+        if not str(event) == 'on_command_error':
+            title = 'Error in event "{e}":'.format(e=event)
+            emb = discord.Embed(title=title, description=str(system.exc_info()[1]), color=0xbc1a00)
+            emb.set_footer(text='Please tell {o} "hey idiot, bot broken" if you think this '.format(o=owner) +
+                                "shouldn't happen.")
+            try:
+                await args[0].channel.send(embed=emb)
+            except discord.Forbidden:
+                return
+        raise system.exc_info()[0]
 
 
     # load commands and listeners

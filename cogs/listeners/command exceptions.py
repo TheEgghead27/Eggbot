@@ -10,20 +10,6 @@ class Exceptions(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_error(self, event, *args):
-        owner = self.bot.get_user(int(hosts[0]))
-        if not str(event) == 'on_command_error':
-            title = 'Error in event "{e}":'.format(e=event)
-            emb = discord.Embed(title=title, description=str(system.exc_info()[1]), color=0xbc1a00)
-            emb.set_footer(text='Please tell {o} "hey idiot, bot broken" if you think this '.format(o=owner) +
-                                "shouldn't happen.")
-            try:
-                await args[0].channel.send(embed=emb)
-            except discord.Forbidden:
-                return
-        raise system.exc_info()[0]
-
-    @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if type(error) == commands.errors.CommandNotFound:
             return
