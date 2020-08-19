@@ -13,26 +13,26 @@ class Files(commands.Cog, name="File Management"):
         self.bot = bot
 
     @commands.command()
+    @commands.check(host_check)
     async def save(self, ctx):
-        if host_check(ctx):
-            write()
-            await ctx.send("Saved the roles and economy database!")
+        write()
+        await ctx.send("Saved the roles and economy database!")
 
     @commands.command()
+    @commands.check(host_check)
     async def backupRoles(self, ctx):
-        if host_check(ctx):
-            with open("roles.json.bak", "w") as j:
-                dick = {"reactions": roles, "join": joinRoles}
-                json.dump(dick, j, encoding="utf-8")
-            await ctx.send("Backed up the current role database!")
+        with open("roles.json.bak", "w") as j:
+            dick = {"reactions": roles, "join": joinRoles}
+            json.dump(dick, j, encoding="utf-8")
+        await ctx.send("Backed up the current role database!")
 
     @commands.command()
-    async def backupRoles(self, ctx):
-        if host_check(ctx):
-            with open("stonks.json.bak", "w") as j:
-                dick = {"moneys": stonks, "amazon": warehouse}
-                json.dump(dick, j, encoding="utf-8")
-            await ctx.send("Backed up the current economy database!")
+    @commands.check(host_check)
+    async def backupEconomy(self, ctx):
+        with open("stonks.json.bak", "w") as j:
+            dick = {"moneys": stonks, "amazon": warehouse}
+            json.dump(dick, j, encoding="utf-8")
+        await ctx.send("Backed up the current economy database!")
 
 
 def setup(bot):

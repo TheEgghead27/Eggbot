@@ -174,46 +174,44 @@ if __name__ == '__main__':
 
     # The One Command to rule them all
     @bot.command()
+    @commands.check(host_check)
     async def say(ctx, *args):
-        if host_check(ctx):
-            try:
-                await ctx.message.delete()
-            except discord.Forbidden:
-                print("I was unable to delete the message!")
-            arghs = list(args)
-            channel = None
-            try:
-                if len(args[0]) == 22:
-                    channel = int(arghs[0][3:-1])
-                    channel = bot.get_user(channel)
-                    del arghs[0]
-                elif len(args[0]) == 21:
-                    channel = int(arghs[0][2:-1])
-                    channel = bot.get_channel(channel)
-                    del arghs[0]
-                elif len(args[0]) == 18:
-                    channel = bot.get_channel(int(args[0]))
-                    if not channel:
-                        channel = bot.get_user(int(args[0]))
-                    del arghs[0]
+        try:
+            await ctx.message.delete()
+        except discord.Forbidden:
+            print("I was unable to delete the message!")
+        arghs = list(args)
+        channel = None
+        try:
+            if len(args[0]) == 22:
+                channel = int(arghs[0][3:-1])
+                channel = bot.get_user(channel)
+                del arghs[0]
+            elif len(args[0]) == 21:
+                channel = int(arghs[0][2:-1])
+                channel = bot.get_channel(channel)
+                del arghs[0]
+            elif len(args[0]) == 18:
+                channel = bot.get_channel(int(args[0]))
+                if not channel:
+                    channel = bot.get_user(int(args[0]))
+                del arghs[0]
+            else:
+                raise ValueError
+        except (ValueError, IndexError):
+            channel = ctx.channel
+        finally:
+            echo = joinArgs(arghs)
+            if echo == "" or echo is None:
+                if not ctx.message.content[len(prefix) + 4:] == "":
+                    await ctx.send(ctx.message.content[len(prefix) + 4:])
                 else:
-                    raise ValueError
-            except (ValueError, IndexError):
-                channel = ctx.channel
-            finally:
-                echo = joinArgs(arghs)
-                if echo == "" or echo is None:
-                    if not ctx.message.content[len(prefix) + 4:] == "":
-                        await ctx.send(ctx.message.content[len(prefix) + 4:])
-                    else:
-                        await ctx.author.send("you idot, you can't just have me say nothing")
-                else:
-                    try:
-                        await channel.send(echo)
-                    except AttributeError:
-                        await ctx.send(echo)
-        else:
-            return
+                    await ctx.author.send("you idot, you can't just have me say nothing")
+            else:
+                try:
+                    await channel.send(echo)
+                except AttributeError:
+                    await ctx.send(echo)
 
 
     # load commands and listeners

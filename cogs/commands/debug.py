@@ -37,12 +37,13 @@ class Debug(commands.Cog):
         await ctx.send(embed=emb)
 
     @commands.command()
+    @commands.check(host_check)
     async def print_emoji(self, ctx, *args):
-        if host_check(ctx):
-            print(args[0])
-            await ctx.send('Check the console!')
+        print(args[0])
+        await ctx.send('Check the console!')
 
     @commands.command()
+    @commands.check(host_check)
     async def embedTest(self, ctx):
         embed = discord.Embed(title='Go to YouTube', url='https://www.youtube.com/',
                               description='New video guys click on the title or click [here](https://www.youtube.com/)')

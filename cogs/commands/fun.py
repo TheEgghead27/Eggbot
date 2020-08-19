@@ -31,37 +31,37 @@ class Fun(commands.Cog):
             await self.pagination.paginate(beeMess, 'bee', 0, 1200)
 
     @commands.command()
+    @commands.check(host_check)
     async def beeGen(self, ctx):
-        if host_check(ctx):
-            beeTime = False
-            script = list(Bee)
-            beeLen = len(script) // 2  # know how many sets of text (name & dialogue) there are
-            limitCheck = 25
-            messNo = 1
-            color_list = [0xffff00, 0x000000]
-            bs = []
-            emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
-            for _ in range(beeLen):  # why did i do this?!?!
-                if limitCheck == 25:  # make sure the embed limits don't cut off the dialogue
-                    limitCheck = 0
-                    if beeTime:  # don't send an empty embed
-                        bs.append(emb.to_dict())
-                        await ctx.send(embed=emb)
-                    emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
-                    emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messNo)))
-                    # alternate colors
-                    color_list.append(color_list[0])
-                    del color_list[0]
-                    messNo = messNo + 1  # keep the message numbers rising
-                    async with ctx.typing():
-                        beeTime = True
-                        await sleep(1)
-                emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
-                del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
-                limitCheck = limitCheck + 1
-            bs.append(emb.to_dict())
-            await ctx.send(embed=emb)
-            print(bs)
+        beeTime = False
+        script = list(Bee)
+        beeLen = len(script) // 2  # know how many sets of text (name & dialogue) there are
+        limitCheck = 25
+        messNo = 1
+        color_list = [0xffff00, 0x000000]
+        bs = []
+        emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
+        for _ in range(beeLen):  # why did i do this?!?!
+            if limitCheck == 25:  # make sure the embed limits don't cut off the dialogue
+                limitCheck = 0
+                if beeTime:  # don't send an empty embed
+                    bs.append(emb.to_dict())
+                    await ctx.send(embed=emb)
+                emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
+                emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messNo)))
+                # alternate colors
+                color_list.append(color_list[0])
+                del color_list[0]
+                messNo = messNo + 1  # keep the message numbers rising
+                async with ctx.typing():
+                    beeTime = True
+                    await sleep(1)
+            emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
+            del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
+            limitCheck = limitCheck + 1
+        bs.append(emb.to_dict())
+        await ctx.send(embed=emb)
+        print(bs)
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user)

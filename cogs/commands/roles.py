@@ -22,72 +22,72 @@ class Roles(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    @commands.check(host_check)
     async def roleGiver(self, ctx, *args):
-        if host_check(ctx):
-            global roleEmbeds
-            args = list(args)
-            try:
-                role, emoji, colo = await self.roleProcess(ctx, args)
-            except TypeError:
-                return
-            emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
-            emb.add_field(name=role.name + " role",
-                          value="React with {emote} to get the {role} role.".format(emote=emoji,
-                                                                                    role=role.
-                                                                                    mention),
-                          inline=False)
-            emb.add_field(name="Note:",
-                          value="You will receive a confirmation DM for your role, as the bot is not always "
-                                "online to give out the role", inline=False)
-            mess = await ctx.send(embed=emb)
-            await mess.add_reaction(emoji)
-            roleData = {str(emoji): {"role": role.id}}
-            roles[str(mess.id)] = roleData
-            with open("roles.json", "w") as j:
-                json.dump(roles, j)
-            rolls = [role.id]
-            emojis = [str(emoji)]
-            roleEmbeds[ctx.message.channel] = [emb.to_dict(), mess.id, roleData, rolls, emojis]
-            emb = discord.Embed(title="Role giver set up!",
-                                description="If you need to add more roles, use `e!addRoles` "
-                                            "(same syntax) soon (before the bot is shut off) "
-                                            "to add another role.",
-                                color=0x0ac845)
-            await ctx.author.send(embed=emb)
+        global roleEmbeds
+        args = list(args)
+        try:
+            role, emoji, colo = await self.roleProcess(ctx, args)
+        except TypeError:
+            return
+        emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
+        emb.add_field(name=role.name + " role",
+                      value="React with {emote} to get the {role} role.".format(emote=emoji,
+                                                                                role=role.
+                                                                                mention),
+                      inline=False)
+        emb.add_field(name="Note:",
+                      value="You will receive a confirmation DM for your role, as the bot is not always "
+                            "online to give out the role", inline=False)
+        mess = await ctx.send(embed=emb)
+        await mess.add_reaction(emoji)
+        roleData = {str(emoji): {"role": role.id}}
+        roles[str(mess.id)] = roleData
+        with open("roles.json", "w") as j:
+            json.dump(roles, j)
+        rolls = [role.id]
+        emojis = [str(emoji)]
+        roleEmbeds[ctx.message.channel] = [emb.to_dict(), mess.id, roleData, rolls, emojis]
+        emb = discord.Embed(title="Role giver set up!",
+                            description="If you need to add more roles, use `e!addRoles` "
+                                        "(same syntax) soon (before the bot is shut off) "
+                                        "to add another role.",
+                            color=0x0ac845)
+        await ctx.author.send(embed=emb)
 
     @commands.command()
+    @commands.check(host_check)
     async def addRole(self, ctx, *args):
-        if host_check(ctx):
-            args = list(args)
-            try:
-                info = roleEmbeds[ctx.message.channel]
-            except KeyError:
-                await ctx.send("Role giver message not found in cache! Are you in the right channel, or did "
-                               "the bot reboot?")
-                return
-            try:
-                role, emoji, colo = await self.roleProcess(ctx, args)
-            except TypeError:
-                return
-            if str(emoji) in info:
-                await ctx.send("This emoji is already in use!")
-                return
-            if role.id in info[3]:
-                await ctx.send("This role is already available!")
-                return
-            info[3].append(role.id)
-            info[3].append(role.id)
-            mess = await ctx.channel.fetch_message(info[1])
-            emb = discord.Embed.from_dict(info[0])
-            emb.insert_field_at(index=-1, name=role.name + " role", value="React with {emote} to get the {role} role.".
-                                format(emote=emoji, role=role.mention), inline=False)
-            await mess.edit(embed=emb)
-            await mess.add_reaction(emoji)
-            info = info[2]
-            info[str(emoji)] = {"role": role.id}
-            roles[str(mess.id)] = info
-            with open("roles.json", "w") as j:
-                json.dump(roles, j)
+        args = list(args)
+        try:
+            info = roleEmbeds[ctx.message.channel]
+        except KeyError:
+            await ctx.send("Role giver message not found in cache! Are you in the right channel, or did "
+                           "the bot reboot?")
+            return
+        try:
+            role, emoji, colo = await self.roleProcess(ctx, args)
+        except TypeError:
+            return
+        if str(emoji) in info:
+            await ctx.send("This emoji is already in use!")
+            return
+        if role.id in info[3]:
+            await ctx.send("This role is already available!")
+            return
+        info[3].append(role.id)
+        info[3].append(role.id)
+        mess = await ctx.channel.fetch_message(info[1])
+        emb = discord.Embed.from_dict(info[0])
+        emb.insert_field_at(index=-1, name=role.name + " role", value="React with {emote} to get the {role} role.".
+                            format(emote=emoji, role=role.mention), inline=False)
+        await mess.edit(embed=emb)
+        await mess.add_reaction(emoji)
+        info = info[2]
+        info[str(emoji)] = {"role": role.id}
+        roles[str(mess.id)] = info
+        with open("roles.json", "w") as j:
+            json.dump(roles, j)
 
     async def roleProcess(self, ctx, args):
         args = list(args)
