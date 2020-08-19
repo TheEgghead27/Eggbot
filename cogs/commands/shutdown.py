@@ -4,7 +4,6 @@ from discord.ext import commands
 from cogs.misc.save import write
 from eggbot import host_check
 from cogs.commands.utility import timerUsers
-from asyncio import sleep
 
 
 class InstanceManagement(commands.Cog, name="Instance Management"):
@@ -15,12 +14,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     @commands.command()
     @commands.check(host_check)
     async def shutdown(self, ctx):
-        write()
-        emb = discord.Embed(title="Shutting down...", description="Please wait...",
-                            color=0xff0000)
-        await ctx.send(embed=emb)
-        for i in timerUsers:
-            await i.send('The bot is shutting down. Your timer has been cancelled.')
+        await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
         await self.bot.close()
         exit(0)
 
@@ -29,14 +23,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     async def restart(self, ctx):
         """Big idiot restart command that generates a dumb default terminal, tons of potential issues there"""
         import os
-        write()
-        emb = discord.Embed(title="Rebooting...", description="Please wait...",
-                            color=0xffff00)
-        await ctx.send(embed=emb)
-        status = 'Rebooting'
-        await self.bot.change_presence(activity=discord.Game(name=status))
-        for i in timerUsers:
-            await i.send('The bot is restarting. Your timer has been cancelled.')
+        await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=True)
         os.startfile("eggbot.py")
         exit(0)
 
@@ -44,14 +31,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     @commands.check(host_check)
     async def reload(self, ctx):
         """Reloads the bot commands and listeners. Only runnable by admins."""
-        print(f"Reload initiated by {str(ctx.author)} ({ctx.author.id})")
-        embed = discord.Embed(title="Reloading...",
-                              description="Eggbot will reload shortly. Check the bot's status for updates.",
-                              color=0xffff00)
-        embed.set_footer(
-            text=f"Reload initiated by {str(ctx.author)} ({ctx.author.id})")
-        await ctx.send(embed=embed)
-        await self.bot.change_presence(activity=discord.Game("Reloading..."))
+        await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=False)
         self.bot.cmds = []
         # *reload commands and listeners
         from os import listdir
@@ -63,6 +43,17 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                 if cog.endswith('.py'):  # tries to reload all .py files in the folders, use cogs/misc instead
                     self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
         await self.bot.change_presence(activity=discord.Game(self.bot.status))
+
+    async def papate(self, ctx, embedColor, phrase, timer):
+        formatted = phrase[0].upper() + phrase[1:] + '...'
+        await self.bot.change_presence(activity=discord.Game(formatted))
+        emb = discord.Embed(title=formatted, description="Please wait...",
+                            color=embedColor)
+        await ctx.send(embed=emb)
+        write()
+        if timer:
+            for i in timerUsers:
+                await i.send(f'The bot is {phrase}. Your timer has been cancelled.')
 
 
 def setup(bot):
