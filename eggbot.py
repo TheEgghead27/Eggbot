@@ -141,18 +141,20 @@ if __name__ == '__main__':
                     if not bot.safeguard:
                         async with message.channel.typing():
                             pass
-                elif a[0] in ("simp", "sɪᴍᴘ"):
-                    if message.author.id == bot.user.id:
-                        return
-                    else:
-                        sno = random.randrange(0, len(spic))
-                        await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
-                elif a[0] in mmyes:
-                    if message.author.id == bot.user.id:
-                        return
-                    else:
-                        await message.channel.send(a[0])
-                elif message.channel.id in [714873042794315857, 719022288443539456] or \
+                for i in ("simp", "sɪᴍᴘ"):
+                    if a[0].startswith(i):
+                        if message.author.id == bot.user.id:
+                            return
+                        else:
+                            sno = random.randrange(0, len(spic))
+                            await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+                for i in mmyes:
+                    if a[0].startswith(i):
+                        if message.author.id == bot.user.id:
+                            return
+                        else:
+                            await message.channel.send(i)
+                if message.channel.id in [714873042794315857, 719022288443539456] or \
                         a[0].startswith(('moyai', '🗿', ':moyai:', 'mooyai')):
                     await message.add_reaction('🗿')
                 else:
