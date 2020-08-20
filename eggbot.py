@@ -105,7 +105,7 @@ if __name__ == '__main__':
         if bot.botSafeguard and message.author.bot and not message.author.id == bot.user.id:
             return
         global stonks  # make economy things happen
-        # new markdown parser utilizing replace
+        # new markdown parser utilizing replace()
         mess = message.content.lower()
         for i in spic:
             mess = mess.replace(i, '')
