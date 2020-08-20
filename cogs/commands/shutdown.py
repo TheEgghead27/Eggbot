@@ -22,7 +22,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     async def restart(self, ctx):
         """Big idiot restart command that generates a dumb default terminal, tons of potential issues there"""
         import os
-        await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=True)
+        await self.papate(ctx, embedColor=0xffff00, phrase="restarting", timer=True)
         os.startfile("eggbot.py")
         exit(0)
 
