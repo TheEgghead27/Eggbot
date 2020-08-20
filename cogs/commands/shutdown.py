@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import threading
 
 from cogs.misc.save import write
 from eggbot import host_check
@@ -50,9 +51,17 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                             color=embedColor)
         await ctx.send(embed=emb)
         write()
+        # TODO add threading
+        # timer purge
         if timer:
             for i in timerUsers:
                 await i.send(f'The bot is {phrase}. Your timer has been cancelled.')
+        # paginated purge
+        for i in self.bot.paginated:
+            message = self.bot.paginated[i][0]
+            await message.remove_reaction('▶', self.bot.user)
+            await message.remove_reaction('◀', self.bot.user)
+        self.bot.paginated = {}
 
 
 def setup(bot):

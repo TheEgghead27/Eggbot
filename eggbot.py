@@ -27,7 +27,6 @@ bot.remove_command("help")
 bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
-bot.paginated = {}
 del status
 eggC = 0
 

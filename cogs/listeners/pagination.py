@@ -11,6 +11,7 @@ class Pagination(commands.Cog):
     # { "message id": [message, [embeds], number]
     def __init__(self, bot):
         self.bot = bot
+        self.bot.paginated = {}
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
@@ -50,10 +51,13 @@ class Pagination(commands.Cog):
         self.bot.paginated[message.id] = [message, embeds, number]
         await message.add_reaction('◀')
         await message.add_reaction('▶')
-        await sleep(timeout)
-        del self.bot.paginated[message.id]
-        await message.remove_reaction('◀', self.bot.user)
-        await message.remove_reaction('▶', self.bot.user)
+        try:
+            await sleep(timeout)
+            del self.bot.paginated[message.id]
+            await message.remove_reaction('▶', self.bot.user)
+            await message.remove_reaction('◀', self.bot.user)
+        except KeyError:
+            pass
 
 
 def setup(bot):

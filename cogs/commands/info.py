@@ -51,7 +51,7 @@ class Info(commands.Cog, name="Bot Info"):
         emb.add_field(name="moyai", value="🗿", inline=False)
         emb.add_field(name="Privacy Policy", value="The privacy policy for Eggbot can be found [here]"
                                                    "(https://github.com/TheEgghead27/Eggbot/blob/master/PRIVACY.md)"
-                                                   "or in e!privacy",
+                                                   " or in e!privacy",
                       inline=False)
         emb.set_footer(text="This instance of Eggbot is hosted by {owner}.".format(owner=owner))
         await ctx.send(embed=emb)
