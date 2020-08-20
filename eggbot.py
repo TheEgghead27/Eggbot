@@ -66,9 +66,44 @@ def reverseBool(boolean):
 
 
 def markdown(textList):
-    debugList = [["*", "**", "***"], ["||"], ["`", " "], ["__"]]
-    sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
-    return spic[sno] + textList[random.randrange(0, len(textList))] + spic[sno]
+    # 2/7 chance of being codeBlock or empty, then 50/50
+    divisor = 0
+    for i in spic:
+        # I don't want the last list's full girth to be considered,
+        # but since it would raise the randrange cap to intended levels, it stays like this with no edits
+        divisor += len(i) + 1
+
+    if random.randrange(1, divisor + 1) <= 2:  # codeBlock and empty have to stay by themselves
+        markedDown = pickRandomListObject(spic[-1])
+    else:
+        # Thanks Blue
+        # Repeat until length(tempList) = amount of desired markdowns:
+        #     Random = random(0, length markdown list)
+        #     If !tempList.contains(markdown[random] {
+        # //add to list
+        # }
+        length = random.randrange(1, len(spic[:-1]) + 1)
+        markedDown = ''
+        temp = []
+        while len(temp) < length:
+            thing = pickRandomListObject(spic[:-1])
+            if thing not in tuple(temp):
+                temp.append(thing)
+                markedDown += pickRandomListObject(thing)
+
+    return markedDown + pickRandomListObject(textList) + markedDown[::-1]
+
+
+def pickRandomListObject(index):
+    return index[random.randrange(0, len(index))]
+
+
+def delistList(index):
+    deobfuscated = []
+    for i in index:
+        for item in i:
+            deobfuscated.append(item)
+    return deobfuscated
 
 
 if __name__ == '__main__':
@@ -113,7 +148,7 @@ if __name__ == '__main__':
         global stonks  # make economy things happen
         # new markdown parser utilizing replace()
         mess = message.content.lower()
-        for i in spic:
+        for i in delistList(spic):
             mess = mess.replace(i, '')
         a = mess.split()
         if mess in ohno:  # check if emotes are screwed up
