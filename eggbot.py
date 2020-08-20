@@ -65,6 +65,12 @@ def reverseBool(boolean):
     return boolean, state
 
 
+def markdown(textList):
+    debugList = [["*", "**", "***"], ["||"], ["`", " "], ["__"]]
+    sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
+    return spic[sno] + textList[random.randrange(0, len(textList))] + spic[sno]
+
+
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
@@ -125,8 +131,7 @@ if __name__ == '__main__':
                 await addServerEgg(message, oval)
             try:
                 if a[0].startswith(eggTrigger):
-                    sno = random.randrange(0, len(spic))  # make sure the markdown stuff is on both sides
-                    await message.channel.send(spic[sno] + eggs[random.randrange(0, len(eggs))] + spic[sno])
+                    await message.channel.send(markdown(eggs))
                     try:
                         oval = random.randrange(0, 10)
                         if oval >= 8:
@@ -146,8 +151,7 @@ if __name__ == '__main__':
                         if message.author.id == bot.user.id:
                             return
                         else:
-                            sno = random.randrange(0, len(spic))
-                            await message.channel.send(spic[sno] + simp[random.randrange(0, len(simp))] + spic[sno])
+                            await message.channel.send(markdown(simp))
                 for i in mmyes:
                     if a[0].startswith(i):
                         if message.author.id == bot.user.id:
