@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import threading
+# import threading
 
 from cogs.misc.save import write
 from eggbot import host_check
@@ -11,7 +11,7 @@ from cogs.listeners.pagination import Pagination
 class InstanceManagement(commands.Cog, name="Instance Management"):
     def __init__(self, bot):
         self.bot = bot
-        self.pagination = Pagination()
+        self.pagination = Pagination(bot)
 
     @commands.command()
     @commands.check(host_check)
