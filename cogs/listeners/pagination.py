@@ -59,6 +59,12 @@ class Pagination(commands.Cog):
         except KeyError:
             pass
 
+    async def flush(self):
+        for i in self.bot.paginated:
+            message = self.bot.paginated[i][0]
+            await message.remove_reaction('▶', self.bot.user)
+            await message.remove_reaction('◀', self.bot.user)
+
 
 def setup(bot):
     bot.add_cog(Pagination(bot))

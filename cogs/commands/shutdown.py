@@ -5,11 +5,13 @@ import threading
 from cogs.misc.save import write
 from eggbot import host_check
 from cogs.commands.utility import timerUsers
+from cogs.listeners.pagination import Pagination
 
 
 class InstanceManagement(commands.Cog, name="Instance Management"):
     def __init__(self, bot):
         self.bot = bot
+        self.pagination = Pagination()
 
     @commands.command()
     @commands.check(host_check)
@@ -57,10 +59,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             for i in timerUsers:
                 await i.send(f'The bot is {phrase}. Your timer has been cancelled.')
         # paginated purge
-        for i in self.bot.paginated:
-            message = self.bot.paginated[i][0]
-            await message.remove_reaction('▶', self.bot.user)
-            await message.remove_reaction('◀', self.bot.user)
+            await self.pagination.flush()
         self.bot.paginated = {}
 
 
