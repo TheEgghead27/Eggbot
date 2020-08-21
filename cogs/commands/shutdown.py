@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-# import threading
 
 from cogs.misc.save import write
 from eggbot import host_check
@@ -53,7 +52,6 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                             color=embedColor)
         await ctx.send(embed=emb)
         write()
-        # TODO add threading
         # timer purge
         if timer:
             for i in timerUsers:
