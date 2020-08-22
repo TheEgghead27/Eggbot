@@ -12,17 +12,18 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         self.bot = bot
         self.pagination = Pagination(bot)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.check(host_check)
     async def shutdown(self, ctx):
+        """Shuts down the bot"""
         await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
         await self.bot.close()
         exit(0)
 
-    @commands.command(name="restart", aliases=["reboot"])
+    @commands.command(name="restart", aliases=["reboot"], hidden=True)
     @commands.check(host_check)
     async def restart(self, ctx):
-        """Big idiot restart command that generates a dumb default terminal, tons of potential issues there"""
+        """Restarts the bot using the default Python interpreter"""
         import os
         await self.papate(ctx, embedColor=0xffff00, phrase="restarting", timer=True)
         os.startfile("eggbot.py")

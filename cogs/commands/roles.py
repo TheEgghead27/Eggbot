@@ -21,9 +21,10 @@ class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.check(host_check)
     async def roleGiver(self, ctx, *args):
+        """Sets up an automatic role-giving message"""
         global roleEmbeds
         args = list(args)
         try:
@@ -55,9 +56,10 @@ class Roles(commands.Cog):
                             color=0x0ac845)
         await ctx.author.send(embed=emb)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.check(host_check)
     async def addRole(self, ctx, *args):
+        """Adds a role to a recently created role-giver"""
         args = list(args)
         try:
             info = roleEmbeds[ctx.message.channel]
@@ -141,7 +143,7 @@ class Roles(commands.Cog):
         await ctx.message.delete()
         return role, emoji, colo
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def joinRole(self, ctx):
         """Command to set role for new server members"""
         if ctx.guild:

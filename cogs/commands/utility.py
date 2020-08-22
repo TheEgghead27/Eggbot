@@ -41,8 +41,9 @@ class Utility(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
 
-    @commands.command()
+    @commands.command(aliases=['user', 'aboutUser'])
     async def about(self, ctx):
+        """Displays the user info for the specified user"""
         message = ctx.message
         async with ctx.typing():
             if message.mentions:
@@ -137,8 +138,9 @@ class Utility(commands.Cog):
         aboutMess = await ctx.send(embed=discord.Embed.from_dict(embeds[0]))
         await self.pagination.paginate(aboutMess, embeds, 0, 300)
 
-    @commands.command()
+    @commands.command(aliases=['purge', 'nuke'])
     async def vacuum(self, ctx, *args):
+        """Deletes the specified number of messages from the current channel"""
         if ctx.message.author.permissions_in(ctx.message.channel).manage_messages:
             try:
                 kirby = int(args[0])
@@ -158,7 +160,7 @@ class Utility(commands.Cog):
         else:
             await ctx.send("You don't have permission to do that!")
 
-    @commands.command(hidden=True)
+    @commands.command(aliases=['vacum', 'vacumm'], hidden=True)
     async def vaccum(self, ctx):
         async with ctx.typing():
             await sleep(1)
@@ -168,8 +170,9 @@ class Utility(commands.Cog):
             await sleep(0.7)
             await ctx.send("you cant spell")
 
-    @commands.command()
+    @commands.command(aliases=['reminder'])
     async def timer(self, ctx, *args):
+        """Sets a reminder that pings you after the specified time"""
         try:
             a = []
             name = []
@@ -238,8 +241,9 @@ class Utility(commands.Cog):
             await ctx.send('The recommended format for e!timer is `e!timer "name" (quotes mandatory) [time format] '
                            '(and if you want more units of time) and [time format]" `.')
 
-    @commands.command()
+    @commands.command(aliases=['getIcon'])
     async def get_icon(self, ctx):
+        """Displays the server's icon up close"""
         await ctx.send("This server's icon can be found at " + str(ctx.guild.icon_url))
 
 

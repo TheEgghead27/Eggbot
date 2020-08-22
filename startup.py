@@ -267,3 +267,18 @@ def numToBool(num):
     else:
         num = num
     return num
+
+
+def getOwners():
+    import simplejson as json
+    try:
+        file = "config.json"
+        with open(file, "r") as config:
+            config = json.load(config)
+            hostsTemp = config['hosts']
+            hosts = []
+            for i in hostsTemp:
+                hosts.append(int(i))
+            return hosts
+    except Exception as e:
+        print(f'getOwners() raised {e}!')

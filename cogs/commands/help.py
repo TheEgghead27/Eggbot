@@ -1,5 +1,8 @@
 from discord.ext import commands
 import discord
+from startup import getOwners
+
+owners = getOwners()
 
 
 class EmbedHelpCommand(commands.HelpCommand):
@@ -15,29 +18,48 @@ class EmbedHelpCommand(commands.HelpCommand):
     bot = commands.Bot(help_command=EmbedHelpCommand())
     """
     # Set the embed colour here
-    COLOUR = discord.Colour.blurple()
+    COLOUR = discord.Colour.from_rgb(24, 136, 240)
 
     def get_ending_note(self):
-        return 'Use {0}{1} [command] for more info on a command.'.format(self.clean_prefix, self.invoked_with)
+        memberIDs = []
+        for i in self.context.guild.members:
+            memberIDs.append(i.id)
+        if 472714545723342848 in tuple(memberIDs):
+            return "Use e!help [command] for more info on a command. || This help command's format was stolen from " \
+                   "Ear Tensifier".format(self.clean_prefix.lower().strip(" "))
+        return 'Use e!help [command] for more info on a command.'.format(self.clean_prefix.lower().strip(" "))
 
     def get_command_signature(self, command):
         return '{0.qualified_name} {0.signature}'.format(command)
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title='Bot Commands', colour=self.COLOUR)
-        description = self.context.bot.description
-        if description:
-            embed.description = description
-
-        for cog, commands in mapping.items():
-            name = 'No Category' if cog is None else cog.qualified_name
-            filtered = await self.filter_commands(commands, sort=True)
+        for cog, Commands in mapping.items():
+            name = 'Misc.' if cog is None else cog.qualified_name
+            filtered = await self.filter_commands(Commands, sort=True)
             if filtered:
-                value = '\u2002'.join(c.name for c in commands)
+                # stealing this formatting from Ear Tensifier because
+                if self.context.author.id in owners:
+                    def commandCheck(CheckCommand):
+                        return CheckCommand
+                else:
+                    def commandCheck(CheckCommand):
+                        return not CheckCommand.hidden
+                new = []
+                for c in Commands:
+                    if commandCheck(c):
+                        new.append(c.name)
+                new.sort()
+                Commands = new
+                del new
+                value = ''
+                for c in Commands:
+                    value += f'`{c}`, '
+                value = value.rstrip(", ")
                 if cog and cog.description:
                     value = '{0}\n{1}'.format(cog.description, value)
 
-                embed.add_field(name=name, value=value)
+                embed.add_field(name=name, value=value, inline=False)
 
         embed.set_footer(text=self.get_ending_note())
         await self.get_destination().send(embed=embed)
@@ -68,7 +90,21 @@ class EmbedHelpCommand(commands.HelpCommand):
         embed.set_footer(text=self.get_ending_note())
         await self.get_destination().send(embed=embed)
 
-    # This makes it so it uses the function above
-    # Less work for us to do since they're both similar.
-    # If you want to make regular command help look different then override it
-    send_command_help = send_group_help
+    async def send_command_help(self, Command):
+        embed = discord.Embed(title='e!' + Command.qualified_name, colour=self.COLOUR)
+        if Command.qualified_name == 'help':
+            embed.description = "Displays the documentation for Eggbot."
+        elif Command.help:
+            embed.description = Command.help
+
+        if isinstance(Command, commands.Group):
+            filtered = await self.filter_commands(Command.commands, sort=True)
+            for command in filtered:
+                embed.add_field(name=self.get_command_signature(command), value=command.short_doc or '...',
+                                inline=False)
+
+        embed.set_footer(text=self.get_ending_note())
+        await self.get_destination().send(embed=embed)
+
+    async def command_not_found(self, string):
+        return "Invalid command. Check `e!help` for a list of valid commands."

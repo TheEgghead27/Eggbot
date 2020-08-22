@@ -11,13 +11,15 @@ class Economy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=["moneyHelp"])
     async def economyHelp(self, ctx):
+        """Displays the manual for Eggbot's economy system"""
         emb = discord.Embed(title="Eggbot Economy Commands", color=0x00ff55)
         emb.add_field(name="Global Eggs", value="Eggs rewarded for using Eggbot commands, usable in e!shop.",
                       inline=False)
-        emb.add_field(name="Server Eggs", value="Eggs rewarded for interactions in the server.", inline=False)
-        emb.add_field(name="e!fridge", value="Shows the number of global and server eggs you own.", inline=False)
+        emb.add_field(name="Server Eggs", value="Eggs rewarded for speaking in the server.", inline=False)
+        await ctx.send(embed=emb)
+        emb.add_field(name="e!fridge", value="", inline=False)
         emb.add_field(name="e!shop", value="Displays the selection of items on sale.", inline=False)
         emb.add_field(name="e!buy", value="Buys an item from the shop.", inline=False)
         emb.add_field(name="e!inv", value="Shows your inventory.", inline=False)
@@ -28,7 +30,6 @@ class Economy(commands.Cog):
                             "using e!donate.", inline=False)
         emb.add_field(name="e!donate {number}", value="Donates the specified number of eggs to the server.",
                       inline=False)
-        emb.add_field(name="e!notifs {on/off}", value="Toggles notifications for eggs earned.", inline=False)
         emb.add_field(name="e!setGoal {cost} {name}", value="Sets a server goal. (admin only)", inline=False)
         emb.add_field(name="e!deleteGoal {name}", value="Deletes a server goal. (admin only)", inline=False)
         emb.add_field(name="e!addEggs {number}", value="Adds eggs to the server bank. (admin only)", inline=False)
@@ -37,10 +38,10 @@ class Economy(commands.Cog):
         emb.add_field(name="e!confirmGoal {name}",
                       value="Confirms goal completion. (Deducts eggs from the server bank, "
                             "deletes goal) (admin only)", inline=False)
-        await ctx.send(embed=emb)
 
-    @commands.command()
+    @commands.command(aliases=["notifications"])
     async def notifs(self, ctx, arg1):
+        """Sets notifications for when you gain egg(s)"""
         try:
             if arg1.lower() in ['on', "true", "yes", "y"]:
                 stonks["users"][str(ctx.author.id)]["notif"] = "True"
@@ -52,8 +53,9 @@ class Economy(commands.Cog):
             await sleep(1)
             await self.notifs(ctx, arg1)
 
-    @commands.command()
+    @commands.command(aliases=['bal', 'balance'])
     async def fridge(self, ctx):
+        """Shows the number of global and server eggs you own."""
         emb = discord.Embed(title="{u}'s fridge:".format(u=str(ctx.author)), color=0xfefefe)
         emb.set_footer(text="Protip: Use e!notifs to be notified of the number of eggs you receive.")
         try:
@@ -76,8 +78,9 @@ class Economy(commands.Cog):
         except AttributeError:
             pass
 
-    @commands.command()
+    @commands.command(aliases=['serverBal', 'serverBalance', 'serverEggs'])
     async def bank(self, ctx):
+        """Shows the current number of server eggs donated to the server."""
         try:
             emb = discord.Embed(title="{s} Bank Balance:".format(s=str(ctx.guild)),
                                 description=str(stonks["servers"][str(ctx.guild.id)]), color=0xfefefe)
@@ -91,6 +94,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def goals(self, ctx):
+        """Displays any goals set in the current server"""
         try:
             emb = discord.Embed(title="{s} Server Goals:".format(s=str(ctx.guild)), color=0x00ff55)
             a = warehouse[str(ctx.guild.id)]
@@ -118,8 +122,9 @@ class Economy(commands.Cog):
             emb.add_field(name="None", value="There are no goals set in this server.")
             await ctx.send(embed=emb)
 
-    @commands.command()
+    @commands.command(aliases=['deposit'])
     async def donate(self, ctx, arg1):
+        """Donates eggs to the server bank, making progress toward any goals."""
         try:
             wallet = stonks["users"][str(ctx.author.id)][str(ctx.guild.id)]
             arg1 = int(arg1)
@@ -144,8 +149,9 @@ class Economy(commands.Cog):
                             color=0x00ff55)
         await ctx.send(embed=emb)
 
-    @commands.command()
+    @commands.command(aliases=['addGoal'])
     async def setGoal(self, ctx, *args):
+        """Adds a goal to the server (admins only)"""
         try:
             if ctx.author.guild_permissions.administrator:
                 try:
@@ -177,8 +183,9 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
 
-    @commands.command()
+    @commands.command(aliases=['removeGoal'])
     async def deleteGoal(self, ctx, *args):
+        """Removes a goal from the server (admins only)"""
         try:
             if ctx.author.guild_permissions.administrator:
                 try:
@@ -206,6 +213,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def addEggs(self, ctx, arg1):
+        """Adds eggs to the server bank (admins only)"""
         try:
             if ctx.author.guild_permissions.administrator:
                 arg1 = int(arg1)
@@ -221,6 +229,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def removeEggs(self, ctx, arg1):
+        """Removes eggs from the server bank (admins only)"""
         try:
             if ctx.author.guild_permissions.administrator:
                 arg1 = int(arg1)
@@ -241,6 +250,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def confirmgoal(self, ctx, *args):
+        """Deletes a goal and deducts the cost from the server bank (admins only)"""
         try:
             if ctx.author.guild_permissions.administrator:
                 try:
@@ -283,8 +293,9 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
 
-    @commands.command()
+    @commands.command(aliases=['store'])
     async def shop(self, ctx):
+        """Displays items purchasable with global eggs"""
         emb = discord.Embed(title="Eggbot Shop", color=0x00ff55)
         a = warehouse["global"]
         if len(a) > 0:
@@ -304,8 +315,9 @@ class Economy(commands.Cog):
         emb.set_footer(text="We only take global eggs.")
         await ctx.send(embed=emb)
 
-    @commands.command()
-    async def inv(self, ctx):
+    @commands.command(aliases=['inv', 'items'])
+    async def inventory(self, ctx):
+        """Displays your collection of items"""
         try:
             inventory = stonks["users"][str(ctx.message.author.id)]["inv"]
             if inventory == "None":
@@ -331,8 +343,9 @@ class Economy(commands.Cog):
                                 color=0xff0000)
         await ctx.send(embed=emb)
 
-    @commands.command()
+    @commands.command(aliases=['purchase'])
     async def buy(self, ctx, *args):
+        """Buys an item from the shop"""
         args = list(args)
         name = joinArgs(args)
         del args

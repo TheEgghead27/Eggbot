@@ -14,16 +14,17 @@ except ModuleNotFoundError:  # install the discord modules
     import discord
     from discord.ext import commands
     import simplejson as json
+from cogs.commands.help import EmbedHelpCommand
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
     beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes = load(blacklist=[])
 
 # initialize a bunch of variables used in places
 prefix = ['e!', 'E!', 'e! ', 'e! ']
-status = '{p}help'.format(p=prefix[0])
+status = '{p}oldHelp'.format(p=prefix[0])
 prefixLen = len(prefix)
-bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts)
-bot.remove_command("help")
+bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts,
+                              help_command=EmbedHelpCommand(verify_checks=False, show_hidden=False))
 bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
@@ -205,7 +206,7 @@ if __name__ == '__main__':
         await message.channel.send(message.author.mention)
 
     # The One Command to rule them all
-    @bot.command()
+    @bot.command(hidden=True)
     @commands.check(host_check)
     async def say(ctx, *args):
         try:
@@ -268,7 +269,10 @@ if __name__ == '__main__':
         loadDir = cogDir.replace('/', '.')
         for cog in listdir(cogDir):
             if cog.endswith('.py'):  # bot tries to load all .py files in said folders, use cogs/misc for non-cog things
-                bot.load_extension(loadDir + cog[:-3])
+                try:
+                    bot.load_extension(loadDir + cog[:-3])
+                except commands.NoEntryPointError:
+                    print(f"{loadDir + cog[:-3]} is not a proper cog!")
 
     try:
         bot.run(token)
