@@ -67,18 +67,25 @@ class Utility(commands.Cog):
                         user = message.author
                 except IndexError:
                     user = message.author
+
             userColor = user.color
             embeds = []
             emb = discord.Embed(title="About " + str(user), description="User info for " + user.name, color=0x03f4fc)
             emb.set_thumbnail(url=user.avatar_url)
+
             if user.display_name != str(user.name):  # doesn't need to use the member/user check
                 emb.add_field(name="User Nickname", value=user.display_name, inline=True)
-            if user.activity:
-                try:
-                    activity = activityTypes[str(user.activity.type)]
-                except KeyError:
-                    activity = "Playing"
-                emb.add_field(name=activity, value=user.activity.name, inline=False)
+
+            try:
+                if user.activity:
+                    try:
+                        activity = activityTypes[str(user.activity.type)]
+                    except KeyError:
+                        activity = "Playing"
+                    emb.add_field(name=activity, value=user.activity.name, inline=False)
+            except AttributeError:
+                pass
+
             emb.add_field(name="User ID", value=str(user.id), inline=True)
             emb.add_field(name="User Avatar Hash", value=user.avatar, inline=False)
             emb.add_field(name="User Discriminator", value=user.discriminator, inline=False)
@@ -99,10 +106,12 @@ class Utility(commands.Cog):
 
             emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
             embeds.append(emb.to_dict())
+
             if type(message.author) == discord.member.Member:
                 emb = discord.Embed(title=f"About {str(user)}", description=f"Member info for {user.name}",
                                     color=0x03f4fc)
                 emb.set_thumbnail(url=user.avatar_url)
+
                 try:
                     emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
                     name_roles = ''
@@ -120,9 +129,11 @@ class Utility(commands.Cog):
                     embeds.append(emb.to_dict())
                 except AttributeError:
                     pass
+
             emb = discord.Embed(title=f"{user.name}'s Profile Picture", color=0x03f4fc)
             emb.set_image(url=user.avatar_url)
             embeds.append(emb.to_dict())
+
         aboutMess = await ctx.send(embed=discord.Embed.from_dict(embeds[0]))
         await self.pagination.paginate(aboutMess, embeds, 0, 300)
 
