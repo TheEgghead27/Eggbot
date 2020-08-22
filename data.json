@@ -1,11 +1,23 @@
 {
   "spic": [
-    "*",
-    "**",
-    "***",
-    "||",
-    "`",
-    " "
+    [
+      "*",
+      "**",
+      "***"
+    ],
+    [
+      "__",
+      ""
+    ],
+    [
+      "||",
+      "",
+      ""
+    ],
+    [
+      "`",
+      ""
+    ]
   ],
   "eggTrigger": [
     "egg",
@@ -19,7 +31,8 @@
     ":egg:",
     "gee",
     "ggge",
-    "<:egghead:698281894441123990>"
+    "<:egghead:698281894441123990>",
+    "\uD83E\uDD5A"
   ],
   "eggs": [
     "egg",
@@ -29,8 +42,15 @@
     "EGg",
     "eGG",
     "EgG",
-    ":egg:",
+    "\uD83E\uDD5A",
     "<:egghead:698281894441123990>"
+  ],
+  "mmyes": [
+    "mk",
+    "bruh",
+    "lol",
+    "oof",
+	"smh"
   ],
   "simp": [
     "Simp",
@@ -200,18 +220,22 @@
   ],
   "insults": [
     "GO UPSTAIRS",
-    "ITS FUCKIN RAW",
-    "Your food killed my dog and he eats his own fucking shit",
-    "This tastes like my grandma's fuckin' dentures",
-    "not even a fucking canary could've warned me of this fast enough",
+    "ITS FUCKIN' RAW",
+    "Your food killed my dog and he eats his own fucking shit!",
+    "This tastes like my grandma's fuckin' dentures.",
+    "Not even a fucking canary could've warned me of this fast enough!",
     "Are you dumb? Stupid? Or just dumb.",
-    "I didn't realize this dish had to specify your brain as a fucking step",
-    "What are you? You're a fucking idiot sandwich"
+    "I didn't realize this dish had to specify your brain as a fucking step!",
+    "What are you? You're a fucking idiot sandwich!",
+    "I'd give you what you deserved for that dish, but that would violate all the laws of robotics."
   ],
   "times": {
     "second": 1,
+    "s": 1,
     "minute": 60,
+    "m": 60,
     "hour": 3600,
+    "h": 3600,
     "day": 0,
     "week": 0,
     "month": 0,
@@ -221,5 +245,26 @@
     "centuries": 0,
     "millennium": 0,
     "millennia": 0
+  },
+  "activityTypes": {
+    "ActivityType.playing": "Playing",
+    "ActivityType.streaming": "Streaming",
+    "ActivityType.listening": "Listening to",
+    "ActivityType.custom": "Custom Status"
+  },
+  "flagFields": {
+    "staff": "A Discord Staff member",
+    "partner": "A Discord Partner",
+    "hypesquad": "A Discord Hypesquad member",
+    "bug_hunter": "A recognized Discord bug hunter",
+    "hypesquad_bravery": "A Hypesquad Bravery <:HypeBravery:745668996241817780> member",
+    "hypesquad_brilliance": "A Hypesquad Brilliance <:HypeBrilliance:745668996157931652> member",
+    "hypesquad_balance": "A Hypesquad Balance <:HypeBalance:745668996237361172> member",
+    "early_supporter": "An early supporter of Discord",
+    "team_user": "A Discord Team User",
+    "system": "A Discord System User",
+    "bug_hunter_level_2": "A recognized Level 2 Discord bug hunter",
+    "verified_bot": "A verified bot",
+    "verified_bot_developer": "A verified bot developer"
   }
 }
