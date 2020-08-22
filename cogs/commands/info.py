@@ -36,8 +36,8 @@ class Info(commands.Cog, name="Bot Info"):
                                                        "(when the bot is online).", inline=False)
         emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
         # good lord I fucked up the timer syntax badly
-        emb.add_field(name="e!timer \"name\" (quotes mandatory) [time format] (and if you want more units of time) and "
-                           "[time format]",
+        emb.add_field(name='e!timer "name" (quotes mandatory) [time format] (and if you want more units of time) and '
+                           '[time format]',
                       value="Creates a timer that pings the requesting user after a specified time.",
                       inline=False)
         emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
