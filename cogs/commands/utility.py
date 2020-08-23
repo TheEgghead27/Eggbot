@@ -95,7 +95,6 @@ class Utility(commands.Cog):
             flags = user.public_flags
             userIs = ''
             for i in flags.all():
-                print(i.name)
                 try:
                     userIs += flagFields[i.name] + '\n'
                 except KeyError:
