@@ -47,6 +47,7 @@ class EmbedHelpCommand(commands.HelpCommand):
                         return not CheckCommand.hidden
                 new = []
                 for c in Commands:
+                    # print(c.clean_params)
                     if commandCheck(c):
                         new.append(c.name)
                 new.sort()

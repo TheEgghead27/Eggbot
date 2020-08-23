@@ -67,7 +67,6 @@ class Debug(commands.Cog):
                 'bot': self.bot,
                 'discord': discord,
                 'commands': commands,
-                'cmds': self.bot.cmds,
                 'ctx': ctx,
             }
             exec(compile(parsed, filename="<ast>", mode="exec"), env)

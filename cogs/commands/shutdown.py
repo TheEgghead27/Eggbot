@@ -43,7 +43,10 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             loadDir = cogDir.replace('/', '.')
             for cog in listdir(cogDir):
                 if cog.endswith('.py'):  # tries to reload all .py files in the folders, use cogs/misc instead
-                    self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
+                    try:
+                        self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
+                    except commands.ExtensionNotLoaded:
+                        pass
         await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     async def papate(self, ctx, embedColor, phrase, timer):
