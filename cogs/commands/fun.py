@@ -48,7 +48,7 @@ class Fun(commands.Cog):
                 limitCheck = 0
                 if beeTime:  # don't send an empty embed
                     bs.append(emb.to_dict())
-                    await ctx.send(embed=emb)
+                    # await ctx.send(embed=emb)
                 emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
                 emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messNo)))
                 # alternate colors
@@ -62,7 +62,7 @@ class Fun(commands.Cog):
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
             limitCheck = limitCheck + 1
         bs.append(emb.to_dict())
-        await ctx.send(embed=emb)
+        await ctx.send("Done, check terminal!")
         print(bs)
 
     @commands.command(hidden=True)
