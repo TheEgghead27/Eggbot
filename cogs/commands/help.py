@@ -20,13 +20,14 @@ class EmbedHelpCommand(commands.HelpCommand):
     # Set the embed colour here
     COLOUR = discord.Colour.from_rgb(24, 136, 240)
 
-    def get_ending_note(self):
-        memberIDs = []
-        for i in self.context.guild.members:
-            memberIDs.append(i.id)
-        if 472714545723342848 in tuple(memberIDs):
-            return "Use e!help [command] for more info on a command. || This help command's format was stolen from " \
-                   "Ear Tensifier".format(self.clean_prefix.lower().strip(" "))
+    def get_ending_note(self, main):
+        if main:
+            memberIDs = []
+            for i in self.context.guild.members:
+                memberIDs.append(i.id)
+            if 472714545723342848 in tuple(memberIDs):
+                return "Use e!help [command] for more info on a command. || This help command's format was stolen " \
+                       "from Ear Tensifier".format(self.clean_prefix.lower().strip(" "))
         return 'Use e!help [command] for more info on a command.'.format(self.clean_prefix.lower().strip(" "))
 
     def get_command_signature(self, command):
@@ -62,7 +63,7 @@ class EmbedHelpCommand(commands.HelpCommand):
 
                 embed.add_field(name=name, value=value, inline=False)
 
-        embed.set_footer(text=self.get_ending_note())
+        embed.set_footer(text=self.get_ending_note(main=True))
         await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
@@ -74,7 +75,7 @@ class EmbedHelpCommand(commands.HelpCommand):
         for command in filtered:
             embed.add_field(name=self.get_command_signature(command), value=command.short_doc or '...', inline=False)
 
-        embed.set_footer(text=self.get_ending_note())
+        embed.set_footer(text=self.get_ending_note(main=False))
         await self.get_destination().send(embed=embed)
 
     async def send_group_help(self, group):
@@ -88,7 +89,7 @@ class EmbedHelpCommand(commands.HelpCommand):
                 embed.add_field(name=self.get_command_signature(command), value=command.short_doc or '...',
                                 inline=False)
 
-        embed.set_footer(text=self.get_ending_note())
+        embed.set_footer(text=self.get_ending_note(main=False))
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, Command):
@@ -104,7 +105,7 @@ class EmbedHelpCommand(commands.HelpCommand):
                 embed.add_field(name=self.get_command_signature(command), value=command.short_doc or '...',
                                 inline=False)
 
-        embed.set_footer(text=self.get_ending_note())
+        embed.set_footer(text=self.get_ending_note(main=False))
         await self.get_destination().send(embed=embed)
 
     async def command_not_found(self, string):

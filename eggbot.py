@@ -209,6 +209,7 @@ if __name__ == '__main__':
     @bot.command(hidden=True)
     @commands.check(host_check)
     async def say(ctx, *args):
+        """Gets the bot to say what you ask it to"""
         try:
             await ctx.message.delete()
         except discord.Forbidden:
