@@ -65,20 +65,6 @@ class EmbedHelpCommand(commands.HelpCommand):
         embed.set_footer(text=self.get_ending_note(main=True))
         await self.get_destination().send(embed=embed)
 
-    async def send_group_help(self, group):
-        embed = discord.Embed(title=group.qualified_name, colour=self.COLOUR)
-        if group.help:
-            embed.description = group.help
-
-        if isinstance(group, commands.Group):
-            filtered = await self.filter_commands(group.commands, sort=True)
-            for command in filtered:
-                embed.add_field(name=self.get_command_signature(command), value=command.short_doc or '...',
-                                inline=False)
-
-        embed.set_footer(text=self.get_ending_note(main=False))
-        await self.get_destination().send(embed=embed)
-
     async def send_command_help(self, Command):
         if Command.brief is None:
             syntax = ""
