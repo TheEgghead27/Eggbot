@@ -48,7 +48,6 @@ class EmbedHelpCommand(commands.HelpCommand):
                         return not CheckCommand.hidden
                 new = []
                 for c in Commands:
-                    # print(c.clean_params)
                     if commandCheck(c):
                         new.append(c.name)
                 new.sort()
@@ -93,7 +92,7 @@ class EmbedHelpCommand(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, Command):
-        embed = discord.Embed(title='e!' + Command.qualified_name, colour=self.COLOUR)
+        embed = discord.Embed(title=f'e!{Command.qualified_name} {Command.brief}', colour=self.COLOUR)
         if Command.qualified_name == 'help':
             embed.description = "Displays the documentation for Eggbot."
         elif Command.help:

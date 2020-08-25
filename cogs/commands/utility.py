@@ -41,7 +41,7 @@ class Utility(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
 
-    @commands.command(aliases=['user', 'aboutUser'])
+    @commands.command(aliases=['user', 'aboutUser'], brief="{optional: @user/user id}")
     async def about(self, ctx):
         """Displays the user info for the specified user"""
         message = ctx.message
@@ -137,7 +137,7 @@ class Utility(commands.Cog):
         aboutMess = await ctx.send(embed=discord.Embed.from_dict(embeds[0]))
         await self.pagination.paginate(aboutMess, embeds, 0, 300)
 
-    @commands.command(aliases=['purge', 'nuke'])
+    @commands.command(aliases=['purge', 'nuke'], brief="{number of messages}")
     async def vacuum(self, ctx, *args):
         """Deletes the specified number of messages from the current channel"""
         if ctx.message.author.permissions_in(ctx.message.channel).manage_messages:
@@ -169,7 +169,8 @@ class Utility(commands.Cog):
             await sleep(0.7)
             await ctx.send("you cant spell")
 
-    @commands.command(aliases=['reminder'])
+    @commands.command(aliases=['reminder'], brief="{optional: timer name} {number} {unit} (repeat number + unit as "
+                                                  "needed)")
     async def timer(self, ctx, *args):
         """Sets a reminder that pings you after the specified time"""
         try:

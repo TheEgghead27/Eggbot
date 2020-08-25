@@ -13,10 +13,10 @@ class Fun(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
 
-    @commands.command()
+    @commands.command(brief="{optional: page number}")
     @commands.cooldown(1, 7.5, commands.BucketType.user)
     async def bee(self, ctx):
-        """Displays The Bee Movie's script, with 99% less spam!"""
+        """Displays The Bee Movie's script, now with 99% less spam!"""
         args = ctx.message.content.split(' ')
         try:
             page = int(args[1]) - 1
@@ -65,7 +65,7 @@ class Fun(commands.Cog):
         await ctx.send("Done, check terminal!")
         print(bs)
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, brief="{optional: number of embeds}")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def kiri(self, ctx, *args):
         """Displays an image of Eijiro Kirishima from My Hero Academia. You can specify the number of images you want

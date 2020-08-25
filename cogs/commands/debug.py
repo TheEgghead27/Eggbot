@@ -19,7 +19,7 @@ class Debug(commands.Cog):
         emb.add_field(name="API Latency", value=f"{round(self.bot.latency * 1000, 3)} ms")
         await msg.edit(content=None, embed=emb)
 
-    @commands.command(aliases=['TestArgs'])
+    @commands.command(aliases=['TestArgs'], brief='{arguments}')
     async def test_args(self, ctx, *args):
         """Displays how the provided arguments are presented to the bot"""
         arghs = args
@@ -40,7 +40,7 @@ class Debug(commands.Cog):
 
     # Code partially used from https://gist.github.com/nitros12/2c3c265813121492655bc95aa54da6b9
     # Code 100% yoinked from CatLamp
-    @commands.command(hidden=True, name="eval")
+    @commands.command(name="eval", hidden=True, brief='{code (use newlines for multi-line code)}')
     @commands.check(host_check)
     async def evaluate(self, ctx, *, code):
         """Executes the specified code (command stolen from CatLamp)"""
@@ -93,7 +93,7 @@ class Debug(commands.Cog):
                 embed.set_footer(text="Error occurred while executing.")
                 await ctx.send(embed=embed)
 
-    @commands.command(aliases=["print", "printEmoji"], hidden=True)
+    @commands.command(aliases=["print", "printEmoji"], hidden=True, brief='{emoji}')
     @commands.check(host_check)
     async def print_emoji(self, ctx, arg1):
         """Prints the first argument"""

@@ -206,7 +206,7 @@ if __name__ == '__main__':
         await message.channel.send(message.author.mention)
 
     # The One Command to rule them all
-    @bot.command(hidden=True)
+    @bot.command(hidden=True, brief='{optional: channel/user mention or id} {words to echo}')
     @commands.check(host_check)
     async def say(ctx, *args):
         """Gets the bot to say what you ask it to"""

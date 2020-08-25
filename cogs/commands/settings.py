@@ -32,7 +32,7 @@ class Settings(commands.Cog):
         self.bot.botSafeguard, state = reverseBool(self.bot.botSafeguard)
         await ctx.send("Set bot message processing to {}.".format(state.upper()))
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, brief="{status}")
     @commands.check(host_check)
     async def setStatus(self, ctx, *args):
         """Sets the \"Playing\" status for the bot based on a provided line"""

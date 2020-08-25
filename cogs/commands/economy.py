@@ -39,7 +39,7 @@ class Economy(commands.Cog):
                       value="Confirms goal completion. (Deducts eggs from the server bank, "
                             "deletes goal) (admin only)", inline=False)
 
-    @commands.command(aliases=["notifications"])
+    @commands.command(aliases=["notifications"], brief="{on/off}")
     async def notifs(self, ctx, arg1):
         """Sets notifications for when you gain egg(s)"""
         try:
@@ -122,7 +122,7 @@ class Economy(commands.Cog):
             emb.add_field(name="None", value="There are no goals set in this server.")
             await ctx.send(embed=emb)
 
-    @commands.command(aliases=['deposit'])
+    @commands.command(aliases=['deposit'], brief="{number of eggs}")
     async def donate(self, ctx, arg1):
         """Donates eggs to the server bank, making progress toward any goals."""
         try:
@@ -149,7 +149,7 @@ class Economy(commands.Cog):
                             color=0x00ff55)
         await ctx.send(embed=emb)
 
-    @commands.command(aliases=['addGoal'])
+    @commands.command(aliases=['addGoal'], brief="{cost} {name}")
     async def setGoal(self, ctx, *args):
         """Adds a goal to the server (admins only)"""
         try:
@@ -183,7 +183,7 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
 
-    @commands.command(aliases=['removeGoal'])
+    @commands.command(aliases=['removeGoal'], brief="{name}")
     async def deleteGoal(self, ctx, *args):
         """Removes a goal from the server (admins only)"""
         try:
@@ -211,7 +211,7 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
 
-    @commands.command()
+    @commands.command(brief="{number}")
     async def addEggs(self, ctx, arg1):
         """Adds eggs to the server bank (admins only)"""
         try:
@@ -227,7 +227,7 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
 
-    @commands.command()
+    @commands.command(brief="{number}")
     async def removeEggs(self, ctx, arg1):
         """Removes eggs from the server bank (admins only)"""
         try:
@@ -248,7 +248,7 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
 
-    @commands.command()
+    @commands.command(brief="{name}")
     async def confirmgoal(self, ctx, *args):
         """Deletes a goal and deducts the cost from the server bank (admins only)"""
         try:
@@ -343,7 +343,7 @@ class Economy(commands.Cog):
                                 color=0xff0000)
         await ctx.send(embed=emb)
 
-    @commands.command(aliases=['purchase'])
+    @commands.command(aliases=['purchase'], brief="{item name}")
     async def buy(self, ctx, *args):
         """Buys an item from the shop"""
         args = list(args)
