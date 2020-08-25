@@ -39,13 +39,13 @@ class EmbedHelpCommand(commands.HelpCommand):
             name = 'Misc.' if cog is None else cog.qualified_name
             filtered = await self.filter_commands(Commands, sort=True)
             if filtered:
-                # stealing this formatting from Ear Tensifier because
                 if self.context.author.id in owners:
                     def commandCheck(CheckCommand):
                         return CheckCommand
                 else:
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
+                # stealing this formatting from Ear Tensifier because
                 new = []
                 for c in Commands:
                     if commandCheck(c):
@@ -54,12 +54,14 @@ class EmbedHelpCommand(commands.HelpCommand):
                 Commands = new
                 del new
                 value = ''
+                if name == "Bot Info":
+                    value += f'`help`, '
                 for c in Commands:
-                    value += f'`{c}`, '
+                    if c != "help":
+                        value += f'`{c}`, '
                 value = value.rstrip(", ")
                 if cog and cog.description:
                     value = '{0}\n{1}'.format(cog.description, value)
-
                 embed.add_field(name=name, value=value, inline=False)
 
         embed.set_footer(text=self.get_ending_note(main=True))
