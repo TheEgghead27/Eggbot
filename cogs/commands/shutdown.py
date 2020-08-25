@@ -46,7 +46,16 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                     try:
                         self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
                     except commands.ExtensionNotLoaded:
-                        pass
+                        try:
+                            self.bot.load_extension(loadDir + cog[:-3])
+                        except commands.NoEntryPointError:
+                            print(f"{loadDir + cog[:-3]} is not a proper cog!")
+                        except commands.ExtensionAlreadyLoaded:
+                            print('you should not be seeing this\n if you do, youre screwed')
+                        except commands.ExtensionFailed as failure:
+                            print(f'{failure.name} failed! booooo')
+                    except commands.ExtensionFailed as failure:
+                        print(f'{failure.name} failed! booooo')
         await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     async def papate(self, ctx, embedColor, phrase, timer):
