@@ -65,18 +65,6 @@ class EmbedHelpCommand(commands.HelpCommand):
         embed.set_footer(text=self.get_ending_note(main=True))
         await self.get_destination().send(embed=embed)
 
-    async def send_cog_help(self, cog):
-        embed = discord.Embed(title='{0.qualified_name} Commands'.format(cog), colour=self.COLOUR)
-        if cog.description:
-            embed.description = cog.description
-
-        filtered = await self.filter_commands(cog.get_commands(), sort=True)
-        for command in filtered:
-            embed.add_field(name=self.get_command_signature(command), value=command.short_doc or '...', inline=False)
-
-        embed.set_footer(text=self.get_ending_note(main=False))
-        await self.get_destination().send(embed=embed)
-
     async def send_group_help(self, group):
         embed = discord.Embed(title=group.qualified_name, colour=self.COLOUR)
         if group.help:
@@ -92,7 +80,11 @@ class EmbedHelpCommand(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, Command):
-        embed = discord.Embed(title=f'e!{Command.qualified_name} {Command.brief}', colour=self.COLOUR)
+        if Command.brief is None:
+            syntax = ""
+        else:
+            syntax = Command.brief
+        embed = discord.Embed(title=f'e!{Command.qualified_name} {syntax}', colour=self.COLOUR)
         if Command.qualified_name == 'help':
             embed.description = "Displays the documentation for Eggbot."
         elif Command.help:
