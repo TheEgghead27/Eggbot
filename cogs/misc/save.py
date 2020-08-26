@@ -3,7 +3,8 @@ from cogs.commands.economy import stonks, warehouse
 from cogs.commands.roles import roles, joinRoles
 
 
-def write():
+def write(eggCount):
+    print(eggCount)
     with open("roles.json", "w") as j:
         dick = {"reactions": roles, "join": joinRoles}
         json.dump(dick, j, encoding="utf-8")

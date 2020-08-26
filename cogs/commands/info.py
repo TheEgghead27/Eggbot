@@ -104,8 +104,7 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.check(host_check)
     async def eggCount(self, ctx):
         """Counts eggs"""
-        emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-        emb.add_field(name="Egg count:", value=str(self.bot.eggCount[0]), inline=False)
+        emb = discord.Embed(title="Eggs sent during this session:", description=str(self.bot.eggCount[0]))
         if not self.bot.eggCount[1]:
             emb.set_footer(text="This score was manipulated, so it is ineligible for the high score boards.")
         await ctx.send(embed=emb)
@@ -113,7 +112,13 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.command(aliases=['eggCharts', 'eC'])
     @commands.check(host_check)
     async def highScores(self, ctx):
-        pass
+        emb = discord.Embed(title="Highest Egg Counts of All Times:")
+        emb.add_field(name="#1", value='first', inline=False)
+        emb.add_field(name="#2", value='first', inline=False)
+        emb.add_field(name="#3", value='first', inline=False)
+        emb.add_field(name="#4", value='first', inline=False)
+        emb.add_field(name="#5", value='first', inline=False)
+        await ctx.send(embed=emb)
 
     @commands.command()
     async def admins(self, ctx):

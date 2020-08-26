@@ -125,7 +125,7 @@ if __name__ == '__main__':
     @bot.event
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
-        write()
+        write(bot.eggCount)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
 
