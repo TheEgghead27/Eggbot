@@ -108,6 +108,7 @@ def delistList(index):
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
+    from datetime import date
 
     import logging as logs
 
@@ -120,7 +121,7 @@ if __name__ == '__main__':
     # turn the bot "on"
     on = True
     # eggCount
-    bot.eggCount = [0, True]
+    bot.eggCount = [0, True, date.today()]
 
     @bot.event
     async def on_ready():
