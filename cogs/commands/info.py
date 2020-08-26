@@ -1,10 +1,11 @@
 from asyncio import sleep
+from datetime import datetime
 
 import discord
 from discord.ext import commands
 
 from cogs.misc import mdbed
-from eggbot import hosts, host_check
+from eggbot import hosts, host_check, scores
 
 
 class Info(commands.Cog, name="Bot Info"):
@@ -112,12 +113,21 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.command(aliases=['eggCharts', 'eC'])
     @commands.check(host_check)
     async def highScores(self, ctx):
+        scoresSorted = []
+        for i in scores:
+            scoresSorted.append(int(i))
+        scoresSorted.sort()
+        scoresSorted = scoresSorted[::-1]
         emb = discord.Embed(title="Highest Egg Counts of All Times:")
-        emb.add_field(name="#1", value='first', inline=False)
-        emb.add_field(name="#2", value='first', inline=False)
-        emb.add_field(name="#3", value='first', inline=False)
-        emb.add_field(name="#4", value='first', inline=False)
-        emb.add_field(name="#5", value='first', inline=False)
+        emb.add_field(name="#1", value=str(scoresSorted[0]), inline=False)
+        emb.add_field(name="#2", value=str(scoresSorted[1]), inline=False)
+        emb.add_field(name="#3", value=str(scoresSorted[2]), inline=False)
+        emb.add_field(name="#4", value=str(scoresSorted[3]), inline=False)
+        emb.add_field(name="#5", value=str(scoresSorted[4]), inline=False)
+        emb.set_footer(text='The record for most eggs in one session was set')
+        date = scores[str(scoresSorted[0])]
+        date = datetime(year=date[0], month=date[1], day=date[2], hour=date[3])
+        emb.timestamp = date
         await ctx.send(embed=emb)
 
     @commands.command()

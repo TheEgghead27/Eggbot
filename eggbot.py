@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # install the discord modules
 from cogs.commands.help import EmbedHelpCommand
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
-    beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes = load(blacklist=[])
+    beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes, scores = load(blacklist=[])
 
 # initialize a bunch of variables used in places
 prefix = ['e!', 'E!', 'e! ', 'e! ']
@@ -108,7 +108,7 @@ def delistList(index):
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
-    from datetime import date
+    from datetime import datetime
 
     import logging as logs
 
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     # turn the bot "on"
     on = True
     # eggCount
-    bot.eggCount = [0, True, date.today()]
+    bot.eggCount = [0, True, datetime.now()]
 
     @bot.event
     async def on_ready():
@@ -262,6 +262,9 @@ if __name__ == '__main__':
                 await args[0].channel.send(embed=emb)
             except discord.Forbidden:
                 return
+            except (discord.NotFound, IndexError):
+                ApertureScienceErrorHandlingAssociate = bot.get_user(bot.owner_ids[0])
+                await ApertureScienceErrorHandlingAssociate.send(embed=emb)
         raise system.exc_info()[0]
 
 

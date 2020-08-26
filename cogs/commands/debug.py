@@ -1,4 +1,6 @@
 import ast
+import datetime
+
 import discord
 from discord.ext import commands
 
@@ -105,6 +107,8 @@ class Debug(commands.Cog):
     async def embedTest(self, ctx):
         embed = discord.Embed(title='Go to YouTube', url='https://www.youtube.com/',
                               description='New video guys click on the title or click [here](https://www.youtube.com/)')
+        # embed.timestamp = datetime.datetime.today()
+        embed.timestamp = datetime.datetime(year=1980, month=1, day=1, hour=5)
         await ctx.send(embed=embed)
 
 
