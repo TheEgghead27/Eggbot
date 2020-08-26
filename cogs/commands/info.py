@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 from cogs.misc import mdbed
-from eggbot import hosts, host_check, eggC
+from eggbot import hosts, host_check
 
 
 class Info(commands.Cog, name="Bot Info"):
@@ -101,14 +101,14 @@ class Info(commands.Cog, name="Bot Info"):
             raise error
 
     @commands.command()
+    @commands.check(host_check)
     async def eggCount(self, ctx):
         """Counts eggs"""
-        if host_check(ctx):
-            emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-            emb.add_field(name="Egg count:", value=str(eggC), inline=False)
-            await ctx.send(embed=emb)
-        else:
-            await ctx.send("This command has been disabled.")
+        emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
+        emb.add_field(name="Egg count:", value=str(self.bot.eggCount[0]), inline=False)
+        if not self.bot.eggCount[1]:
+            emb.set_footer(text="T")
+        await ctx.send(embed=emb)
 
     @commands.command()
     async def admins(self, ctx):

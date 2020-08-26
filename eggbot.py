@@ -29,7 +29,6 @@ bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
 del status
-eggC = 0
 
 
 # create functions imported by cogs
@@ -120,7 +119,8 @@ if __name__ == '__main__':
 
     # turn the bot "on"
     on = True
-
+    # eggCount
+    bot.eggCount = [0, True]
 
     @bot.event
     async def on_ready():
@@ -167,6 +167,7 @@ if __name__ == '__main__':
             try:
                 if a[0].startswith(eggTrigger):
                     await message.channel.send(markdown(eggs))
+                    bot.eggCount[0] += 1
                     try:
                         oval = random.randrange(0, 10)
                         if oval >= 8:
