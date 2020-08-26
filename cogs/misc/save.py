@@ -11,12 +11,18 @@ def write(eggCount):
         print(str(eggCount[2]))
         date = eggCount[2]
         date = [date.year, date.month, date.day, date.hour]
-        print(date)
-        # uhhh ill just make plans here
-        # scores: {'str(score)': date}
 
-    else:
-        print('bastard')
+        scores[str(eggCount[0])] = date
+        scoresSorted = []
+        for i in scores:  # wait can i sort a dict? no
+            scoresSorted.append(int(i))
+            print(scores[i] == date)
+        scoresSorted.sort()
+        if len(scores) == 6:
+            print(scores[str(scoresSorted[0])])
+            del scores[str(scoresSorted[0])]
+        elif len(scores) != 5:
+            print('Dude WTF')
 
     with open("roles.json", "w") as j:
         dick = {"reactions": roles, "join": joinRoles}
