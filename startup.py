@@ -283,15 +283,3 @@ def getOwners():
             return hosts
     except Exception as e:
         print(f'getOwners() raised {e}!')
-
-
-def badges():
-    try:
-        file = "config.json"
-        with open(file, "r") as config:
-            config = json.load(config)
-            activityTypes = data['activityTypes']
-            return activityTypes
-    except Exception as e:
-        print(f'badges() raised {e}!')
-
