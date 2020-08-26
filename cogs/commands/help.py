@@ -77,6 +77,13 @@ class EmbedHelpCommand(commands.HelpCommand):
             embed.description = "Displays the documentation for Eggbot."
         elif Command.help:
             embed.description = Command.help
+        if Command.aliases:
+            value = ''
+            for a in Command.aliases:
+                if a != "help":
+                    value += f'`{a}`, '
+            value = value.rstrip(", ")
+            embed.add_field(name='Aliases', value=value)
 
         embed.set_footer(text=self.get_ending_note(main=False))
         await self.get_destination().send(embed=embed)
