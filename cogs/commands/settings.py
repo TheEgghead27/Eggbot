@@ -23,6 +23,7 @@ class Settings(commands.Cog):
     async def spam(self, ctx):
         """[REDACTED FOR SPOILERS]"""
         self.bot.safeguard, state = reverseBool(self.bot.safeguard)
+        self.bot.eggCount[1] = False
         await ctx.send("Set spam mode to {}.".format(state.upper()))
 
     @commands.command(hidden=True)
@@ -30,6 +31,7 @@ class Settings(commands.Cog):
     async def botSpam(self, ctx):
         """Allows the bot to process messages from other bots"""
         self.bot.botSafeguard, state = reverseBool(self.bot.botSafeguard)
+        self.bot.eggCount[1] = False
         await ctx.send("Set bot message processing to {}.".format(state.upper()))
 
     @commands.command(hidden=True, brief="{status}")
