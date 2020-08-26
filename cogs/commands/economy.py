@@ -341,6 +341,8 @@ class Economy(commands.Cog):
             emb = discord.Embed(title="Error:",
                                 description="There was an error loading your inventory. Check back later.",
                                 color=0xff0000)
+            stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                                   "inv": "None"}
         await ctx.send(embed=emb)
 
     @commands.command(aliases=['purchase'], brief="{item name}")
