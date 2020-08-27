@@ -20,7 +20,7 @@ hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, 
     beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes, scores = load(blacklist=[])
 
 # initialize a bunch of variables used in places
-prefix = ['e!', 'E!', 'e! ', 'e! ']  # you can kinda? customize this, but i honestly don't care if you do/don't,
+prefix = ['e!', 'E!', 'e! ', 'E! ', "e1", 'e1 ']  # you can kinda? customize this, but i honestly don't care
 status = '{p}help'.format(p=prefix[0])
 prefixLen = len(prefix)
 bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts,
