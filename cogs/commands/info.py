@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 from cogs.misc import mdbed, save
-from eggbot import hosts, host_check
+from eggbot import hosts
 
 
 class Info(commands.Cog, name="Bot Info"):
