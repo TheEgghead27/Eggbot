@@ -16,7 +16,7 @@ class Files(commands.Cog, name="File Management"):
     @commands.check(host_check)
     async def save(self, ctx):
         """Saves the roles and economy databases to their respective JSONs"""
-        write(self.bot.eggCount)
+        write(self.bot)
         await ctx.send("Saved the roles and economy database!")
 
     @commands.command(hidden=True)

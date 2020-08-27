@@ -64,7 +64,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         emb = discord.Embed(title=formatted, description="Please wait...",
                             color=embedColor)
         await ctx.send(embed=emb)
-        write(self.bot.eggCount)
+        write(self.bot)
         # timer purge
         if timer:
             for i in timerUsers:

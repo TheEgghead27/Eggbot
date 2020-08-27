@@ -122,11 +122,12 @@ if __name__ == '__main__':
     on = True
     # eggCount
     bot.eggCount = [0, True, datetime.now()]
+    bot.scores = scores
 
     @bot.event
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
-        write(bot.eggCount)
+        write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
 

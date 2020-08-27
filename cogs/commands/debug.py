@@ -63,6 +63,9 @@ class Debug(commands.Cog):
             body = parsed.body[0].body
 
             insert_returns(body)
+            from eggbot import hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, \
+                warehouse, joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, \
+                flagFields, mmyes, scores
 
             env = {
                 'client': self.bot,
@@ -70,6 +73,31 @@ class Debug(commands.Cog):
                 'discord': discord,
                 'commands': commands,
                 'ctx': ctx,
+                'hosts': hosts,
+                # 'token': token,
+                'Bee': Bee,
+                'kirilist': kirilist,
+                'eggs': eggs,
+                'eggTrigger': eggTrigger,
+                'spic': spic,
+                'simp': simp,
+                'ohno': ohno,
+                'roles': roles,
+                'colors': colors,
+                'stonks': stonks,
+                'warehouse': warehouse,
+                'joinRoles': joinRoles,
+                'insults': insults,
+                'beeEmbed': beeEmbed,
+                'logging': logging,
+                'dmLog': dmLog,
+                'audit': audit,
+                'deleteLog': deleteLog,
+                'times': times,
+                'activityTypes': activityTypes,
+                'flagFields': flagFields,
+                'mmyes': mmyes,
+                'scores': scores
             }
             exec(compile(parsed, filename="<ast>", mode="exec"), env)
             result = (await eval(f"{fn_name}()", env))
