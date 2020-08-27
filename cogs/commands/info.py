@@ -102,7 +102,6 @@ class Info(commands.Cog, name="Bot Info"):
             raise error
 
     @commands.command()
-    @commands.check(host_check)
     async def eggCount(self, ctx):
         """Counts eggs"""
         emb = discord.Embed(title="Eggs sent during this session:", description=str(self.bot.eggCount[0]))
@@ -111,7 +110,6 @@ class Info(commands.Cog, name="Bot Info"):
         await ctx.send(embed=emb)
 
     @commands.command(aliases=['eggCharts', 'eC'])
-    @commands.check(host_check)
     async def highScores(self, ctx):
         save.sortScores(self.bot)
         scoresSorted = []
