@@ -13,9 +13,10 @@ class Fun(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
 
-    @commands.command()
+    @commands.command(brief="{optional: page number}")
     @commands.cooldown(1, 7.5, commands.BucketType.user)
     async def bee(self, ctx):
+        """Displays The Bee Movie's script, now with 99% less spam!"""
         args = ctx.message.content.split(' ')
         try:
             page = int(args[1]) - 1
@@ -30,9 +31,10 @@ class Fun(commands.Cog):
             beeMess = await ctx.send(embed=emb)
             await self.pagination.paginate(beeMess, 'bee', 0, 1200)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.check(host_check)
     async def beeGen(self, ctx):
+        """Generates and prints a new set of e!bee embeds based on bee.txt"""
         beeTime = False
         script = list(Bee)
         beeLen = len(script) // 2  # know how many sets of text (name & dialogue) there are
@@ -46,7 +48,7 @@ class Fun(commands.Cog):
                 limitCheck = 0
                 if beeTime:  # don't send an empty embed
                     bs.append(emb.to_dict())
-                    await ctx.send(embed=emb)
+                    # await ctx.send(embed=emb)
                 emb = discord.Embed(title="The Bee Movie Script", color=color_list[0])
                 emb.set_footer(text="Page {n}/56 | Adapted from scripts.com".format(n=str(messNo)))
                 # alternate colors
@@ -60,12 +62,14 @@ class Fun(commands.Cog):
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
             limitCheck = limitCheck + 1
         bs.append(emb.to_dict())
-        await ctx.send(embed=emb)
+        await ctx.send("Done, check terminal!")
         print(bs)
 
-    @commands.command()
+    @commands.command(hidden=True, brief="{optional: number of embeds}")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def kiri(self, ctx, *args):
+        """Displays an image of Eijiro Kirishima from My Hero Academia. You can specify the number of images you want
+        to be sent. [request from Karkat's Stolen Identity#0909]"""
         try:
             send_amount = args[0]
             send_amount = int(send_amount)
@@ -94,9 +98,10 @@ class Fun(commands.Cog):
         emb.set_footer(text=f"This command, and its related images were requested and sourced from {kiriPerson}")
         await ctx.send(embed=emb)
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def song(self, ctx):
+        """The screams of the damned"""
         micheal = await ctx.message.author.voice.channel.connect(timeout=60.0, reconnect=True)
         await sleep(5)
         await micheal.disconnect()
@@ -112,10 +117,12 @@ class Fun(commands.Cog):
 
     @commands.command()
     async def rateFood(self, ctx):
+        """Rates your food like a certain angry chef"""
         await ctx.send(insults[randrange(0, len(insults) - 1)])
 
     @commands.command(hidden=True)
     async def pp(self, ctx):
+        """pp"""
         if ctx.message.channel.is_nsfw():
             try:
                 await ctx.send(content="Here's the good stuff.", file=discord.File(filename="pp.png", fp="pp.png"))

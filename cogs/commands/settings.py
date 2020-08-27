@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
+from eggbot import dmLog, logging, audit, deleteLog, host_check, joinArgs, reverseBool
 
 safeguard = True
 botSafeguard = True
 status = "e!help"
-from eggbot import dmLog, logging, audit, deleteLog, host_check, joinArgs, reverseBool
 
 
 def settingCheck(setting):
@@ -18,21 +18,26 @@ class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.check(host_check)
     async def spam(self, ctx):
+        """[REDACTED FOR SPOILERS]"""
         self.bot.safeguard, state = reverseBool(self.bot.safeguard)
+        self.bot.eggCount[1] = False
         await ctx.send("Set spam mode to {}.".format(state.upper()))
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.check(host_check)
     async def botSpam(self, ctx):
+        """Allows the bot to process messages from other bots"""
         self.bot.botSafeguard, state = reverseBool(self.bot.botSafeguard)
+        self.bot.eggCount[1] = False
         await ctx.send("Set bot message processing to {}.".format(state.upper()))
 
-    @commands.command()
+    @commands.command(hidden=True, brief="{status}")
     @commands.check(host_check)
     async def setStatus(self, ctx, *args):
+        """Sets the \"Playing\" status for the bot based on a provided line"""
         args = list(args)
         self.bot.status = joinArgs(args)
         await self.bot.change_presence(activity=discord.Game(name=self.bot.status))
@@ -40,6 +45,7 @@ class Settings(commands.Cog):
 
     @commands.command()
     async def settings(self, ctx):
+        """Displays the current logging configuration of Eggbot"""
         emb = discord.Embed(title="Settings on this instance of Eggbot",
                             description="The state of certain options in Eggbot", color=0xdddddd)
         emb.add_field(name="All Message Logging", value=settingCheck(logging), inline=False)

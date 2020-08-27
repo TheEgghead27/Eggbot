@@ -1,20 +1,21 @@
 from asyncio import sleep
+from datetime import datetime
 
 import discord
 from discord.ext import commands
 
-from cogs.misc import mdbed
-from eggbot import hosts, host_check, eggC
+from cogs.misc import mdbed, save
+from eggbot import hosts
 
 
 class Info(commands.Cog, name="Bot Info"):
     def __init__(self, bot):
         self.bot = bot
 
-    # TODO Use lib helpCommand
-    @commands.command(name="help")
+    @commands.command(name="oldHelp", hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def documentation(self, ctx):
+        """The original help command for Eggbot (depreciated)"""
         kiriPerson = self.bot.get_user(255070100325924864)
         owner = self.bot.get_user(int(hosts[0]))
         emb = discord.Embed(title="Eggbot Commands", description="The commands in this bot", color=0x1888f0)
@@ -36,8 +37,8 @@ class Info(commands.Cog, name="Bot Info"):
                                                        "(when the bot is online).", inline=False)
         emb.add_field(name="e!vacuum [number]", value="Mass deletes [number] messages.", inline=False)
         # good lord I fucked up the timer syntax badly
-        emb.add_field(name='e!timer "name" (quotes mandatory) [time format] (and if you want more units of time) and '
-                           '[time format]',
+        emb.add_field(name="e!timer \"name\" (quotes mandatory) [time format] (and if you want more units of time) and "
+                           "[time format]",
                       value="Creates a timer that pings the requesting user after a specified time.",
                       inline=False)
         emb.add_field(name="e!rateFood", value="Rates food. [beware foul language]", inline=False)
@@ -58,6 +59,7 @@ class Info(commands.Cog, name="Bot Info"):
 
     @commands.command()
     async def github(self, ctx):
+        """Sends a link to the Eggbot source code on GitHub"""
         emb = discord.Embed(title="Github Repo", description="https://github.com/TheEgghead27/Eggbot",
                             color=0x26a343)
         await ctx.send(embed=emb)
@@ -65,6 +67,7 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def invite(self, ctx):
+        """Sends the link to invite the bot"""
         emb = discord.Embed(title="Bot Invite",
                             description="https://discordapp.com/api/oauth2/authorize?client_id=681295724188794890&"
                                         "permissions=271969345&scope=bot", color=0xffffff)
@@ -80,6 +83,7 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def server(self, ctx):
+        """Sends a link to the Eggbot Discord Server"""
         egg_guild = self.bot.get_guild(675750662058934324)
         if ctx.guild != egg_guild:
             emb = discord.Embed(title="Official Eggbot Discord Server", description="https://discord.gg/rTfkdvX",
@@ -98,15 +102,41 @@ class Info(commands.Cog, name="Bot Info"):
 
     @commands.command()
     async def eggCount(self, ctx):
-        if host_check(ctx):
-            emb = discord.Embed(title="Number of times you people used egg since last reboot:", color=0xffffff)
-            emb.add_field(name="Egg count:", value=str(eggC), inline=False)
-            await ctx.send(embed=emb)
+        """Counts eggs"""
+        emb = discord.Embed(title="Eggs sent today:", description=str(self.bot.eggCount[0]))
+        if not self.bot.eggCount[1]:
+            emb.set_footer(text="This score was manipulated, so it is ineligible for the high score boards.")
         else:
-            await ctx.send("This command has been disabled.")
+            emb.set_footer(text="Check e!highScores to see the eggCount charts.")
+        await ctx.send(embed=emb)
+
+    @commands.command(aliases=['eggCharts', 'eC'])
+    async def highScores(self, ctx):
+        save.sortScores(self.bot)
+        scoresSorted = []
+        scores = self.bot.scores
+        for i in scores:
+            scoresSorted.append(int(i))
+        scoresSorted.sort()
+        scoresSorted = scoresSorted[::-1]
+        emb = discord.Embed(title="Highest Egg Counts of All Times:")
+        emb.add_field(name="#1", value=str(scoresSorted[0]), inline=False)
+        emb.add_field(name="#2", value=str(scoresSorted[1]), inline=False)
+        emb.add_field(name="#3", value=str(scoresSorted[2]), inline=False)
+        emb.add_field(name="#4", value=str(scoresSorted[3]), inline=False)
+        emb.add_field(name="#5", value=str(scoresSorted[4]), inline=False)
+        emb.set_footer(text='The record for most eggs in one session was set')
+        try:
+            date = scores[str(scoresSorted[0])]
+        except KeyError:
+            date = scores[int(scoresSorted[0])]
+        date = datetime(year=date[0], month=date[1], day=date[2], hour=date[3])
+        emb.timestamp = date
+        await ctx.send(embed=emb)
 
     @commands.command()
     async def admins(self, ctx):
+        """Lists the admins for this instance of Eggbot"""
         c = len(hosts)
         d = 0
         e = 0
@@ -130,6 +160,7 @@ class Info(commands.Cog, name="Bot Info"):
 
     @commands.command()
     async def privacy(self, ctx):
+        """Displays the privacy policy of the bot"""
         try:
             privacy = self.bot.privacy
         except (NameError, AttributeError):

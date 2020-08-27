@@ -47,7 +47,7 @@ e!fridge: Shows the number of global and server eggs you own.
 
 e!shop: Displays the selection of items on sale.
 
-e!buy: Buys an item from the shop.
+e!buy {item name}: Buys an item from the shop.
 
 e!inv: Shows your inventory.
 

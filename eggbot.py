@@ -14,21 +14,21 @@ except ModuleNotFoundError:  # install the discord modules
     import discord
     from discord.ext import commands
     import simplejson as json
+from cogs.commands.help import EmbedHelpCommand
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
-    beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes = load(blacklist=[])
+    beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes, scores = load(blacklist=[])
 
 # initialize a bunch of variables used in places
-prefix = ['e!', 'E!', 'e! ', 'e! ']
+prefix = ['e!', 'E!', 'e! ', 'E! ', "e1", 'e1 ']  # you can kinda? customize this, but i honestly don't care
 status = '{p}help'.format(p=prefix[0])
 prefixLen = len(prefix)
-bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts)
-bot.remove_command("help")
+bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts,
+                              help_command=EmbedHelpCommand(verify_checks=False, show_hidden=False))
 bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
 del status
-eggC = 0
 
 
 # create functions imported by cogs
@@ -53,6 +53,8 @@ def joinArgs(args):
     echo = echo.strip(' ')
     return echo
 
+def pickRandomListObject(index):
+    return index[random.randrange(0, len(index))]
 
 def reverseBool(boolean):
     if boolean:
@@ -108,6 +110,7 @@ def delistList(index):
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
+    from datetime import datetime
 
     import logging as logs
 
@@ -119,12 +122,14 @@ if __name__ == '__main__':
 
     # turn the bot "on"
     on = True
-
+    # eggCount
+    bot.eggCount = [0, True, datetime.now()]
+    bot.scores = scores
 
     @bot.event
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
-        write()
+        write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
 
@@ -166,6 +171,7 @@ if __name__ == '__main__':
             try:
                 if a[0].startswith(eggTrigger):
                     await message.channel.send(markdown(eggs))
+                    bot.eggCount[0] += 1
                     try:
                         oval = random.randrange(0, 10)
                         if oval >= 8:
@@ -205,9 +211,10 @@ if __name__ == '__main__':
         await message.channel.send(message.author.mention)
 
     # The One Command to rule them all
-    @bot.command()
+    @bot.command(hidden=True, brief='{optional: channel/user mention or id} {words to echo}')
     @commands.check(host_check)
     async def say(ctx, *args):
+        """Gets the bot to say what you ask it to"""
         try:
             await ctx.message.delete()
         except discord.Forbidden:
@@ -258,6 +265,9 @@ if __name__ == '__main__':
                 await args[0].channel.send(embed=emb)
             except discord.Forbidden:
                 return
+            except (discord.NotFound, IndexError):
+                ApertureScienceErrorHandlingAssociate = bot.get_user(bot.owner_ids[0])
+                await ApertureScienceErrorHandlingAssociate.send(embed=emb)
         raise system.exc_info()[0]
 
 
@@ -268,7 +278,14 @@ if __name__ == '__main__':
         loadDir = cogDir.replace('/', '.')
         for cog in listdir(cogDir):
             if cog.endswith('.py'):  # bot tries to load all .py files in said folders, use cogs/misc for non-cog things
-                bot.load_extension(loadDir + cog[:-3])
+                try:
+                    bot.load_extension(loadDir + cog[:-3])
+                except commands.NoEntryPointError:
+                    print(f"{loadDir + cog[:-3]} is not a proper cog!")
+                except commands.ExtensionAlreadyLoaded:
+                    print('you should not be seeing this\n if you do, youre screwed')
+                except commands.ExtensionFailed as failure:
+                    print(f'{failure.name} failed! booooo')
 
     try:
         bot.run(token)
