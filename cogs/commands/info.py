@@ -12,7 +12,6 @@ class Info(commands.Cog, name="Bot Info"):
     def __init__(self, bot):
         self.bot = bot
 
-    # TODO Use lib helpCommand
     @commands.command(name="oldHelp", hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def documentation(self, ctx):
@@ -104,9 +103,11 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.command()
     async def eggCount(self, ctx):
         """Counts eggs"""
-        emb = discord.Embed(title="Eggs sent during this session:", description=str(self.bot.eggCount[0]))
+        emb = discord.Embed(title="Eggs sent today:", description=str(self.bot.eggCount[0]))
         if not self.bot.eggCount[1]:
             emb.set_footer(text="This score was manipulated, so it is ineligible for the high score boards.")
+        else:
+            emb.set_footer(text="Check e!highScores to see the eggCount charts.")
         await ctx.send(embed=emb)
 
     @commands.command(aliases=['eggCharts', 'eC'])
