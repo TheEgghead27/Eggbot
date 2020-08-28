@@ -90,7 +90,6 @@ def load(blacklist):
                 convert()
             else:
                 setup(hosts=[], token="Improper token")
-            print('mh')
             import settings
             print('You are always allowed to run settings.py to edit your settings again.')
             input('Setup complete! Press enter to continue startup.')
