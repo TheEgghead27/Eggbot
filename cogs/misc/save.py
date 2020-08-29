@@ -19,7 +19,10 @@ def sortScores(bot):
     Scores = data
     if current[1]:  # check if the eggCount is legitimate
         date = current[2]
-        date = [date.year, date.month, date.day, date.hour + 5]  # add five because EST
+        hour = date.hour
+        if hour + 5 < 24:
+            hour += 5
+        date = [date.year, date.month, date.day, hour]
 
         marked = []
         scoresSorted = []
@@ -37,7 +40,7 @@ def sortScores(bot):
 
         scoresSorted.sort()
 
-        Scores = jsonSanitize(purgeDuplicates(data))
+        Scores = purgeDuplicates(jsonSanitize(data))
 
         if len(Scores) > 5:
             del Scores[str(scoresSorted[0])]
