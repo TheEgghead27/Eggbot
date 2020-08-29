@@ -120,11 +120,10 @@ class Info(commands.Cog, name="Bot Info"):
         scoresSorted.sort()
         scoresSorted = scoresSorted[::-1]
         emb = discord.Embed(title="Highest Egg Counts of All Times:")
-        emb.add_field(name="#1", value=str(scoresSorted[0]), inline=False)
-        emb.add_field(name="#2", value=str(scoresSorted[1]), inline=False)
-        emb.add_field(name="#3", value=str(scoresSorted[2]), inline=False)
-        emb.add_field(name="#4", value=str(scoresSorted[3]), inline=False)
-        emb.add_field(name="#5", value=str(scoresSorted[4]), inline=False)
+        number = 0
+        while number < 5:
+            emb.add_field(name=f"#{number + 1}", value=str(scoresSorted[number]), inline=False)
+            number += 1
         emb.set_footer(text='The record for most eggs in one session was set')
         try:
             date = scores[str(scoresSorted[0])]
