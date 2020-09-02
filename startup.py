@@ -167,9 +167,11 @@ def setup():
     token = os.getenv('token')
     if not token:
         input('The "token" environment variable was not found!\n Press enter to exit.')
+        exit(0)
     hosts = os.getenv('hosts')
     if not hosts:
         input('The "hosts" environment variable was not found!\n Press enter to exit.')
+        exit(0)
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
