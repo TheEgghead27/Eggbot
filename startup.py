@@ -1,7 +1,8 @@
+from ast import literal_eval
+
 def load(blacklist):
     """read files for data"""
     import simplejson as json
-    from ast import literal_eval
     hosts, token, Bee, beeEmbed, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, joinRoles, colors, \
         stonks, warehouse, insults, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes, scores \
         = placeholders()
@@ -172,6 +173,9 @@ def setup():
     if not hosts:
         input('The "hosts" environment variable was not found!\n Press enter to exit.')
         exit(0)
+    hosts = literal_eval(hosts)
+    print(token, type(token))
+    print(hosts, type(hosts))
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
