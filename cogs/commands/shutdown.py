@@ -56,6 +56,11 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                             print(f'{failure.name} failed! booooo')
                     except commands.ExtensionFailed as failure:
                         print(f'{failure.name} failed! booooo')
+
+        # reload help command
+        from cogs.commands.help import EmbedHelpCommand
+        self.bot.help_command = EmbedHelpCommand()
+
         await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     async def papate(self, ctx, embedColor, phrase, timer):
