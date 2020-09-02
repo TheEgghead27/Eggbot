@@ -19,12 +19,15 @@ def sortScores(bot):
     Scores = data
     if current[1]:  # check if the eggCount is legitimate
         date = current[2]
-        date = [date.year, date.month, date.day, date.hour + 5]  # add five because EST
+        hour = date.hour
+        if hour + 5 < 24:
+            hour += 5
+        date = [date.year, date.month, date.day, hour]
 
         marked = []
         scoresSorted = []
         for i in data:  # wait can i sort a dict? no
-            if data[i][-3:] == date[-3:]:  # check if the data is from today
+            if data[i][:3] == date[:3]:  # check if the data is from today
                 marked.append(i)  # avoid iteration during while error
             scoresSorted.append(int(i))
 
@@ -32,12 +35,12 @@ def sortScores(bot):
             if int(i) > bot.eggCount[0]:
                 current[0] = int(i)
                 bot.eggCount = current
-                del data[i]
+            del data[i]
         data[current[0]] = date
 
         scoresSorted.sort()
 
-        Scores = jsonSanitize(purgeDuplicates(data))
+        Scores = purgeDuplicates(jsonSanitize(data))
 
         if len(Scores) > 5:
             del Scores[str(scoresSorted[0])]

@@ -1,12 +1,13 @@
 # Eggbot Self-Hosting
 
-1. To host a bot, you'll need a bot account from https://discordapp.com/developers/applications/
+### Creating a bot
+1. To host Eggbot (or any bot), you'll need a bot account from https://discordapp.com/developers/applications/
 
 2. Click New Application\
-  ![](tutorial/newapp.png)
+![](tutorial/newapp.png)
 
 3. Name the application (We recommend setting Team to Personal)\
- ![](tutorial/teamchoose.png)
+![](tutorial/teamchoose.png)
 
 4. Click Bot \
 ![](tutorial/clikbot.png)
@@ -14,47 +15,52 @@
 5. Add a bot (just click yes for the popup I guess) \
 ![](tutorial/makebot.png)
 
-6. Get the token from your bot \
+### Linking the bot to Eggbot code
+
+1. Run eggbot.py from a [fresh copy](https://github.com/TheEgghead27/Eggbot/archive/master.zip), then press enter to start the setup. Anyone using an older configuration will have their files automatically converted.
+
+2. Get the token from your bot \
 ![](tutorial/tokentime.png)
 
-7. Make a token.txt out of the text you got \
+3. Make a token.txt out of the text you got \
 ![](tutorial/tokentxt.png)
 
-8. Go to Oauth section \
-![](tutorial/oauth.png)
-
-9. Click Bot Scope \
-![](tutorial/botlink.png)
-
-10. Click these permissions \
-![](tutorial/perms.png)
-
-11. Use the generated link to invite your bot to your server (like any other bot)\
- ![](tutorial/getlink.png)
-
-12. Right click your Discord account in chat\
+4. Right click your Discord account in chat\
  ![](tutorial/rclickOwner.png)
 
-13. Copy ID \
+5. Copy your ID \
 ![](tutorial/copyOwner.png)
 
-14. Paste it in a host.txt (note: you can have multiple admins by typing their ids in a separate line of the file)\
+6. Enter it in the terminal\
 ![](tutorial/hostpaste.png)
 
-18. Download and unzip the files from the latest Eggbot-self-host.X.X https://github.com/TheEgghead27/Eggbot/releases \
+7. If you want to give others permission, you must enter their IDs, one by one, into the field. Enter nothing to continue.\
+![](tutorial/addHosts.png)
+
+8. Configure your settings as the wizard dictates.
 ![](tutorial/setup.png)
 
-19. Place your token and host.txt's in the folder\
-![](tutorial/setup1.png)
+9. Press enter to start up the bot.
 
-22. Run convert.py\
-[IMAGE NOT FOUND]
+### Inviting your bot/Finalizing the setup
 
-20. Go to\
- [![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
+1. Go to the Oauth section of your [application](https://discordapp.com/developers/applications/) \
+![](tutorial/oauth.png)
+
+2. Click Bot Scope \
+![](tutorial/botlink.png)
+
+3. Click these permissions \
+![](tutorial/perms.png)
+
+4. Use the generated link to invite your bot to your server (like any other bot)\
+ ![](tutorial/getlink.png)
+
+5. Go to \
+[![Server Invite](tutorial/invite.png)](https://discord.gg/rTfkdvX)
 \
 and have a moderator add your bot with the bot invite link.
 
-21. Run the eggbot.py Python script.
+6. Run the eggbot.py Python script, with no further need for setup.
 
 Enjoy!

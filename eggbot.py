@@ -53,8 +53,6 @@ def joinArgs(args):
     echo = echo.strip(' ')
     return echo
 
-def pickRandomListObject(index):
-    return index[random.randrange(0, len(index))]
 
 def reverseBool(boolean):
     if boolean:
