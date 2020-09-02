@@ -21,7 +21,7 @@ class EmbedHelpCommand(commands.HelpCommand):
     COLOUR = discord.Colour.from_rgb(24, 136, 240)
 
     def get_ending_note(self, main):
-        if main:
+        if main and str(self.context.channel.type) == "text":
             memberIDs = []
             for i in self.context.guild.members:
                 memberIDs.append(i.id)
