@@ -1,5 +1,6 @@
 from ast import literal_eval
 
+
 def load(blacklist):
     """read files for data"""
     import simplejson as json
@@ -86,11 +87,7 @@ def load(blacklist):
                 mmyes, scores = load(blacklist)
         elif file == 'config.json':
             input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
-            from os import path
-            if path.exists("token.txt") or path.exists("host.txt"):
-                convert()
-            else:
-                setup()
+            setup()
             import settings
             print('You are always allowed to run settings.py to edit your settings again.')
             input('Setup complete! Press enter to continue startup.')
@@ -162,7 +159,18 @@ def loadColors():
 
 
 def setup():
-    """[Heroku Adaptation] Creates a config.json based on env variables"""
+    """Selects an appropriate setup function"""
+    import os
+    if os.path.exists("token.txt") or os.path.exists("host.txt"):
+        fileConvert()
+    elif os.getenv('token') or os.getenv('hosts'):
+        envConvert()
+    else:
+        manualSetup(hosts=[], token='Improper token')
+
+
+def envConvert():
+    """Creates a config.json based on env variables"""
     import simplejson as json
     import os
     token = os.getenv('token')
@@ -174,14 +182,12 @@ def setup():
         input('The "hosts" environment variable was not found!\n Press enter to exit.')
         exit(0)
     hosts = literal_eval(hosts)
-    print(token, type(token))
-    print(hosts, type(hosts))
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
 
 
-def convert():
+def fileConvert():
     """convert old config system to the new json"""
     import simplejson as json
     file = 'no file'
@@ -202,7 +208,7 @@ def convert():
         input("Bruh {} is missing. Close this window if you intend to replace the file. "
               "Press enter to delete the remaining files and start anew.".format(file))
         cleanUp()
-        setup()
+        manualSetup(hosts=[], token='Improper token')
 
 
 def cleanUp():
@@ -214,6 +220,38 @@ def cleanUp():
     file = "host.txt"
     if os.path.exists(file):
         os.remove(file)
+
+
+def manualSetup(hosts, token):
+    """out of box setup function to configure the token and hosts, then package in a new json"""
+    import simplejson as json
+    if token == "Improper token":
+        token = input("Paste your token here.\n").strip(' ')
+        if not len(token) >= 50:
+            token = "Improper token"
+            print(token)
+            manualSetup(hosts, token)
+    if not len(hosts) > 0:
+        print(token)
+        a = input("Input your user ID.\n")
+        if len(a) == 18:
+            hosts.append(a)
+        else:
+            print('Invalid input.')
+            manualSetup(hosts, token)
+    hostInput = True
+    while hostInput:
+        a = input('Enter the next user ID. If you wish to exit, type nothing.\n')
+        if len(a) == 18:
+            hosts.append(a)
+        elif len(a) in [0, 1]:
+            hostInput = False
+        else:
+            pass
+    data = {"hosts": hosts, "token": token}
+    with open("config.json", "w") as config:
+        json.dump(data, config)
+    return
 
 
 def placeholders():
