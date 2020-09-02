@@ -251,7 +251,6 @@ def manualSetup(hosts, token):
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
-    return
 
 
 def placeholders():
