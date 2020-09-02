@@ -86,7 +86,8 @@ def load(blacklist):
                 joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, \
                 mmyes, scores = load(blacklist)
         elif file == 'config.json':
-            input("Press enter to begin the initialization process. If you have an old setup, it will be converted.")
+            print("config.json was not found! The initialization process will now begin. The script will attempt to "
+                  "automatically retrieve your configuration, then fall back to manual input.")
             setup()
             import settings
             print('You are always allowed to run settings.py to edit your settings again.')
