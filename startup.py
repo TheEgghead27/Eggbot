@@ -89,7 +89,7 @@ def load(blacklist):
             if path.exists("token.txt") or path.exists("host.txt"):
                 convert()
             else:
-                setup(hosts=[], token="Improper token")
+                setup()
             import settings
             print('You are always allowed to run settings.py to edit your settings again.')
             input('Setup complete! Press enter to continue startup.')
@@ -160,36 +160,15 @@ def loadColors():
     return colors
 
 
-def setup(hosts, token):
-    """out of box setup function to configure the token and hosts, then package in a new json"""
+def setup():
+    """[Heroku Adaptation] Creates a config.json based on env variables"""
     import simplejson as json
-    if token == "Improper token":
-        token = input("Paste your token here.\n").strip(' ')
-        if not len(token) >= 50:
-            token = "Improper token"
-            print(token)
-            setup(hosts, token)
-    if not len(hosts) > 0:
-        print(token)
-        a = input("Input your user ID.\n")
-        if len(a) == 18:
-            hosts.append(a)
-        else:
-            print('Invalid input.')
-            setup(hosts, token)
-    hostInput = True
-    while hostInput:
-        a = input('Enter the next user ID. If you wish to exit, type nothing.\n')
-        if len(a) == 18:
-            hosts.append(a)
-        elif len(a) in [0, 1]:
-            hostInput = False
-        else:
-            pass
+    import os
+    token = os.getenv('token')
+    hosts = os.getenv('hosts')
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
-    return
 
 
 def convert():
@@ -213,7 +192,7 @@ def convert():
         input("Bruh {} is missing. Close this window if you intend to replace the file. "
               "Press enter to delete the remaining files and start anew.".format(file))
         cleanUp()
-        setup(hosts=[], token="Improper token")
+        setup()
 
 
 def cleanUp():
