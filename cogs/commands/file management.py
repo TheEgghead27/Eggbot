@@ -1,16 +1,33 @@
 import simplejson as json
 
+import discord
 from discord.ext import commands
 
 from cogs.commands.roles import joinRoles, roles
 from cogs.commands.economy import stonks, warehouse
 from cogs.misc.save import write
-from eggbot import host_check
+from eggbot import host_check, hosts
 
 
 class Files(commands.Cog, name="File Management"):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(hidden=True)
+    @commands.check(host_check)
+    async def files(self, ctx):
+        """Sends Eggbot's saved data."""
+        targets = ['discord.log', 'roles.json', 'stonks.json']
+        files = []
+        for i in targets:
+            files.append(discord.File(filename=i, fp=i))
+        try:
+            await ctx.send(files=files)
+            if ctx.author.id == hosts[0]:
+                await ctx.author.send(file=discord.File(filename="config.json", fp="config.json"))
+        except Exception as E:
+            await ctx.send('There was an error getting your files!')
+            raise E
 
     @commands.command(hidden=True)
     @commands.check(host_check)
