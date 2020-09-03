@@ -28,7 +28,7 @@ def load(blacklist):
                     audit = numToBool(config['audit'])
                     deleteLog = numToBool(config['deleteLog'])
                 else:
-                    import settings
+                    makeSettings()
                     with open(file, "r") as configNested:
                         configNested = json.load(configNested)
                         logging = numToBool(configNested['logging'])
@@ -89,9 +89,9 @@ def load(blacklist):
             print("config.json was not found! The initialization process will now begin. The script will attempt to "
                   "automatically retrieve your configuration, then fall back to manual input.")
             setup()
-            import settings
+            makeSettings()
             print('You are always allowed to run settings.py to edit your settings again.')
-            input('Setup complete! Press enter to continue startup.')
+            print('Setup complete!')
             # just load the config off of the config.json, it's more efficient than blacklisting
             # and using *args to pass the data through
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
@@ -318,3 +318,26 @@ def getOwners():
             return hosts
     except Exception as e:
         print(f'getOwners() raised {e}!')
+
+
+def makeSettings():
+    """Selects an appropriate settings function"""
+    import os
+    import simplejson as json
+    if os.getenv('settings'):
+        with open('config.json', 'r') as cfg:
+            config = json.load(cfg)
+
+        settings = literal_eval(os.getenv('settings'))
+        config["logging"] = settings[0]
+        config["dmLog"] = settings[1]
+        config["audit"] = settings[2]
+        config["deleteLog"] = settings[3]
+
+        with open('config.json', 'w') as cfg:
+            json.dump(config, cfg)
+
+        print('Settings have been pulled from environment variables.')
+    else:
+        import settings
+        settings.configure()
