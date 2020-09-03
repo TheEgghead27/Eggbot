@@ -29,18 +29,20 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
 
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=30, check=confirm)
-        except asyncio.TimeoutError:
+        except asyncio.TimeoutError:  # timeout cancel
             await confirmMess.edit(text='Shutdown cancelled.')
         else:
             if reaction.emoji == '✅':
-                if os.startfile:
+                try:
+                    print(os.startfile.__class__)  # check for the thing heroku os just doesn't
+                except AttributeError:
+                    await ctx.send('I might be unable to shutdown!')
+                else:
                     await confirmMess.delete()
                     await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
                     await self.bot.close()
                     exit(0)
-                else:
-                    await ctx.send('I might be unable to shutdown!')
-            else:
+            else:  # ❌ react cancel
                 await confirmMess.remove_reaction('✅', self.bot.user)
                 await confirmMess.remove_reaction('❌', self.bot.user)
                 try:
@@ -59,7 +61,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             os.startfile("eggbot.py")
             exit(0)
         except AttributeError:
-            await ctx.send("I am unable to restart!")
+            await ctx.send("I am unable to restart!")  # maybe do the catlamp
             await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     @commands.command(hidden=True)
