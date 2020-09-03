@@ -41,6 +41,7 @@ class EmbedHelpCommand(commands.HelpCommand):
             if Commands:
                 try:
                     if self.context.author.id in owners or str(self.context.author.id) in owners:
+                        await self.get_destination().send("embed=emb")
                         def commandCheck(CheckCommand):
                             return CheckCommand
                     else:
