@@ -41,13 +41,9 @@ class EmbedHelpCommand(commands.HelpCommand):
             if Commands:
                 # define commandCheck type depending on user authorization level
                 if self.context.author.id in owners or str(self.context.author.id) in owners:
-                    await self.get_destination().send("owner")
-
                     def commandCheck(CheckCommand):
                         return CheckCommand
                 else:
-                    await self.get_destination().send("not owner")
-
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
 
