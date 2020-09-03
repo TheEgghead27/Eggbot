@@ -26,8 +26,12 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         """Restarts the bot using the default Python interpreter"""
         import os
         await self.papate(ctx, embedColor=0xffff00, phrase="restarting", timer=True)
-        os.startfile("eggbot.py")
-        exit(0)
+        try:
+            os.startfile("eggbot.py")
+            exit(0)
+        except AttributeError:
+            await ctx.send("I am unable to restart!")
+            await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     @commands.command(hidden=True)
     @commands.check(host_check)
