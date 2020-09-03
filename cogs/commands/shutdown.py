@@ -67,6 +67,13 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
 
         await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
+    @commands.command(name="papate", hidden=True)
+    @commands.check(host_check)
+    async def silent(self, ctx):
+        """\"Silently\" purges the pagination queue and timers."""
+        await self.papate(ctx, embedColor=0x0ff00, phrase="purging", timer=False)
+        await self.bot.change_presence(activity=discord.Game(self.bot.status))
+
     async def papate(self, ctx, embedColor, phrase, timer):
         formatted = phrase[0].upper() + phrase[1:] + '...'
         await self.bot.change_presence(activity=discord.Game(formatted))
