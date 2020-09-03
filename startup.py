@@ -315,6 +315,7 @@ def getOwners():
             hosts = []
             for i in hostsTemp:
                 hosts.append(int(i))
+            print(hosts)
             return hosts
     except Exception as e:
         print(f'getOwners() raised {e}!')
