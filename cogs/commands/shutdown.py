@@ -37,7 +37,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                 try:
                     print(os.startfile.__class__)  # check for the thing heroku os just doesn't
                 except AttributeError:
-                    await ctx.send('I might be unable to shutdown!')
+                    await ctx.send('I might be unable to shut down!')
                 else:
                     await confirmMess.delete()
                     await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
