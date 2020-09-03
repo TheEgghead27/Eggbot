@@ -39,11 +39,14 @@ class EmbedHelpCommand(commands.HelpCommand):
         for cog, Commands in mapping.items():
             name = 'Misc.' if cog is None else cog.qualified_name
             if Commands:
-                # define commandCheck type depending on user authorization level
-                if self.context.author.id in owners or str(self.context.author.id) in owners:
-                    def commandCheck(CheckCommand):
-                        return CheckCommand
-                else:
+                try:  # define commandCheck type depending on user authorization level
+                    if self.context.author.id in owners or str(self.context.author.id) in owners:
+                        def commandCheck(CheckCommand):
+                            return CheckCommand
+                    else:
+                        def commandCheck(CheckCommand):
+                            return not CheckCommand.hidden
+                except (AttributeError, TypeError):
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
 
