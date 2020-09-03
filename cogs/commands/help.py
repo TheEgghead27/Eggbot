@@ -44,6 +44,7 @@ class EmbedHelpCommand(commands.HelpCommand):
                         def commandCheck(CheckCommand):
                             return CheckCommand
                     else:
+                        await self.get_destination().send("embed=embed")
                         def commandCheck(CheckCommand):
                             return not CheckCommand.hidden
                 except TypeError:
