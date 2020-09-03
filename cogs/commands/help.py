@@ -40,7 +40,7 @@ class EmbedHelpCommand(commands.HelpCommand):
             name = 'Misc.' if cog is None else cog.qualified_name
             if Commands:
                 try:
-                    if self.context.author.id in owners:
+                    if self.context.author.id in owners or str(self.context.author.id) in owners:
                         def commandCheck(CheckCommand):
                             return CheckCommand
                     else:
