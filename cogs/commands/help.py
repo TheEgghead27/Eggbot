@@ -43,7 +43,7 @@ class EmbedHelpCommand(commands.HelpCommand):
                     print(self.context)
                     print(self.context.author)
                     print(self.context.author.id)
-                    if self.context.author.id in owners or str(self.context.author.id) in owners:
+                    if self.context.author.id in owners:
                         def commandCheck(CheckCommand):
                             return CheckCommand
                     else:
