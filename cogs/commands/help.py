@@ -37,22 +37,27 @@ class EmbedHelpCommand(commands.HelpCommand):
         embed = discord.Embed(title='Bot Commands', colour=self.COLOUR)
         for cog, Commands in mapping.items():
 
-            name = 'Misc.' if cog is None else cog.qualified_name
-            if Commands:
-                try:
-                    if self.context.author.id in owners or str(self.context.author.id) in owners:
-                        print('owner')
-                        def commandCheck(CheckCommand):
-                            return CheckCommand
-                    else:
-                        print('no owner')
-                        await self.get_destination().send("embed=embed")
-                        def commandCheck(CheckCommand):
-                            return not CheckCommand.hidden
-                except TypeError:
-                    print('eror')
+            try:  # define commandCheck type depending on user authorization level
+                if self.context.author.id in owners or str(self.context.author.id) in owners:
+                    print('owner')
+
+                    def commandCheck(CheckCommand):
+                        return CheckCommand
+                else:
+                    print('no owner')
+                    await self.get_destination().send("embed=embed")
+
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
+            except TypeError as eror:
+                print(eror)
+
+                def commandCheck(CheckCommand):
+                    return not CheckCommand.hidden
+
+            name = 'Misc.' if cog is None else cog.qualified_name
+
+            if Commands:
                 # stealing this formatting from Ear Tensifier because
                 new = []
                 for c in Commands:
