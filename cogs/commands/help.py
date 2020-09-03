@@ -36,8 +36,6 @@ class EmbedHelpCommand(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title='Bot Commands', colour=self.COLOUR)
 
-        print(self.context)
-
         for cog, Commands in mapping.items():
             name = 'Misc.' if cog is None else cog.qualified_name
             if Commands:
