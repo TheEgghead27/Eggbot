@@ -1,5 +1,3 @@
-from asyncio import sleep
-
 from discord.ext import commands
 import discord
 from startup import getOwners
@@ -38,24 +36,20 @@ class EmbedHelpCommand(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title='Bot Commands', colour=self.COLOUR)
 
-        await sleep(1)
-
-        try:  # define commandCheck type depending on user authorization level
-            if self.context.author.id in owners or str(self.context.author.id) in owners:
-                def commandCheck(CheckCommand):
-                    return CheckCommand
-            else:
-                def commandCheck(CheckCommand):
-                    return not CheckCommand.hidden
-        except TypeError:
-            def commandCheck(CheckCommand):
-                return not CheckCommand.hidden
-
         for cog, Commands in mapping.items():
-
             name = 'Misc.' if cog is None else cog.qualified_name
-
             if Commands:
+                try:  # define commandCheck type depending on user authorization level
+                    if self.context.author.id in owners or str(self.context.author.id) in owners:
+                        def commandCheck(CheckCommand):
+                            return CheckCommand
+                    else:
+                        def commandCheck(CheckCommand):
+                            return not CheckCommand.hidden
+                except TypeError:
+                    def commandCheck(CheckCommand):
+                        return not CheckCommand.hidden
+
                 # stealing this formatting from Ear Tensifier because
                 new = []
                 for c in Commands:
