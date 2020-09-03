@@ -59,12 +59,12 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         import os
         await self.papate(ctx, embedColor=0xffff00, phrase="restarting", timer=True)
         try:
+            # on a local host, execv won't have a visible terminal
             os.startfile("eggbot.py")
             exit(0)
         except AttributeError:
-            await ctx.send("I might be unable to restart!")  # maybe do the catlamp
+            # on heroku, it's fine to do this
             os.execv(sys.executable, ['python3'] + sys.argv)
-            await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     @commands.command(hidden=True)
     @commands.check(host_check)
