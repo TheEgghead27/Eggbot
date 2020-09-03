@@ -4,7 +4,7 @@ import datetime
 import discord
 from discord.ext import commands
 
-from eggbot import host_check
+from eggbot import host_check, hosts
 
 
 class Debug(commands.Cog):
@@ -138,6 +138,18 @@ class Debug(commands.Cog):
         # embed.timestamp = datetime.datetime.today()
         embed.timestamp = datetime.datetime(year=1980, month=1, day=1, hour=5)
         await ctx.send(embed=embed)
+
+    @commands.command(hidden=True)
+    @commands.check(host_check)
+    async def files(self, ctx):
+        """Sends Eggbot's saved data."""
+        targets = ['discord.log', 'roles.json', 'stonks.json']
+        files = []
+        for i in targets:
+            files.append(discord.File(filename=i, fp=i))
+        await ctx.send(files=files)
+        if ctx.author.id == hosts[0]:
+            await ctx.author.send(file=discord.File(filename="config.json", fp="config.json"))
 
 
 def insert_returns(body):
