@@ -124,6 +124,15 @@ if __name__ == '__main__':
     bot.eggCount = [0, True, datetime.now()]
     bot.scores = scores
 
+    # verify that the bot is not running on Heroku
+    try:
+        import os
+        os.startfile("verify.py")
+        bot.heroku = False
+    except AttributeError:
+        bot.heroku = True
+
+
     @bot.event
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)

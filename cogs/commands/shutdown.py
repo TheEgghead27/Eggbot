@@ -34,13 +34,10 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             await confirmMess.edit(text='Shutdown cancelled.')
         else:
             if reaction.emoji == '✅':
-                try:
-                    print(os.startfile.__class__)  # check for the thing heroku os just doesn't
-                except AttributeError:
+                if self.bot.heroku:
                     await ctx.send('I might be unable to shut down!')
-                else:
-                    await confirmMess.delete()
-                    await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
+                await confirmMess.delete()
+                await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
                 await self.bot.close()
                 exit(0)
             else:  # ❌ react cancel
@@ -58,11 +55,11 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         """Restarts the bot using the default Python interpreter"""
         import os
         await self.papate(ctx, embedColor=0xffff00, phrase="restarting", timer=True)
-        try:
+        if not self.bot.heroku:
             # on a local host, execv won't have a visible terminal
             os.startfile("eggbot.py")
             exit(0)
-        except AttributeError:
+        else:
             # on heroku, it's fine to do this
             os.execv(sys.executable, ['python3'] + sys.argv)
 
