@@ -39,10 +39,14 @@ class EmbedHelpCommand(commands.HelpCommand):
             name = 'Misc.' if cog is None else cog.qualified_name
             filtered = await self.filter_commands(Commands, sort=True)
             if filtered:
-                if self.context.author.id in owners:
-                    def commandCheck(CheckCommand):
-                        return CheckCommand
-                else:
+                try:
+                    if self.context.author.id in owners:
+                        def commandCheck(CheckCommand):
+                            return CheckCommand
+                    else:
+                        def commandCheck(CheckCommand):
+                            return not CheckCommand.hidden
+                except TypeError:
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
                 # stealing this formatting from Ear Tensifier because
