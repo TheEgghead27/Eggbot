@@ -35,27 +35,22 @@ class EmbedHelpCommand(commands.HelpCommand):
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title='Bot Commands', colour=self.COLOUR)
-        for cog, Commands in mapping.items():
 
-            try:  # define commandCheck type depending on user authorization level
-                if not self.context:
-                    print('oh.')
-                if self.context.author.id in owners or str(self.context.author.id) in owners:
-                    print('owner')
+        try:  # define commandCheck type depending on user authorization level
+            if self.context.author.id in owners or str(self.context.author.id) in owners:
 
-                    def commandCheck(CheckCommand):
-                        return CheckCommand
-                else:
-                    print('no owner')
-                    await self.get_destination().send("embed=embed")
-
-                    def commandCheck(CheckCommand):
-                        return not CheckCommand.hidden
-            except TypeError as eror:
-                raise eror
+                def commandCheck(CheckCommand):
+                    return CheckCommand
+            else:
+                await self.get_destination().send("embed=embed")
 
                 def commandCheck(CheckCommand):
                     return not CheckCommand.hidden
+        except TypeError:
+            def commandCheck(CheckCommand):
+                return not CheckCommand.hidden
+
+        for cog, Commands in mapping.items():
 
             name = 'Misc.' if cog is None else cog.qualified_name
 
