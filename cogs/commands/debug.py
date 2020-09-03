@@ -147,9 +147,13 @@ class Debug(commands.Cog):
         files = []
         for i in targets:
             files.append(discord.File(filename=i, fp=i))
-        await ctx.send(files=files)
-        if ctx.author.id == hosts[0]:
-            await ctx.author.send(file=discord.File(filename="config.json", fp="config.json"))
+        try:
+            await ctx.send(files=files)
+            if ctx.author.id == hosts[0]:
+                await ctx.author.send(file=discord.File(filename="config.json", fp="config.json"))
+        except Exception as E:
+            await ctx.send('There was an error getting your files!')
+            raise E
 
 
 def insert_returns(body):
