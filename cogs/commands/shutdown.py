@@ -1,5 +1,6 @@
 import asyncio
 import os
+import sys
 
 import discord
 from discord.ext import commands
@@ -40,8 +41,8 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                 else:
                     await confirmMess.delete()
                     await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
-                    await self.bot.close()
-                    exit(0)
+                await self.bot.close()
+                exit(0)
             else:  # ❌ react cancel
                 await confirmMess.remove_reaction('✅', self.bot.user)
                 await confirmMess.remove_reaction('❌', self.bot.user)
@@ -61,7 +62,8 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             os.startfile("eggbot.py")
             exit(0)
         except AttributeError:
-            await ctx.send("I am unable to restart!")  # maybe do the catlamp
+            await ctx.send("I might be unable to restart!")  # maybe do the catlamp
+            os.execv(sys.executable, ['python3'] + sys.argv)
             await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     @commands.command(hidden=True)
