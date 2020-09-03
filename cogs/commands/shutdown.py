@@ -1,3 +1,6 @@
+import asyncio
+import os
+
 import discord
 from discord.ext import commands
 
@@ -16,9 +19,35 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     @commands.check(host_check)
     async def shutdown(self, ctx):
         """Shuts down the bot"""
-        await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
-        await self.bot.close()
-        exit(0)
+        confirmMess = await ctx.send('Are you sure you want to shut down the bot?')
+        await confirmMess.add_reaction('✅')
+        await confirmMess.add_reaction('❌')
+
+        # wait_for stolen from docs example
+        def confirm(react, reactor):
+            return reactor == ctx.author and str(react.emoji) in ('✅', '❌')
+
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=30, check=confirm)
+        except asyncio.TimeoutError:
+            await confirmMess.edit(text='Shutdown cancelled.')
+        else:
+            if reaction.emoji == '✅':
+                if os.startfile:
+                    await confirmMess.delete()
+                    await self.papate(ctx, embedColor=0xff0000, phrase="shutting down", timer=True)
+                    await self.bot.close()
+                    exit(0)
+                else:
+                    await ctx.send('I might be unable to shutdown!')
+            else:
+                await confirmMess.remove_reaction('✅', self.bot.user)
+                await confirmMess.remove_reaction('❌', self.bot.user)
+                try:
+                    await confirmMess.remove_reaction('❌', user)
+                except (discord.Forbidden, discord.NotFound):
+                    pass
+                await confirmMess.edit(content='Shutdown cancelled.')
 
     @commands.command(name="restart", aliases=["reboot"], hidden=True)
     @commands.check(host_check)
@@ -40,12 +69,11 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=False)
         self.bot.cmds = []
         # *reload commands and listeners
-        from os import listdir
         cogDirectories = ['cogs/commands/',
                           'cogs/listeners/']  # bot will look for python files in these directories
         for cogDir in cogDirectories:
             loadDir = cogDir.replace('/', '.')
-            for cog in listdir(cogDir):
+            for cog in os.listdir(cogDir):
                 if cog.endswith('.py'):  # tries to reload all .py files in the folders, use cogs/misc instead
                     try:
                         self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
