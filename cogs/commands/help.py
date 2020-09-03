@@ -36,10 +36,9 @@ class EmbedHelpCommand(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title='Bot Commands', colour=self.COLOUR)
         for cog, Commands in mapping.items():
-            print(cog, '\nCommands:', Commands)
+
             name = 'Misc.' if cog is None else cog.qualified_name
-            filtered = await self.filter_commands(Commands, sort=True)
-            if filtered:
+            if Commands:
                 try:
                     if self.context.author.id in owners:
                         def commandCheck(CheckCommand):
@@ -69,8 +68,6 @@ class EmbedHelpCommand(commands.HelpCommand):
                     value = '{0}\n{1}'.format(cog.description, value)
                 if value:
                     embed.add_field(name=name, value=value, inline=False)
-                else:
-                    print(name)
 
         embed.set_footer(text=self.get_ending_note(main=True))
         await self.get_destination().send(embed=embed)
