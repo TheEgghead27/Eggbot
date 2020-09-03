@@ -41,14 +41,16 @@ class EmbedHelpCommand(commands.HelpCommand):
             if Commands:
                 try:
                     if self.context.author.id in owners or str(self.context.author.id) in owners:
-                        await self.get_destination().send("embed=emb")
+                        print('owner')
                         def commandCheck(CheckCommand):
                             return CheckCommand
                     else:
+                        print('no owner')
                         await self.get_destination().send("embed=embed")
                         def commandCheck(CheckCommand):
                             return not CheckCommand.hidden
                 except TypeError:
+                    print('eror')
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
                 # stealing this formatting from Ear Tensifier because
