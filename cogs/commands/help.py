@@ -50,7 +50,7 @@ class EmbedHelpCommand(commands.HelpCommand):
                     def commandCheck(CheckCommand):
                         return not CheckCommand.hidden
             except TypeError as eror:
-                print(eror)
+                raise eror
 
                 def commandCheck(CheckCommand):
                     return not CheckCommand.hidden
