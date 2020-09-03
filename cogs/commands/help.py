@@ -38,6 +38,8 @@ class EmbedHelpCommand(commands.HelpCommand):
         for cog, Commands in mapping.items():
 
             try:  # define commandCheck type depending on user authorization level
+                if not self.context:
+                    print('oh.')
                 if self.context.author.id in owners or str(self.context.author.id) in owners:
                     print('owner')
 
