@@ -40,14 +40,6 @@ class EmbedHelpCommand(commands.HelpCommand):
             name = 'Misc.' if cog is None else cog.qualified_name
             if Commands:
                 try:  # define commandCheck type depending on user authorization level
-                    print(self.context)
-                    print(self.context.author)
-                    print(self.context.author.id)
-                    print(owners)
-                    print(owners[0].__class__)
-                    print(self.context.author.id.__class__)
-                    print(self.context.author.id in owners)
-
                     if self.context.author.id in owners:
                         def commandCheck(CheckCommand):
                             return CheckCommand
