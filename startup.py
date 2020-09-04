@@ -316,6 +316,7 @@ def getOwners():
             for i in hostsTemp:
                 hosts.append(int(i))
     except Exception as e:
+        # I never expected this to happen because getOwners() only happens after configuring, but heroku dumb
         import os
         print(f'getOwners() raised {e}! Attempting to load from env...')
         hostsTemp = os.getenv('hosts')
