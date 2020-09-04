@@ -315,9 +315,15 @@ def getOwners():
             hosts = []
             for i in hostsTemp:
                 hosts.append(int(i))
-            return hosts
     except Exception as e:
-        print(f'getOwners() raised {e}!')
+        import os
+        print(f'getOwners() raised {e}! Attempting to load from env...')
+        hosts = os.getenv('hosts')
+        if not hosts:
+            input('The "hosts" environment variable was not found!\n Press enter to exit.')
+            exit(0)
+        hosts = literal_eval(hosts)
+    return hosts
 
 
 def makeSettings():
