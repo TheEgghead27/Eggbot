@@ -132,6 +132,7 @@ if __name__ == '__main__':
     except AttributeError:
         bot.heroku = True
 
+    # I was gonna add an autosave for when you redeploy, but it just didn't work
 
     @bot.event
     async def on_ready():
