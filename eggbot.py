@@ -133,14 +133,14 @@ if __name__ == '__main__':
         bot.heroku = True
 
     # set SIGTERM handler if bot is on heroku (I trust everyone else to manually save/use shutdown commands)
-    if bot.heroku:
-        import signal
+    import signal
 
-        def receiveSignal():
+    def receiveSignal():
+        if bot.heroku:
             print('AaaAAuGAh I\'m dYIng')
             # exit(5)
 
-        signal.signal(signal.SIGTERM, receiveSignal)
+    signal.signal(signal.SIGTERM, receiveSignal)
 
 
     @bot.event
