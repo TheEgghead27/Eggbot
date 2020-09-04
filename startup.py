@@ -318,11 +318,15 @@ def getOwners():
     except Exception as e:
         import os
         print(f'getOwners() raised {e}! Attempting to load from env...')
-        hosts = os.getenv('hosts')
-        if not hosts:
+        hostsTemp = os.getenv('hosts')
+        if not hostsTemp:
             input('The "hosts" environment variable was not found!\n Press enter to exit.')
             exit(0)
-        hosts = literal_eval(hosts)
+        hostsTemp = literal_eval(hostsTemp)
+        hosts = []
+        for i in hostsTemp:
+            hosts.append(int(i))
+        del hostsTemp
     return hosts
 
 
