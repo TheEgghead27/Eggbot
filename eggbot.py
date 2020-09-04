@@ -132,6 +132,16 @@ if __name__ == '__main__':
     except AttributeError:
         bot.heroku = True
 
+    # set SIGTERM handler if bot is on heroku (I trust everyone else to manually save/use shutdown commands)
+    if bot.heroku:
+        import signal
+
+        def receiveSignal():
+            print('AaaAAuGAh I\'m dYIng')
+            # exit(5)
+
+        signal.signal(signal.SIGTERM, receiveSignal)
+
 
     @bot.event
     async def on_ready():
