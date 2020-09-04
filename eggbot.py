@@ -106,6 +106,28 @@ def delistList(index):
     return deobfuscated
 
 
+# signal tests
+def receiveSignal(signalNumber, frame):
+    print('Received:', signalNumber)
+    return
+# register the signals to be caught
+signal.signal(signal.SIGHUP, receiveSignal)
+signal.signal(signal.SIGINT, receiveSignal)
+signal.signal(signal.SIGQUIT, receiveSignal)
+signal.signal(signal.SIGILL, receiveSignal)
+signal.signal(signal.SIGTRAP, receiveSignal)
+signal.signal(signal.SIGABRT, receiveSignal)
+signal.signal(signal.SIGBUS, receiveSignal)
+signal.signal(signal.SIGFPE, receiveSignal)
+#signal.signal(signal.SIGKILL, receiveSignal)
+signal.signal(signal.SIGUSR1, receiveSignal)
+signal.signal(signal.SIGSEGV, receiveSignal)
+signal.signal(signal.SIGUSR2, receiveSignal)
+signal.signal(signal.SIGPIPE, receiveSignal)
+signal.signal(signal.SIGALRM, receiveSignal)
+signal.signal(signal.SIGTERM, receiveSignal)
+
+
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
@@ -132,27 +154,6 @@ if __name__ == '__main__':
         bot.heroku = False
     except AttributeError:
         bot.heroku = True
-
-    # signal tests
-    def receiveSignal(signalNumber, frame):
-        print('Received:', signalNumber)
-        return
-    # register the signals to be caught
-    signal.signal(signal.SIGHUP, receiveSignal)
-    signal.signal(signal.SIGINT, receiveSignal)
-    signal.signal(signal.SIGQUIT, receiveSignal)
-    signal.signal(signal.SIGILL, receiveSignal)
-    signal.signal(signal.SIGTRAP, receiveSignal)
-    signal.signal(signal.SIGABRT, receiveSignal)
-    signal.signal(signal.SIGBUS, receiveSignal)
-    signal.signal(signal.SIGFPE, receiveSignal)
-    #signal.signal(signal.SIGKILL, receiveSignal)
-    signal.signal(signal.SIGUSR1, receiveSignal)
-    signal.signal(signal.SIGSEGV, receiveSignal)
-    signal.signal(signal.SIGUSR2, receiveSignal)
-    signal.signal(signal.SIGPIPE, receiveSignal)
-    signal.signal(signal.SIGALRM, receiveSignal)
-    signal.signal(signal.SIGTERM, receiveSignal)
 
     # set SIGTERM handler if bot is on heroku (I trust everyone else to manually save/use shutdown commands)
     # def receiveSignal():
