@@ -1,5 +1,6 @@
 from startup import load  # startup functions
 import random  # to randomize egg, economy earnings, simp, and e!kiri
+import signal
 import sys as system
 
 try:  # in case discord.py or simplejson isn't installed
@@ -132,15 +133,34 @@ if __name__ == '__main__':
     except AttributeError:
         bot.heroku = True
 
-    # set SIGTERM handler if bot is on heroku (I trust everyone else to manually save/use shutdown commands)
-    import signal
-
-    def receiveSignal():
-        if bot.heroku:
-            print('AaaAAuGAh I\'m dYIng')
-            # exit(5)
-
+    # signal tests
+    def receiveSignal(signalNumber, frame):
+        print('Received:', signalNumber)
+        return
+    # register the signals to be caught
+    signal.signal(signal.SIGHUP, receiveSignal)
+    signal.signal(signal.SIGINT, receiveSignal)
+    signal.signal(signal.SIGQUIT, receiveSignal)
+    signal.signal(signal.SIGILL, receiveSignal)
+    signal.signal(signal.SIGTRAP, receiveSignal)
+    signal.signal(signal.SIGABRT, receiveSignal)
+    signal.signal(signal.SIGBUS, receiveSignal)
+    signal.signal(signal.SIGFPE, receiveSignal)
+    #signal.signal(signal.SIGKILL, receiveSignal)
+    signal.signal(signal.SIGUSR1, receiveSignal)
+    signal.signal(signal.SIGSEGV, receiveSignal)
+    signal.signal(signal.SIGUSR2, receiveSignal)
+    signal.signal(signal.SIGPIPE, receiveSignal)
+    signal.signal(signal.SIGALRM, receiveSignal)
     signal.signal(signal.SIGTERM, receiveSignal)
+
+    # set SIGTERM handler if bot is on heroku (I trust everyone else to manually save/use shutdown commands)
+    # def receiveSignal():
+    #     if bot.heroku:
+    #         print('AaaAAuGAh I\'m dYIng')
+    #         # exit(5)
+#
+    # signal.signal(signal.SIGTERM, receiveSignal)
 
 
     @bot.event
