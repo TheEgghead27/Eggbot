@@ -142,6 +142,7 @@ if __name__ == '__main__':
         if bot.heroku:  # load files from owner DMs because heroku
             print('uhhhhhh')
             async for message in bot.get_user(hosts[0]).history():
+                print('mesage')
                 if message.author == bot.user and message.attachments:
                     print(message.attachments)
                     break
