@@ -146,10 +146,10 @@ if __name__ == '__main__':
                 if message.author == bot.user and len(message.attachments) == 2:
                     for i in message.attachments:
                         await i.save(i.filename)
-                    # restart to apply changes
-                    import sys
-                    os.execv(sys.executable, ['python3'] + sys.argv)
-
+                    # apply changes
+                    global roles, stonks, warehouse, joinRoles, scores
+                    _, _, _, _, _, _, _, _, _, roles, _, stonks, warehouse, joinRoles, _, _, _, _, _, _, _, _, _, _, \
+                        scores = load(blacklist=[])
         write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
