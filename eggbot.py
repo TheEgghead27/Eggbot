@@ -130,8 +130,10 @@ if __name__ == '__main__':
         import os
         os.startfile("verify.py")
         bot.heroku = False
+        bot.loaded = True
     except AttributeError:
         bot.heroku = True
+        bot.loaded = False
 
     # I was gonna add an autosave for when you redeploy, but it just didn't work
 
@@ -139,7 +141,7 @@ if __name__ == '__main__':
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
 
-        if bot.heroku:  # load files from owner DMs because heroku
+        if bot.heroku and not bot.loaded:  # load files from owner DMs because heroku
             print('uhhhhhh')
             async for message in bot.get_user(hosts[0]).history(limit=200):
                 print('mesage')
@@ -151,8 +153,10 @@ if __name__ == '__main__':
                     global roles, stonks, warehouse, joinRoles, scores
                     _, _, _, _, _, _, _, _, _, roles, _, stonks, warehouse, joinRoles, _, _, _, _, _, _, _, _, _, _, \
                         scores = load(blacklist=[])
+                    bot.loaded = True
                     break
-        write(bot)
+        else:
+            write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
 
