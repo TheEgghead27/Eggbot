@@ -145,6 +145,7 @@ if __name__ == '__main__':
                 print('mesage')
                 if message.author == bot.user and len(message.attachments) == 2:
                     for i in message.attachments:
+                        os.remove(i.filename)
                         await i.save(i.filename)
                     # apply changes
                     global roles, stonks, warehouse, joinRoles, scores
