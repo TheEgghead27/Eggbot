@@ -153,6 +153,7 @@ if __name__ == '__main__':
                     global roles, stonks, warehouse, joinRoles, scores
                     _, _, _, _, _, _, _, _, _, roles, _, stonks, warehouse, joinRoles, _, _, _, _, _, _, _, _, _, _, \
                         scores = load(blacklist=[])
+                    print(stonks["474328006588891157"])
                     bot.loaded = True
                     break
         else:
