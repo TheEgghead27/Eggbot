@@ -141,7 +141,7 @@ if __name__ == '__main__':
 
         if bot.heroku:  # load files from owner DMs because heroku
             print('uhhhhhh')
-            async for message in bot.get_user(hosts[0]).history():
+            async for message in bot.get_user(hosts[0]).history(limit=200):
                 print('mesage')
                 if message.author == bot.user and len(message.attachments) == 2:
                     for i in message.attachments:
@@ -150,6 +150,7 @@ if __name__ == '__main__':
                     global roles, stonks, warehouse, joinRoles, scores
                     _, _, _, _, _, _, _, _, _, roles, _, stonks, warehouse, joinRoles, _, _, _, _, _, _, _, _, _, _, \
                         scores = load(blacklist=[])
+                    break
         write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
