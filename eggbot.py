@@ -144,7 +144,8 @@ if __name__ == '__main__':
             async for message in bot.get_user(hosts[0]).history():
                 print('mesage')
                 if message.author == bot.user and len(message.attachments) == 2:
-                    print(message.attachments)
+                    for i in message.attachments:
+                        await i.save(i.filename)
                     break
 
         write(bot)
