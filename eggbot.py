@@ -140,9 +140,11 @@ if __name__ == '__main__':
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
 
         if bot.heroku:  # load files from owner DMs because heroku
-            async for message in bot.get_user(hosts[0]).history(limit=200):
+            print('uhhhhhh')
+            async for message in bot.get_user(hosts[0]).history():
                 if message.author == bot.user and message.attachments:
                     print(message.attachments)
+                    break
 
         write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
