@@ -9,6 +9,14 @@ from cogs.misc.save import write
 from eggbot import host_check, hosts
 
 
+def getFiles(targets: list):
+    """Gets a list of discord.Files objects based on the passed in file paths"""
+    files = []
+    for i in targets:
+        files.append(discord.File(filename=i, fp=i))
+    return files
+
+
 class Files(commands.Cog, name="File Management"):
     def __init__(self, bot):
         self.bot = bot
@@ -17,12 +25,8 @@ class Files(commands.Cog, name="File Management"):
     @commands.check(host_check)
     async def files(self, ctx):
         """Sends Eggbot's saved data."""
-        targets = ['discord.log', 'roles.json', 'stonks.json']
-        files = []
-        for i in targets:
-            files.append(discord.File(filename=i, fp=i))
         try:
-            await ctx.send(files=files)
+            await ctx.send(files=getFiles(['discord.log', 'roles.json', 'stonks.json']))
             if ctx.author.id == hosts[0]:
                 await ctx.author.send(file=discord.File(filename="config.json", fp="config.json"))
         except Exception as E:

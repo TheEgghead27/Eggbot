@@ -6,7 +6,8 @@ import discord
 from discord.ext import commands
 
 from cogs.misc.save import write
-from eggbot import host_check
+from eggbot import host_check, hosts
+from cogs.commands.files import getFiles
 from cogs.commands.utility import timerUsers
 from cogs.listeners.pagination import Pagination
 
@@ -110,6 +111,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                             color=embedColor)
         await ctx.send(embed=emb)
         write(self.bot)
+        await self.bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
         # timer purge
         if timer:
             for i in timerUsers:

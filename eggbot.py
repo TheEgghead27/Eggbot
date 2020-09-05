@@ -14,10 +14,11 @@ except ModuleNotFoundError:  # install the discord modules
     import discord
     from discord.ext import commands
     import simplejson as json
-from cogs.commands.help import EmbedHelpCommand
 
 hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, joinRoles, insults, \
     beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes, scores = load(blacklist=[])
+
+from cogs.commands.help import EmbedHelpCommand
 
 # initialize a bunch of variables used in places
 prefix = ['e!', 'E!', 'e! ', 'E! ', "e1", 'e1 ']  # you can kinda? customize this, but i honestly don't care
@@ -137,6 +138,14 @@ if __name__ == '__main__':
     @bot.event
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
+
+        if bot.heroku:  # load files from owner DMs because heroku
+            print('uhhhhhh')
+            async for message in bot.get_user(hosts[0]).history():
+                if message.author == bot.user and message.attachments:
+                    print(message.attachments)
+                    break
+
         write(bot)
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
