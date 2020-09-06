@@ -27,7 +27,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
 
         # wait_for stolen from docs example
         def confirm(react, reactor):
-            return reactor == ctx.author and str(react.emoji) in ('✅', '❌')
+            return reactor == ctx.author and str(react.emoji) in ('✅', '❌') and confirmMess.id == react.message.id
 
         try:
             reaction, user = await self.bot.wait_for('reaction_add', timeout=30, check=confirm)
@@ -111,7 +111,8 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
                             color=embedColor)
         await ctx.send(embed=emb)
         write(self.bot)
-        await self.bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
+        if self.bot.heroku:  # dm the files for safe-keeping
+            await self.bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
         # timer purge
         if timer:
             for i in timerUsers:
