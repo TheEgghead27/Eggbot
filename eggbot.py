@@ -144,9 +144,7 @@ if __name__ == '__main__':
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
 
         if bot.heroku and not bot.loaded:  # load files from owner DMs because heroku
-            print('uhhhhhh')
             async for message in bot.get_user(hosts[0]).history(limit=200):
-                print('mesage')
                 if message.author == bot.user and len(message.attachments) == 2:
                     for i in message.attachments:
                         os.remove(i.filename)
@@ -154,7 +152,6 @@ if __name__ == '__main__':
                     # apply changes
                     _, _, _, _, _, _, _, _, _, bot.roles, _, bot.stonks, bot.warehouse, bot.joinRoles, _, _, _, _, _, \
                         _, _, _, _, _, bot.scores = load(blacklist=[])
-                    print(bot.stonks['users']["474328006588891157"])
                     bot.loaded = True
                     break
         else:
