@@ -1,16 +1,13 @@
 import simplejson as json
 
-from cogs.commands.economy import stonks, warehouse
-from cogs.commands.roles import roles, joinRoles
-
 
 def write(bot):
     with open("roles.json", "w") as j:
-        dick = {"reactions": roles, "join": joinRoles}
+        dick = {"reactions": bot.roles, "join": bot.joinRoles}
         json.dump(dick, j, encoding="utf-8")
     with open("stonks.json", "w") as j:
-        print(stonks['users']["474328006588891157"])
-        dick = {"moneys": stonks, "amazon": warehouse, "scores": sortScores(bot)}
+        print(bot.stonks['users']["474328006588891157"])
+        dick = {"moneys": bot.stonks, "amazon": bot.warehouse, "scores": sortScores(bot)}
         json.dump(dick, j, encoding="utf-8")
 
 

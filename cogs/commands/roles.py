@@ -3,30 +3,18 @@ import simplejson as json
 import discord
 from discord.ext import commands
 
-from eggbot import host_check, colors, roles, joinRoles
-
-# this guarantees that joinRoles come from the right place (because without this, it's a WTF moment)
-roles = roles
-joinRoles = joinRoles
-roleEmbeds = {}
-
-
-def load(role):
-    # noinspection PyGlobalUndefined
-    global joinRoles, roles
-    joinRoles = role["join"]
-    roles = role["reactions"]
+from eggbot import host_check, colors
 
 
 class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.roleEmbeds = {}
 
     @commands.command(hidden=True, brief="{@role/role id} {emoji} {color name}")
     @commands.check(host_check)
     async def roleGiver(self, ctx, *args):
         """Sets up an automatic role-giving message"""
-        global roleEmbeds
         args = list(args)
         try:
             role, emoji, colo = await self.roleProcess(ctx, args)
@@ -44,12 +32,12 @@ class Roles(commands.Cog):
         mess = await ctx.send(embed=emb)
         await mess.add_reaction(emoji)
         roleData = {str(emoji): {"role": role.id}}
-        roles[str(mess.id)] = roleData
+        self.bot.roles[str(mess.id)] = roleData
         with open("roles.json", "w") as j:
-            json.dump(roles, j)
+            json.dump(self.bot.roles, j)
         rolls = [role.id]
         emojis = [str(emoji)]
-        roleEmbeds[ctx.message.channel] = [emb.to_dict(), mess.id, roleData, rolls, emojis]
+        self.roleEmbeds[ctx.message.channel] = [emb.to_dict(), mess.id, roleData, rolls, emojis]
         emb = discord.Embed(title="Role giver set up!",
                             description="If you need to add more roles, use `e!addRoles` "
                                         "(same syntax) soon (before the bot is shut off) "
@@ -63,7 +51,7 @@ class Roles(commands.Cog):
         """Adds a role to a recently created role-giver"""
         args = list(args)
         try:
-            info = roleEmbeds[ctx.message.channel]
+            info = self.roleEmbeds[ctx.message.channel]
         except KeyError:
             await ctx.send("Role giver message not found in cache! Are you in the right channel, or did "
                            "the bot reboot?")
@@ -88,9 +76,9 @@ class Roles(commands.Cog):
         await mess.add_reaction(emoji)
         info = info[2]
         info[str(emoji)] = {"role": role.id}
-        roles[str(mess.id)] = info
+        self.bot.roles[str(mess.id)] = info
         with open("roles.json", "w") as j:
-            json.dump(roles, j)
+            json.dump(self.bot.roles, j)
 
     async def roleProcess(self, ctx, args):
         args = list(args)
@@ -151,7 +139,7 @@ class Roles(commands.Cog):
             if ctx.author.guild_permissions.administrator:
                 if ctx.message.role_mentions:
                     role = ctx.message.role_mentions[0]
-                    joinRoles[str(ctx.guild.id)] = role.id
+                    self.bot.joinRoles[str(ctx.guild.id)] = role.id
                     await ctx.send('@{r} was set as the role for new members.'.format(r=role.name))
                 else:
                     try:
@@ -171,8 +159,8 @@ class Roles(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         """Assign role on member joining server, if a role is set."""
-        if str(member.guild.id) in joinRoles:
-            role = member.guild.get_role(joinRoles[str(member.guild.id)])
+        if str(member.guild.id) in self.bot.joinRoles:
+            role = member.guild.get_role(self.bot.joinRoles[str(member.guild.id)])
             await member.add_roles(role)
 
 

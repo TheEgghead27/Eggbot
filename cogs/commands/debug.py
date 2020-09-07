@@ -63,8 +63,8 @@ class Debug(commands.Cog):
             body = parsed.body[0].body
 
             insert_returns(body)
-            from eggbot import hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, \
-                warehouse, joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, \
+            from eggbot import hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, colors, \
+                insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, \
                 flagFields, mmyes, scores
 
             env = {
@@ -82,11 +82,11 @@ class Debug(commands.Cog):
                 'spic': spic,
                 'simp': simp,
                 'ohno': ohno,
-                'roles': roles,
+                'roles': self.bot.roles,
                 'colors': colors,
-                'stonks': stonks,
-                'warehouse': warehouse,
-                'joinRoles': joinRoles,
+                'stonks': self.bot.stonks,
+                'warehouse': self.bot.warehouse,
+                'joinRoles': self.bot.joinRoles,
                 'insults': insults,
                 'beeEmbed': beeEmbed,
                 'logging': logging,

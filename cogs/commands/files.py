@@ -3,8 +3,6 @@ import simplejson as json
 import discord
 from discord.ext import commands
 
-from cogs.commands.roles import joinRoles, roles
-from cogs.commands.economy import stonks, warehouse
 from cogs.misc.save import write
 from eggbot import host_check, hosts
 
@@ -45,7 +43,7 @@ class Files(commands.Cog, name="File Management"):
     async def backupRoles(self, ctx):
         """Creates a roles.json.bak based on the current roles database"""
         with open("roles.json.bak", "w") as j:
-            dick = {"reactions": roles, "join": joinRoles}
+            dick = {"reactions": self.bot.roles, "join": self.bot.joinRoles}
             json.dump(dick, j, encoding="utf-8")
         await ctx.send("Backed up the current role database!")
 
@@ -54,7 +52,7 @@ class Files(commands.Cog, name="File Management"):
     async def backupEconomy(self, ctx):
         """Creates a stonks.json.bak based on the current economy database"""
         with open("stonks.json.bak", "w") as j:
-            dick = {"moneys": stonks, "amazon": warehouse}
+            dick = {"moneys": self.bot.stonks, "amazon": self.bot.warehouse}
             json.dump(dick, j, encoding="utf-8")
         await ctx.send("Backed up the current economy database!")
 

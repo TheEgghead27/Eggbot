@@ -30,6 +30,8 @@ bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
 del status
+bot.roles, bot.stonks, bot.warehouse, bot.joinRoles = roles, stonks, warehouse, joinRoles
+del roles, stonks, warehouse
 
 
 # create functions imported by cogs
@@ -153,7 +155,7 @@ if __name__ == '__main__':
                     global roles, stonks, warehouse, joinRoles, scores
                     _, _, _, _, _, _, _, _, _, roles, _, stonks, warehouse, joinRoles, _, _, _, _, _, _, _, _, _, _, \
                         scores = load(blacklist=[])
-                    print(stonks['users']["474328006588891157"])
+                    print(bot.stonks['users']["474328006588891157"])
                     bot.loaded = True
                     break
         else:
@@ -195,7 +197,7 @@ if __name__ == '__main__':
                 pass
             else:
                 oval = random.randrange(1, 3)
-                await addServerEgg(message, oval)
+                await addServerEgg(message, oval, bot)
             try:
                 if a[0].startswith(eggTrigger):
                     await message.channel.send(markdown(eggs))
@@ -205,10 +207,10 @@ if __name__ == '__main__':
                         if oval >= 8:
                             pass
                         else:
-                            stonks["users"][str(message.author.id)]["global"] += 1
+                            bot.stonks["users"][str(message.author.id)]["global"] += 1
                     except KeyError:
-                        stonks["users"][str(message.author.id)] = {"global": 1, str(message.guild.id): 0,
-                                                                   "notif": "False"}
+                        bot.stonks["users"][str(message.author.id)] = {"global": 1, str(message.guild.id): 0,
+                                                                       "notif": "False"}
                     except AttributeError:
                         pass
                     if not bot.safeguard:

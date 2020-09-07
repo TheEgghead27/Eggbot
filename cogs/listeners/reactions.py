@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 
-from eggbot import roles
-
 
 class Reactions(commands.Cog):
     def __init__(self, bot):
@@ -16,8 +14,8 @@ class Reactions(commands.Cog):
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
             await message.add_reaction('🗿')
-        if str(payload.message_id) in roles:
-            roleData = roles[str(payload.message_id)]
+        if str(payload.message_id) in self.bot.roles:
+            roleData = self.bot.roles[str(payload.message_id)]
             if emoji in roleData:
                 roleData = roleData[emoji]
                 react_guild = self.bot.get_guild(payload.guild_id)
@@ -51,8 +49,8 @@ class Reactions(commands.Cog):
     async def on_raw_reaction_remove(self, payload):
         # get role configurations
         emoji = str(payload.emoji)
-        if str(payload.message_id) in roles:
-            roleData = roles[str(payload.message_id)]
+        if str(payload.message_id) in self.bot.roles:
+            roleData = self.bot.roles[str(payload.message_id)]
             if emoji in roleData:
                 roleData = roleData[emoji]
             else:

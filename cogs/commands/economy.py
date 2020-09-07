@@ -4,7 +4,7 @@ from random import randrange
 import discord
 from discord.ext import commands
 
-from eggbot import stonks, warehouse, joinArgs
+from eggbot import joinArgs
 
 
 class Economy(commands.Cog):
@@ -44,10 +44,10 @@ class Economy(commands.Cog):
         """Sets notifications for when you gain egg(s)"""
         try:
             if arg1.lower() in ['on', "true", "yes", "y"]:
-                stonks["users"][str(ctx.author.id)]["notif"] = "True"
+                self.bot.stonks["users"][str(ctx.author.id)]["notif"] = "True"
                 await ctx.send("Egg gain notifications have been turned on.")
             else:
-                stonks["users"][str(ctx.author.id)]["notif"] = "False"
+                self.bot.stonks["users"][str(ctx.author.id)]["notif"] = "False"
                 await ctx.send("Egg gain notifications have been turned off.")
         except KeyError:
             await sleep(1)
@@ -59,7 +59,7 @@ class Economy(commands.Cog):
         emb = discord.Embed(title="{u}'s fridge:".format(u=str(ctx.author)), color=0xfefefe)
         emb.set_footer(text="Protip: Use e!notifs to be notified of the number of eggs you receive.")
         try:
-            wallet = stonks["users"][str(ctx.author.id)]
+            wallet = self.bot.stonks["users"][str(ctx.author.id)]
             try:
                 emb.add_field(name="Global Eggs:", value=wallet["global"])
             except KeyError:
@@ -83,10 +83,10 @@ class Economy(commands.Cog):
         """Shows the current number of server eggs donated to the server."""
         try:
             emb = discord.Embed(title="{s} Bank Balance:".format(s=str(ctx.guild)),
-                                description=str(stonks["servers"][str(ctx.guild.id)]), color=0xfefefe)
+                                description=str(self.bot.stonks["servers"][str(ctx.guild.id)]), color=0xfefefe)
             await ctx.send(embed=emb)
         except KeyError:
-            stonks["servers"][str(ctx.guild.id)] = 0
+            self.bot.stonks["servers"][str(ctx.guild.id)] = 0
             emb = discord.Embed(title="{s} Bank Balance:".format(s=str(ctx.guild)), description="0", color=0xfefefe)
             await ctx.send(embed=emb)
         except AttributeError:
@@ -97,7 +97,7 @@ class Economy(commands.Cog):
         """Displays any goals set in the current server"""
         try:
             emb = discord.Embed(title="{s} Server Goals:".format(s=str(ctx.guild)), color=0x00ff55)
-            a = warehouse[str(ctx.guild.id)]
+            a = self.bot.warehouse[str(ctx.guild.id)]
             if len(a) > 0:
                 i = len(a) // 2
                 b = 0
@@ -117,7 +117,7 @@ class Economy(commands.Cog):
         except AttributeError:
             await ctx.send("Bruh, this isn't a server!?!")
         except KeyError:
-            warehouse[str(ctx.guild.id)] = []
+            self.bot.warehouse[str(ctx.guild.id)] = []
             emb = discord.Embed(title="{s} Server Goals:".format(s=str(ctx.guild)), color=0x00ff55)
             emb.add_field(name="None", value="There are no goals set in this server.")
             await ctx.send(embed=emb)
@@ -126,7 +126,7 @@ class Economy(commands.Cog):
     async def donate(self, ctx, arg1):
         """Donates eggs to the server bank, making progress toward any goals."""
         try:
-            wallet = stonks["users"][str(ctx.author.id)][str(ctx.guild.id)]
+            wallet = self.bot.stonks["users"][str(ctx.author.id)][str(ctx.guild.id)]
             arg1 = int(arg1)
         except KeyError:
             await ctx.send("Don't be cheeky, you don't have any eggs to donate!")
@@ -141,10 +141,10 @@ class Economy(commands.Cog):
             elif arg1 <= 0:
                 await ctx.send("bruh how do you donate less than 1 egg the heck")
                 return
-            stonks["servers"][str(ctx.guild.id)] += arg1
+            self.bot.stonks["servers"][str(ctx.guild.id)] += arg1
         except KeyError:
-            stonks["servers"][str(ctx.guild.id)] = arg1
-        stonks["users"][str(ctx.author.id)][str(ctx.guild.id)] -= arg1
+            self.bot.stonks["servers"][str(ctx.guild.id)] = arg1
+        self.bot.stonks["users"][str(ctx.author.id)][str(ctx.guild.id)] -= arg1
         emb = discord.Embed(title="👍 Donated {e} eggs to {s} Server".format(e=str(arg1), s=str(ctx.guild)),
                             color=0x00ff55)
         await ctx.send(embed=emb)
@@ -155,9 +155,9 @@ class Economy(commands.Cog):
         try:
             if ctx.author.guild_permissions.administrator:
                 try:
-                    a = warehouse[str(ctx.guild.id)]
+                    a = self.bot.warehouse[str(ctx.guild.id)]
                 except KeyError:
-                    a = warehouse[str(ctx.guild.id)] = []
+                    a = self.bot.warehouse[str(ctx.guild.id)] = []
                 try:
                     if len(a) <= 8:
                         args = list(args)
@@ -189,16 +189,16 @@ class Economy(commands.Cog):
         try:
             if ctx.author.guild_permissions.administrator:
                 try:
-                    if len(warehouse[str(ctx.guild.id)]) == 0:
+                    if len(self.bot.warehouse[str(ctx.guild.id)]) == 0:
                         await ctx.send("You don't have any goals to delete???????????")
                     else:
                         args = list(args)
                         name = joinArgs(args)
                         name = name.strip(' ')
                         a = 0
-                        for _ in warehouse[str(ctx.guild.id)]:
-                            if name == warehouse[str(ctx.guild.id)][a]:
-                                del warehouse[str(ctx.guild.id)][a], warehouse[str(ctx.guild.id)][a]
+                        for _ in self.bot.warehouse[str(ctx.guild.id)]:
+                            if name == self.bot.warehouse[str(ctx.guild.id)][a]:
+                                del self.bot.warehouse[str(ctx.guild.id)][a], self.bot.warehouse[str(ctx.guild.id)][a]
                                 await ctx.send("Deleted the `{g}` goal.".format(g=name))
                                 return
                             else:
@@ -218,9 +218,9 @@ class Economy(commands.Cog):
             if ctx.author.guild_permissions.administrator:
                 arg1 = int(arg1)
                 try:
-                    stonks["servers"][str(ctx.guild.id)] += arg1
+                    self.bot.stonks["servers"][str(ctx.guild.id)] += arg1
                 except KeyError:
-                    stonks["servers"][str(ctx.guild.id)] = arg1
+                    self.bot.stonks["servers"][str(ctx.guild.id)] = arg1
                 await ctx.send("Added {e} eggs to the server's egg bank.".format(e=str(arg1)))
             else:
                 await ctx.send("Bruh, you can't do that!")
@@ -234,14 +234,14 @@ class Economy(commands.Cog):
             if ctx.author.guild_permissions.administrator:
                 arg1 = int(arg1)
                 try:
-                    if arg1 <= stonks["servers"][str(ctx.guild.id)]:
-                        stonks["servers"][str(ctx.guild.id)] -= arg1
+                    if arg1 <= self.bot.stonks["servers"][str(ctx.guild.id)]:
+                        self.bot.stonks["servers"][str(ctx.guild.id)] -= arg1
                         await ctx.send("Removed {e} eggs from the server's egg bank.".format(e=str(arg1)))
                     else:
-                        stonks["servers"][str(ctx.guild.id)] = 0
+                        self.bot.stonks["servers"][str(ctx.guild.id)] = 0
                         await ctx.send("Emptied the server's egg bank.")
                 except KeyError:
-                    stonks["servers"][str(ctx.guild.id)] = 0
+                    self.bot.stonks["servers"][str(ctx.guild.id)] = 0
                     await ctx.send("The server bank doesn't have any eggs to remove?")
             else:
                 await ctx.send("Bruh, you can't do that!")
@@ -255,27 +255,28 @@ class Economy(commands.Cog):
             if ctx.author.guild_permissions.administrator:
                 try:
                     try:
-                        if len(warehouse[str(ctx.guild.id)]) == 0:
+                        if len(self.bot.warehouse[str(ctx.guild.id)]) == 0:
                             await ctx.send("You don't have any goals to confirm???????????")
                         else:
                             args = list(args)
                             name = joinArgs(args)
                             name = name.strip(' ')
                             a = 0
-                            for _ in warehouse[str(ctx.guild.id)]:
-                                if name == warehouse[str(ctx.guild.id)][a]:
-                                    cost = warehouse[str(ctx.guild.id)][a + 1]
+                            for _ in self.bot.warehouse[str(ctx.guild.id)]:
+                                if name == self.bot.warehouse[str(ctx.guild.id)][a]:
+                                    cost = self.bot.warehouse[str(ctx.guild.id)][a + 1]
                                     try:
-                                        if cost <= stonks["servers"][str(ctx.guild.id)]:
-                                            stonks["servers"][str(ctx.guild.id)] -= cost
-                                            del warehouse[str(ctx.guild.id)][a], warehouse[str(ctx.guild.id)][a]
+                                        if cost <= self.bot.stonks["servers"][str(ctx.guild.id)]:
+                                            self.bot.stonks["servers"][str(ctx.guild.id)] -= cost
+                                            del self.bot.warehouse[str(ctx.guild.id)][a]
+                                            del self.bot.warehouse[str(ctx.guild.id)][a]
                                             await ctx.send("Confirmed the `{g}` goal transaction.".format(g=name))
                                             return
                                         else:
                                             await ctx.send("The server bank doesn't that many eggs!?!")
                                             return
                                     except KeyError:
-                                        stonks["servers"][str(ctx.guild.id)] = 0
+                                        self.bot.stonks["servers"][str(ctx.guild.id)] = 0
                                         await ctx.send("There are no eggs to spend.")
                                         return
                                 else:
@@ -297,7 +298,7 @@ class Economy(commands.Cog):
     async def shop(self, ctx):
         """Displays items purchasable with global eggs"""
         emb = discord.Embed(title="Eggbot Shop", color=0x00ff55)
-        a = warehouse["global"]
+        a = self.bot.warehouse["global"]
         if len(a) > 0:
             i = len(a) // 3
             b = 0
@@ -319,7 +320,7 @@ class Economy(commands.Cog):
     async def inventory(self, ctx):
         """Displays your collection of items"""
         try:
-            inventory = stonks["users"][str(ctx.message.author.id)]["inv"]
+            inventory = self.bot.stonks["users"][str(ctx.message.author.id)]["inv"]
             if inventory == "None":
                 emb = discord.Embed(title="{u}'s Inventory:".format(u=str(ctx.author)), description="{u} owns no items!"
                                     .format(u=str(ctx.author)), color=0xff0000)
@@ -328,8 +329,8 @@ class Economy(commands.Cog):
                 for item in inventory:
                     emb.add_field(name=item, value=inventory[item], inline=True)
             else:
-                stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
-                                                       "inv": "None"}
+                self.bot.stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                                                "inv": "None"}
                 emb = discord.Embed(title="{u}'s Inventory:".format(u=str(ctx.author)), description=f"{str(ctx.author)}"
                                                                                                     f"'s inventory "
                                                                                                     f"appears to be "
@@ -341,8 +342,8 @@ class Economy(commands.Cog):
             emb = discord.Embed(title="Error:",
                                 description="There was an error loading your inventory. Check back later.",
                                 color=0xff0000)
-            stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
-                                                   "inv": "None"}
+            self.bot.stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                                            "inv": "None"}
         await ctx.send(embed=emb)
 
     @commands.command(aliases=['purchase'], brief="{item name}")
@@ -353,18 +354,18 @@ class Economy(commands.Cog):
         del args
         name = name.strip(' ').lower()
         a = 0
-        for item in warehouse["global"]:
+        for item in self.bot.warehouse["global"]:
             if name == item:
-                cost = warehouse["global"][a + 1]
+                cost = self.bot.warehouse["global"][a + 1]
                 try:
-                    if cost <= stonks["users"][str(ctx.author.id)]["global"]:
-                        stonks["users"][str(ctx.author.id)]["global"] -= cost
+                    if cost <= self.bot.stonks["users"][str(ctx.author.id)]["global"]:
+                        self.bot.stonks["users"][str(ctx.author.id)]["global"] -= cost
                         try:
-                            stonks["users"][str(ctx.author.id)]["inv"][item] += 1
+                            self.bot.stonks["users"][str(ctx.author.id)]["inv"][item] += 1
                         except KeyError:
-                            stonks["users"][str(ctx.author.id)]["inv"][item] = 1
+                            self.bot.stonks["users"][str(ctx.author.id)]["inv"][item] = 1
                         except TypeError:
-                            stonks["users"][str(ctx.author.id)]["inv"] = {item: 1}
+                            self.bot.stonks["users"][str(ctx.author.id)]["inv"] = {item: 1}
                         await ctx.send("Bought `{g}`.".format(g=item))
                     else:
                         await ctx.send("You can't afford that item!?!")
@@ -375,8 +376,8 @@ class Economy(commands.Cog):
             a += 1
         if name in ("4 eggs", "four eggs"):
             try:
-                if 5 <= stonks["users"][str(ctx.author.id)]["global"]:
-                    stonks["users"][str(ctx.author.id)]["global"] -= 1
+                if 5 <= self.bot.stonks["users"][str(ctx.author.id)]["global"]:
+                    self.bot.stonks["users"][str(ctx.author.id)]["global"] -= 1
                     await ctx.send("Bought `{g}` for `5 eggs`.".format(g=name))
                 else:
                     await ctx.send("You can't afford that item!?!")
@@ -389,7 +390,7 @@ class Economy(commands.Cog):
     @commands.Cog.listener()
     async def on_command(self, ctx):
         try:
-            if str(ctx.author.id) in stonks["users"]:
+            if str(ctx.author.id) in self.bot.stonks["users"]:
                 args = ctx.message.content.split(' ')[0]
                 args = args[2:]
                 if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
@@ -403,23 +404,23 @@ class Economy(commands.Cog):
                         pass
                     else:
                         oval = randrange(1, 3)
-                        stonks["users"][str(ctx.author.id)]["global"] += oval
-                        if stonks["users"][str(ctx.author.id)]["notif"] == "True":
+                        self.bot.stonks["users"][str(ctx.author.id)]["global"] += oval
+                        if self.bot.stonks["users"][str(ctx.author.id)]["notif"] == "True":
                             await ctx.send("You got {e} eggs!".format(e=str(oval)))
                         else:
                             pass
             else:
                 raise KeyError
         except KeyError:
-            stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
-                                                   "inv": "None"}
+            self.bot.stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
+                                                            "inv": "None"}
         except AttributeError:
             pass
 
 
-async def addServerEgg(message, eggs):
+async def addServerEgg(message, eggs, bot):
     try:
-        userData = stonks["users"][str(message.author.id)]
+        userData = bot.stonks["users"][str(message.author.id)]
         try:
             userData[str(message.guild.id)] += eggs
         except KeyError:
@@ -430,8 +431,8 @@ async def addServerEgg(message, eggs):
             pass
     except KeyError:
         try:
-            stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): eggs,
-                                                       "notif": "False", 'inv': "None"}
+            bot.stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): eggs,
+                                                           "notif": "False", 'inv': "None"}
         except AttributeError:
             pass
     except AttributeError:
