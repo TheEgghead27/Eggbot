@@ -6,7 +6,6 @@ def write(bot):
         dick = {"reactions": bot.roles, "join": bot.joinRoles}
         json.dump(dick, j, encoding="utf-8")
     with open("stonks.json", "w") as j:
-        print(bot.stonks['users']["474328006588891157"])
         dick = {"moneys": bot.stonks, "amazon": bot.warehouse, "scores": sortScores(bot)}
         json.dump(dick, j, encoding="utf-8")
 
