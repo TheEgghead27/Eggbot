@@ -152,9 +152,8 @@ if __name__ == '__main__':
                         os.remove(i.filename)
                         await i.save(i.filename)
                     # apply changes
-                    global roles, stonks, warehouse, joinRoles, scores
-                    _, _, _, _, _, _, _, _, _, roles, _, stonks, warehouse, joinRoles, _, _, _, _, _, _, _, _, _, _, \
-                        scores = load(blacklist=[])
+                    _, _, _, _, _, _, _, _, _, bot.roles, _, bot.stonks, bot.warehouse, bot.joinRoles, _, _, _, _, _, \
+                        _, _, _, _, _, bot.scores = load(blacklist=[])
                     print(bot.stonks['users']["474328006588891157"])
                     bot.loaded = True
                     break
