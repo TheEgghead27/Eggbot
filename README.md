@@ -7,7 +7,7 @@ Basic text pusher with embed message functionality
 ## Commands
 For information on Eggbot's commands, check the `e!help` command.
 
-## Official Host (Not on 24/7)
+## Official Host (Now on 24/7)
 https://discord.com/api/oauth2/authorize?client_id=681295724188794890&permissions=272104513&scope=bot
 
 ## Self-Host
