@@ -106,7 +106,8 @@ class Info(commands.Cog, name="Bot Info"):
 
     @tasks.loop(hours=24)
     async def dailyReset(self):
-        self.bot.eggCount = [0, True, datetime.datetime.now()]
+        save.sortScores(self.bot)
+        self.bot.eggCount = [0, True, datetime.datetime.now(tz=datetime.timezone.utc)]
 
     @dailyReset.after_loop
     async def on_daily_cancel(self):

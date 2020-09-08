@@ -1,3 +1,5 @@
+import datetime
+
 import simplejson as json
 
 
@@ -10,16 +12,16 @@ def write(bot):
         json.dump(dick, j, encoding="utf-8")
 
 
-def sortScores(bot):
+def sortScores(bot, edit=False):
+    if edit:
+        now = datetime.datetime.now(tz=datetime.timezone.utc)
+        bot.eggCount[2] = now  # set eggCount timestamp to now
     current = bot.eggCount
     data = bot.scores
     Scores = data
     if current[1]:  # check if the eggCount is legitimate
         date = current[2]
-        hour = date.hour
-        if hour + 5 < 24:
-            hour += 5
-        date = [date.year, date.month, date.day, hour, date.minute]
+        date = [date.year, date.month, date.day, date.hour, date.minute]
 
         marked = []
         scoresSorted = []
@@ -33,7 +35,7 @@ def sortScores(bot):
                 current[0] = int(i)
                 bot.eggCount = current
             del data[i]
-        data[current[0]] = date
+            data[current[0]] = date
 
         scoresSorted.sort()
 

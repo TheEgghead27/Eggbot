@@ -1,3 +1,4 @@
+from cogs.misc import save
 from startup import load  # startup functions
 import random  # to randomize egg, economy earnings, simp, and e!kiri
 import sys as system
@@ -111,7 +112,7 @@ def delistList(index):
 if __name__ == '__main__':
     from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
-    from datetime import datetime
+    import datetime
 
     import logging as logs
 
@@ -124,7 +125,7 @@ if __name__ == '__main__':
     # turn the bot "on"
     on = True
     # eggCount
-    bot.eggCount = [0, True, datetime.now()]
+    bot.eggCount = [0, True, datetime.datetime.now(tz=datetime.timezone.utc)]
     bot.scores = scores
 
     # verify that the bot is not running on Heroku
@@ -198,6 +199,7 @@ if __name__ == '__main__':
                 if a[0].startswith(eggTrigger):
                     await message.channel.send(markdown(eggs))
                     bot.eggCount[0] += 1
+                    save.sortScores(bot, edit=True)
                     try:
                         oval = random.randrange(0, 10)
                         if oval >= 8:
