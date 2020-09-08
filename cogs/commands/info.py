@@ -104,9 +104,9 @@ class Info(commands.Cog, name="Bot Info"):
     def cog_unload(self):
         self.dailyReset.cancel()
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(hours=24)
     async def dailyReset(self):
-        pass
+        self.bot.eggCount = [0, True, datetime.datetime.now()]
 
     @dailyReset.after_loop
     async def on_daily_cancel(self):
