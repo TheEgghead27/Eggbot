@@ -110,7 +110,6 @@ def delistList(index):
 
 
 if __name__ == '__main__':
-    from cogs.misc.save import write
     from cogs.commands.economy import addServerEgg
     import datetime
 
@@ -155,8 +154,7 @@ if __name__ == '__main__':
                         _, _, _, _, _, bot.scores = load(blacklist=[])
                     bot.loaded = True
                     break
-        else:
-            write(bot)
+
         await bot.change_presence(activity=discord.Game(name=bot.status))
 
 

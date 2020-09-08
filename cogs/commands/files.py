@@ -1,7 +1,7 @@
 import simplejson as json
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from cogs.misc.save import write
 from eggbot import host_check, hosts
@@ -18,6 +18,7 @@ def getFiles(targets: list):
 class Files(commands.Cog, name="File Management"):
     def __init__(self, bot):
         self.bot = bot
+        self.autoSave.start()
 
     @commands.command(hidden=True)
     @commands.check(host_check)
@@ -55,6 +56,22 @@ class Files(commands.Cog, name="File Management"):
             dick = {"moneys": self.bot.stonks, "amazon": self.bot.warehouse}
             json.dump(dick, j, encoding="utf-8")
         await ctx.send("Backed up the current economy database!")
+
+    def cog_unload(self):
+        self.autoSave.cancel()
+
+    @tasks.loop(hours=6)
+    async def autoSave(self):
+        write(self.bot)
+
+    @autoSave.after_loop
+    async def on_autoSave_cancel(self):
+        if self.autoSave.is_being_cancelled():
+            print('The autosave timer has been reset.')
+
+    @autoSave.before_loop
+    async def before_autoSave(self):
+        await self.bot.wait_until_ready()
 
 
 def setup(bot):
