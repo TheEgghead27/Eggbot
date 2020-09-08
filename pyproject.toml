@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "eggbot"
-version = "1.5.1-Indev"
+version = "1.5.1-Release"
 description = ""
 authors = ["repl.it user <replituser@example.com>"]
 
