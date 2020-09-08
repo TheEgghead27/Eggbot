@@ -1,8 +1,8 @@
 from asyncio import sleep
-from datetime import datetime
+import datetime
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from cogs.misc import mdbed, save
 from eggbot import hosts
@@ -11,6 +11,7 @@ from eggbot import hosts
 class Info(commands.Cog, name="Bot Info"):
     def __init__(self, bot):
         self.bot = bot
+        self.dailyReset.start()
 
     @commands.command(name="oldHelp", hidden=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
@@ -100,6 +101,22 @@ class Info(commands.Cog, name="Bot Info"):
         else:
             raise error
 
+    def cog_unload(self):
+        self.dailyReset.cancel()
+
+    @tasks.loop(minutes=1)
+    async def dailyReset(self):
+        pass
+
+    @dailyReset.after_loop
+    async def on_daily_cancel(self):
+        if self.dailyReset.is_being_cancelled():
+            print('The high-score and timer have been reset.')
+
+    @dailyReset.before_loop
+    async def before_daily(self):
+        await self.bot.wait_until_ready()
+
     @commands.command()
     async def eggCount(self, ctx):
         """Counts eggs"""
@@ -108,6 +125,11 @@ class Info(commands.Cog, name="Bot Info"):
             emb.set_footer(text="This score was manipulated, so it is ineligible for the high score boards.")
         else:
             emb.set_footer(text="Check e!highScores to see the eggCount charts.")
+            if self.dailyReset.next_iteration - datetime.datetime.now(tz=datetime.timezone.utc) < \
+                    datetime.timedelta(hours=3):
+                emb.set_footer(text="The current egg count will reset")
+                emb.timestamp = self.dailyReset.next_iteration
+
         await ctx.send(embed=emb)
 
     @commands.command(aliases=['eggCharts', 'eC'])
@@ -129,7 +151,11 @@ class Info(commands.Cog, name="Bot Info"):
             date = scores[str(scoresSorted[0])]
         except KeyError:
             date = scores[int(scoresSorted[0])]
-        date = datetime(year=date[0], month=date[1], day=date[2], hour=date[3])
+        if len(date) > 4:
+            date = datetime.datetime(year=date[0], month=date[1], day=date[2], hour=date[3], minute=date[4])
+        else:
+            date = datetime.datetime(year=date[0], month=date[1], day=date[2], hour=date[3])
+
         emb.timestamp = date
         await ctx.send(embed=emb)
 

@@ -19,7 +19,7 @@ def sortScores(bot):
         hour = date.hour
         if hour + 5 < 24:
             hour += 5
-        date = [date.year, date.month, date.day, hour]
+        date = [date.year, date.month, date.day, hour, date.minute]
 
         marked = []
         scoresSorted = []
