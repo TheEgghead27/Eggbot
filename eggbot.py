@@ -60,11 +60,10 @@ def joinArgs(args):
 
 def reverseBool(boolean):
     if boolean:
-        boolean = False
         state = 'on'
     else:
-        boolean = True
         state = 'off'
+    boolean = not boolean
     return boolean, state
 
 
