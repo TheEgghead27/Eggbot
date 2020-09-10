@@ -1,5 +1,3 @@
-from cogs.commands.files import getFiles
-from cogs.listeners.pagination import Pagination
 from cogs.misc import save
 from startup import load  # startup functions
 import random  # to randomize egg, economy earnings, simp, and e!kiri
@@ -143,16 +141,22 @@ if __name__ == '__main__':
     if bot.heroku:
         # Autosave for when you redeploy or Heroku cycling
         # noinspection PyUnusedLocal
-        def panik(signalNumber, frame):
+        async def panik(signalNumber, frame):
             save.write(bot)
             # dm the files for safe-keeping
-            await bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
+            targets = ['roles.json', 'stonks.json']
+            files = []
+            for i in targets:
+                files.append(discord.File(filename=i, fp=i))
+            await bot.get_user(hosts[0]).send(files=files)
             # timer purge
             for i in bot.timerUsers:
                 await i.send(f'The bot is restarting. Your timer has been cancelled.')
             # paginated purge
-            p = Pagination(bot)
-            await p.flush()
+            for i in bot.paginated:
+                message = bot.paginated[i][0]
+                await message.remove_reaction('▶', bot.user)
+                await message.remove_reaction('◀', bot.user)
             bot.paginated = {}
 
 
