@@ -142,6 +142,7 @@ if __name__ == '__main__':
         # Autosave for when you redeploy or Heroku cycling
         # noinspection PyUnusedLocal
         async def panik(signalNumber, frame):
+            print('oh shit')
             save.write(bot)
             # dm the files for safe-keeping
             targets = ['roles.json', 'stonks.json']
