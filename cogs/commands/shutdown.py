@@ -141,17 +141,13 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     @sigtermHandler.after_loop
     async def on_autoSave_cancel(self):
         if self.sigtermHandler.is_being_cancelled() and self.bot.heroku:
-            formatted = 'Restarting...'
-            await self.bot.change_presence(activity=discord.Game(formatted))
-            emb = discord.Embed(title=formatted, description="Please wait...",
-                                color=0xffff00)
-            await self.bot.get_user(hosts[0]).send(embed=emb)
             write(self.bot)
             if self.bot.heroku:  # dm the files for safe-keeping
-                await self.bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
+                await self.bot.get_user(hosts[0]).send(content='Restarting...', files=getFiles(['roles.json',
+                                                                                                'stonks.json']))
             # timer purge
             for i in self.bot.timerUsers:
-                await i.send('The bot is restarting. Your timer has been cancelled.')
+                await i.send('The bot is being force-restarted. Your timer has been cancelled.')
             # paginated purge
             await self.pagination.flush()
             self.bot.paginated = {}
