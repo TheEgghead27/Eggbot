@@ -63,6 +63,9 @@ class Files(commands.Cog, name="File Management"):
     @tasks.loop(hours=6)
     async def autoSave(self):
         write(self.bot)
+        if self.bot.heroku:  # dm the files for safe-keeping
+            await self.bot.get_user(hosts[0]).send(content='Autosaving...', files=getFiles(['roles.json',
+                                                                                            'stonks.json']))
 
     @autoSave.after_loop
     async def on_autoSave_cancel(self):
