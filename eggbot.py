@@ -160,7 +160,7 @@ if __name__ == '__main__':
                 await message.remove_reaction('◀', bot.user)
             bot.paginated = {}
 
-
+        print('uhhh')
         signal.signal(signal.SIGTERM, panik)
 
     @bot.event
