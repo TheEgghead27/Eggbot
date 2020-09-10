@@ -160,7 +160,7 @@ if __name__ == '__main__':
             bot.paginated = {}
 
 
-        signal.signal(signal.SIGBREAK, panik)
+        signal.signal(signal.SIGTERM, panik)
 
     @bot.event
     async def on_ready():
