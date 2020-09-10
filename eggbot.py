@@ -1,3 +1,5 @@
+from cogs.commands.files import getFiles
+from cogs.listeners.pagination import Pagination
 from cogs.misc import save
 from startup import load  # startup functions
 import random  # to randomize egg, economy earnings, simp, and e!kiri
@@ -31,6 +33,7 @@ bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
 del status
+bot.timerUsers = []
 bot.roles, bot.stonks, bot.warehouse, bot.joinRoles = roles, stonks, warehouse, joinRoles
 del roles, stonks, warehouse
 
@@ -111,6 +114,7 @@ def delistList(index):
 if __name__ == '__main__':
     from cogs.commands.economy import addServerEgg
     import datetime
+    import signal
 
     import logging as logs
 
@@ -136,12 +140,27 @@ if __name__ == '__main__':
         bot.heroku = True
         bot.loaded = False
 
-    # I was gonna add an autosave for when you redeploy, but it just didn't work
+    if bot.heroku:
+        # Autosave for when you redeploy or Heroku cycling
+        # noinspection PyUnusedLocal
+        def panik(signalNumber, frame):
+            save.write(bot)
+            # dm the files for safe-keeping
+            await bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
+            # timer purge
+            for i in bot.timerUsers:
+                await i.send(f'The bot is restarting. Your timer has been cancelled.')
+            # paginated purge
+            p = Pagination(bot)
+            await p.flush()
+            bot.paginated = {}
+
+
+        signal.signal(signal.SIGBREAK, panik)
 
     @bot.event
     async def on_ready():
         print('We have logged in as ' + bot.user.name + "#" + bot.user.discriminator)
-
         if bot.heroku and not bot.loaded:  # load files from owner DMs because heroku
             async for message in bot.get_user(hosts[0]).history(limit=200):
                 if message.author == bot.user and len(message.attachments) == 2:

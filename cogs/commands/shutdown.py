@@ -8,7 +8,6 @@ from discord.ext import commands
 from cogs.misc.save import write
 from eggbot import host_check, hosts
 from cogs.commands.files import getFiles
-from cogs.commands.utility import timerUsers
 from cogs.listeners.pagination import Pagination
 
 
@@ -97,7 +96,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             await self.bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
         # timer purge
         if timer:
-            for i in timerUsers:
+            for i in self.bot.timerUsers:
                 await i.send(f'The bot is {phrase}. Your timer has been cancelled.')
         # paginated purge
             await self.pagination.flush()

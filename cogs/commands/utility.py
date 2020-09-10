@@ -6,8 +6,6 @@ from discord.ext import commands
 from eggbot import times, joinArgs, activityTypes, flagFields
 from cogs.listeners.pagination import Pagination
 
-timerUsers = []
-
 
 def isNumber(string: str):
     try:
@@ -222,15 +220,14 @@ class Utility(commands.Cog):
                 await ctx.send(f"Timer set for {time}.")
             else:
                 await ctx.send(f'"{name}" timer set for {time}.')
-            global timerUsers
-            timerUsers.append(ctx.message.author)  # add user to the list of current timers
+            self.bot.timerUsers.append(ctx.message.author)  # add user to the list of current timers
             # the timer with no brim
             await sleep(timeAmount)
             if default:
                 await ctx.send(f'{ctx.message.author.mention}, your {time} timer is up!')
             else:
                 await ctx.send(f'{ctx.message.author.mention}, your "{name}" timer, set at {time}, is up!')
-            timerUsers.remove(ctx.message.author)
+            self.bot.timerUsers.remove(ctx.message.author)
         except IndexError:
             # this will rarely get called, but...
             await ctx.send('You did not provide the correct syntax.')
