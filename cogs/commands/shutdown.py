@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands, tasks
 
 from cogs.misc.save import write
-from eggbot import host_check, hosts
+from eggbot import host_check, hosts, token
 from cogs.commands.files import getFiles
 from cogs.listeners.pagination import Pagination
 
@@ -142,9 +142,11 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     async def on_autoSave_cancel(self):
         if self.sigtermHandler.is_being_cancelled() and self.bot.heroku:
             write(self.bot)
-            if self.bot.heroku:  # dm the files for safe-keeping
-                await self.bot.get_user(hosts[0]).send(content='Restarting...', files=getFiles(['roles.json',
-                                                                                                'stonks.json']))
+            # dm the files for safe-keeping
+            bot = commands.AutoShardedBot(command_prefix='dlfkjsklfjlksfjlkdsjflksjflkdjfklsjfkldsjflksjdflksjklflkkll')
+            bot.run(token)
+            await bot.get_user(hosts[0]).send(content='Force-restarting...', files=getFiles(['roles.json',
+                                                                                             'stonks.json']))
             # timer purge
             for i in self.bot.timerUsers:
                 await i.send('The bot is being force-restarted. Your timer has been cancelled.')
