@@ -112,7 +112,6 @@ def delistList(index):
 if __name__ == '__main__':
     from cogs.commands.economy import addServerEgg
     import datetime
-    import signal
 
     import logging as logs
 
@@ -138,30 +137,6 @@ if __name__ == '__main__':
         bot.heroku = True
         bot.loaded = False
 
-    # if bot.heroku:
-    #     # Autosave for when you redeploy or Heroku cycling
-    #     # noinspection PyUnusedLocal
-    #     async def panik(signalNumber, frame):
-    #         print('oh shit')
-    #         save.write(bot)
-    #         # dm the files for safe-keeping
-    #         targets = ['roles.json', 'stonks.json']
-    #         files = []
-    #         for i in targets:
-    #             files.append(discord.File(filename=i, fp=i))
-    #         await bot.get_user(hosts[0]).send(files=files)
-    #         # timer purge
-    #         for i in bot.timerUsers:
-    #             await i.send(f'The bot is restarting. Your timer has been cancelled.')
-    #         # paginated purge
-    #         for i in bot.paginated:
-    #             message = bot.paginated[i][0]
-    #             await message.remove_reaction('▶', bot.user)
-    #             await message.remove_reaction('◀', bot.user)
-    #         bot.paginated = {}
-#
-    #     print('uhhh')
-    #     signal.signal(signal.SIGTERM, panik)
 
     @bot.event
     async def on_ready():

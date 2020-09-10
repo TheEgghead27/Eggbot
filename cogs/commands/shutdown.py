@@ -3,7 +3,7 @@ import os
 import sys
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from cogs.misc.save import write
 from eggbot import host_check, hosts
@@ -15,6 +15,7 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     def __init__(self, bot):
         self.bot = bot
         self.pagination = Pagination(bot)
+        self.sigtermHandler.start()
 
     @commands.command(hidden=True)
     @commands.check(host_check)
@@ -128,6 +129,36 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
             except (discord.Forbidden, discord.NotFound):
                 pass
             await confirmMess.edit(content=f'{noun} cancelled.')
+
+    def cog_unload(self):
+        self.sigtermHandler.cancel()
+
+    @tasks.loop(hours=24)
+    async def sigtermHandler(self):
+        """Dummy task to handle Heroku SIGTERM shutdowns"""
+        pass
+
+    @sigtermHandler.after_loop
+    async def on_autoSave_cancel(self):
+        if self.sigtermHandler.is_being_cancelled() and self.bot.heroku:
+            formatted = 'Restarting...'
+            await self.bot.change_presence(activity=discord.Game(formatted))
+            emb = discord.Embed(title=formatted, description="Please wait...",
+                                color=0xffff00)
+            await self.bot.get_user(hosts[0]).send(embed=emb)
+            write(self.bot)
+            if self.bot.heroku:  # dm the files for safe-keeping
+                await self.bot.get_user(hosts[0]).send(files=getFiles(['roles.json', 'stonks.json']))
+            # timer purge
+            for i in self.bot.timerUsers:
+                await i.send('The bot is restarting. Your timer has been cancelled.')
+            # paginated purge
+            await self.pagination.flush()
+            self.bot.paginated = {}
+
+    @sigtermHandler.before_loop
+    async def before_autoSave(self):
+        await self.bot.wait_until_ready()
 
 
 def setup(bot):
