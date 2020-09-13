@@ -49,7 +49,6 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
         """Reloads the bot commands and listeners. Only runnable by admins."""
         if await self.check(ctx, "reload", "Reload"):
             await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=False)
-            self.bot.cmds = []
             # *reload commands and listeners
             cogDirectories = ['cogs/commands/',
                               'cogs/listeners/']  # bot will look for python files in these directories
