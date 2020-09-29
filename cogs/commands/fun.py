@@ -151,7 +151,6 @@ class Fun(commands.Cog):
             await ctx.send('mention a human to play dumb')
 
     @commands.command(aliases=['ttt', "tic_tac_toe", 'ticTacToe'], brief='{@user}')
-    @commands.check(host_check)
     async def tictactoe(self, ctx):
         """Starts a game of tic-tac-toe against the mentioned user."""
         if ctx.message.mentions:
