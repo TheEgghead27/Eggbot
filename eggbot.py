@@ -27,7 +27,7 @@ status = '{p}help'.format(p=prefix[0])
 prefixLen = len(prefix)
 intents = discord.Intents.all()
 bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts,
-                              help_command=EmbedHelpCommand(verify_checks=False, show_hidden=False))
+                              help_command=EmbedHelpCommand(verify_checks=False, show_hidden=False), intents=intents)
 bot.safeguard = True
 bot.botSafeguard = True
 bot.status = status
