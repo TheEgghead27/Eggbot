@@ -104,8 +104,8 @@ class ticTacToe:
                 return '0'
 
         # row check
-        data = ''
         for rowLetter in ['a', 'b', 'c']:
+            data = ''
             for piece in board:
                 if piece.lower()[0] == rowLetter:
                     i = board[piece]
