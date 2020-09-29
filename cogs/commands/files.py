@@ -1,3 +1,6 @@
+import datetime
+from asyncio import sleep
+
 import simplejson as json
 
 import discord
@@ -75,6 +78,10 @@ class Files(commands.Cog, name="File Management"):
     @autoSave.before_loop
     async def before_autoSave(self):
         await self.bot.wait_until_ready()
+        # sleep until the clock strikes an hour because im fucking sick of seeing uneven timestamps
+        now = datetime.datetime.now()
+        remaining = (now.replace(hour=now.hour + 1, minute=0, second=0, microsecond=0) - now).total_seconds()
+        await sleep(remaining)
 
 
 def setup(bot):
