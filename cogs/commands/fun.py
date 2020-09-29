@@ -132,7 +132,7 @@ class Fun(commands.Cog):
         else:
             await ctx.send("This content is NSFW, ya dingus!")
 
-    @commands.command(hidden=True, aliases=['tttB', "tic_tac_toe_beta", 'ticTacToeBeta'], brief='{@user}')
+    @commands.command(hidden=True, aliases=['tttB', "tic_tac_toe_beta"])
     @commands.check(host_check)
     async def tictactoeBeta(self, ctx):
         """Beta tic tac toe thing"""
@@ -150,8 +150,8 @@ class Fun(commands.Cog):
         else:
             await ctx.send('mention a human to play dumb')
 
-    @commands.command(aliases=['ttt', "tic_tac_toe", 'ticTacToe'], brief='{@user}')
-    async def tictactoe(self, ctx):
+    @commands.command(aliases=['ttt', "tic_tac_toe"], brief='{@user}')
+    async def ticTacToe(self, ctx):
         """Starts a game of tic-tac-toe against the mentioned user."""
         if ctx.message.mentions:
             victim = ctx.message.mentions[0]

@@ -308,8 +308,8 @@ if __name__ == '__main__':
                     print(f"{loadDir + cog[:-3]} is not a proper cog!")
                 except commands.ExtensionAlreadyLoaded:
                     print('you should not be seeing this\n if you do, youre screwed')
-                except commands.ExtensionFailed as failure:
-                    print(f'{failure.name} failed! booooo')
+                # except commands.ExtensionFailed as failure:
+                #     print(f'{failure.name} failed! booooo')
 
     try:
         bot.run(token)
