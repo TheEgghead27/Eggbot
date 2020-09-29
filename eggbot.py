@@ -25,6 +25,8 @@ from cogs.commands.help import EmbedHelpCommand
 prefix = ['e!', 'E!', 'e! ', 'E! ', "e1", 'e1 ']  # you can kinda? customize this, but i honestly don't care
 status = '{p}help'.format(p=prefix[0])
 prefixLen = len(prefix)
+intents = discord.Intents.all()
+intents.members = True
 bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, description=status, owner_ids=hosts,
                               help_command=EmbedHelpCommand(verify_checks=False, show_hidden=False))
 bot.safeguard = True
