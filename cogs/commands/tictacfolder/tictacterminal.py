@@ -68,23 +68,6 @@ class ticTacToe:
               f"{icons[6]}|{icons[7]}|{icons[8]}")
 
     # noinspection PyMethodMayBeStatic
-    # def winCheck(self, board: dict):
-    #    XList = ['XXX......', '...XXX...', '......XXX', 'X..X..X', 'X...X...X', 'X.X.X']
-    #    OList = ['OOO', 'O..O..O', 'O...O...O', 'O.O.O']
-    #    data = ''
-    #    for i in board.values():
-    #        if i is not None:
-    #            data += i
-    #        else:
-    #            data += ' '
-    #    for i in XList:
-    #        for _ in re.findall(i, data):
-    #            return '1'
-    #    for i in OList:
-    #        for _ in re.findall(i, data):
-    #            return '0'
-
-    # noinspection PyMethodMayBeStatic
     def winCheck(self, board: dict):
         XList = ['X..X..X', 'X...X...X', '..X.X.X..']  # columns and diagonals
         OList = ['O..O..O', 'O...O...O', '..O.O.O..']
@@ -225,16 +208,19 @@ class discordTicTac(ticTacToe):
             if self.player == '1':
                 curPlayer = self.p1
                 if await self.awaitP1Input():
+                    await self.cleanBoard()
                     return
             else:
                 curPlayer = self.p2
                 if await self.awaitP2Input():
+                    await self.cleanBoard()
                     return
+
             if self.winCheck(self.pieces):
-                await self.confirmMess.edit(embed=self.renderBoard(self.pieces, ''))
+                await self.cleanBoard()
                 await self.announceWin(curPlayer)
                 return
-        await self.confirmMess.edit(embed=self.renderBoard(self.pieces, ''))
+        await self.cleanBoard()
         await self.ctx.send('wow a tie amazing')
 
     # noinspection PyTypeChecker
@@ -318,8 +304,11 @@ class discordTicTac(ticTacToe):
         return True
 
     async def announceWin(self, winner: DiscordPlayer):
-        asyncio.ensure_future(self.removeReactions(['⬆', '⬇', '⬅', '➡', '✅'], self.ctx.bot.user))
         await self.ctx.send(f'Player {winner.user.mention} ({winner.mark}) wins!')
+
+    async def cleanBoard(self):
+        asyncio.ensure_future(self.removeReactions(['⬆', '⬇', '⬅', '➡', '✅'], self.ctx.bot.user))
+        await self.confirmMess.edit(embed=self.renderBoard(self.pieces, ''))
 
 
 if __name__ == '__main__':
