@@ -6,6 +6,7 @@ from discord.ext import commands
 
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults
 from cogs.listeners.pagination import Pagination
+from cogs.commands.tictacfolder.tictacterminal import discordTicTac
 
 
 class Fun(commands.Cog):
@@ -130,6 +131,41 @@ class Fun(commands.Cog):
                 await ctx.send("Oops! pp not found! It's probably too small! xD")
         else:
             await ctx.send("This content is NSFW, ya dingus!")
+
+    @commands.command(hidden=True, aliases=['tttB', "tic_tac_toe_beta", 'ticTacToeBeta'], brief='{@user}')
+    @commands.check(host_check)
+    async def tictactoeBeta(self, ctx):
+        """Beta tic tac toe thing"""
+        if ctx.message.mentions:
+            victim = ctx.message.mentions[0]
+            if not victim.bot:
+                if victim.id != ctx.author.id:
+                    game = discordTicTac(ctx, ctx.message.mentions[0])
+                    await game.run()
+                else:
+                    await ctx.send('damn youre lonely, but dont worry, '
+                                   'im gonna learn how to play the game for you soon™')
+            else:
+                await ctx.send('mention a *human* to play dumb')
+        else:
+            await ctx.send('mention a human to play dumb')
+
+    @commands.command(aliases=['ttt', "tic_tac_toe", 'ticTacToe'], brief='{@user}')
+    @commands.check(host_check)
+    async def tictactoe(self, ctx):
+        """Starts a game of tic-tac-toe against the mentioned user."""
+        if ctx.message.mentions:
+            victim = ctx.message.mentions[0]
+            if not victim.bot:
+                if victim.id != ctx.author.id:
+                    game = discordTicTac(ctx, ctx.message.mentions[0])
+                    await game.run()
+                else:
+                    await ctx.send('damn youre lonely, but dont worry, im gonna learn how to play the game for you')
+            else:
+                await ctx.send('mention a *human* to play dumb')
+        else:
+            await ctx.send('mention a human to play dumb')
 
 
 def setup(bot):
