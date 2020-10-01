@@ -52,10 +52,7 @@ async def host_check(ctx):
 
 
 def joinArgs(args):
-    echo = ""
-    while args:
-        echo = echo + " " + args[0]
-        del args[0]
+    echo = " ".join(args)
     echo = echo.strip(' ')
     return echo
 

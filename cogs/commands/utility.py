@@ -176,7 +176,6 @@ class Utility(commands.Cog):
             name = []
             time = []
             timeAmount = 0
-            indexNo = 0
             for i in args:
                 if isNumber(i) or i in times or i[:-1] in times:
                     a.append(i)
@@ -195,7 +194,6 @@ class Utility(commands.Cog):
                     pass
                 else:
                     name.append(i)
-                indexNo += 1
             name = joinArgs(name)
             time = joinArgs(time)
 
