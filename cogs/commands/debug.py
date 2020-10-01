@@ -1,15 +1,17 @@
 import ast
+import asyncio
 import datetime
 
 import discord
 from discord.ext import commands
 
-from eggbot import host_check
+from eggbot import host_check, hosts
 
 
 class Debug(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.hosts = hosts
 
     @commands.command(aliases=['latency'])
     async def ping(self, ctx):
@@ -46,82 +48,115 @@ class Debug(commands.Cog):
     @commands.check(host_check)
     async def evaluate(self, ctx, *, code):
         """Executes the specified code (command stolen from CatLamp)"""
+        if ctx.author.id == self.hosts[0] or await self.askCode(ctx.author, code, ctx):
+
+            try:
+                fn_name = "_eval_expr"
+
+                code = code.strip("` ")
+                if code.startswith("py"):
+                    code = code[2:]
+
+                # add a layer of indentation
+                code = "\n".join(f"    {i}" for i in code.splitlines())
+
+                # wrap in async def body
+                body = f"async def {fn_name}():\n{code}"
+
+                parsed = ast.parse(body)
+                body = parsed.body[0].body
+
+                insert_returns(body)
+                from eggbot import hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, colors, \
+                    insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, \
+                    flagFields, mmyes, scores
+
+                env = {
+                    'client': self.bot,
+                    'bot': self.bot,
+                    'discord': discord,
+                    'commands': commands,
+                    'ctx': ctx,
+                    'hosts': hosts,
+                    # 'token': token,
+                    'Bee': Bee,
+                    'kirilist': kirilist,
+                    'eggs': eggs,
+                    'eggTrigger': eggTrigger,
+                    'spic': spic,
+                    'simp': simp,
+                    'ohno': ohno,
+                    'roles': self.bot.roles,
+                    'colors': colors,
+                    'stonks': self.bot.stonks,
+                    'warehouse': self.bot.warehouse,
+                    'joinRoles': self.bot.joinRoles,
+                    'insults': insults,
+                    'beeEmbed': beeEmbed,
+                    'logging': logging,
+                    'dmLog': dmLog,
+                    'audit': audit,
+                    'deleteLog': deleteLog,
+                    'times': times,
+                    'activityTypes': activityTypes,
+                    'flagFields': flagFields,
+                    'mmyes': mmyes,
+                    'scores': scores
+                }
+                exec(compile(parsed, filename="<ast>", mode="exec"), env)
+                result = (await eval(f"{fn_name}()", env))
+                if len(str(result)) > 2048:
+                    embed = discord.Embed(title="Result too long",
+                                          description=f"The result was too long, so it was printed in terminal.",
+                                          color=0x00ff00)
+                    embed.set_footer(text="Executed successfully.")
+                    await ctx.send(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"```python\n{str(result)}\n```", color=0x00ff00)
+                    embed.set_footer(text="Executed successfully.")
+                    await ctx.send(embed=embed)
+            except Exception as exception:
+                if len(str(exception)) > 2048:  # I doubt this is needed, but just in case
+                    embed = discord.Embed(title="Error too long",
+                                          description=f"The error was too long, so it was printed in terminal",
+                                          color=0xff0000)
+                    embed.set_footer(text="Error occurred while executing.")
+                    await ctx.send(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"```python\n{str(exception)}\n```", color=0xff0000)
+                    embed.set_footer(text="Error occurred while executing.")
+                    await ctx.send(embed=embed)
+
+    async def askCode(self, slave: discord.User, code, ctx: commands.Context):
+        pp = await ctx.send('Asking for approval...')
+        ask = await (self.bot.get_user(self.hosts[0])).send(f'Is it okay for {slave} to execute: \n```py\n{code}```')
+
+        for i in ['✅', '❌']:
+            await ask.add_reaction(i)
+
+        def confirm(react, reactor):
+            return reactor == self.bot.get_user(self.hosts[0]) and str(react.emoji) in ('✅', '❌') \
+                   and ask.id == react.message.id
+
         try:
-            fn_name = "_eval_expr"
-
-            code = code.strip("` ")
-            if code.startswith("py"):
-                code = code[2:]
-
-            # add a layer of indentation
-            code = "\n".join(f"    {i}" for i in code.splitlines())
-
-            # wrap in async def body
-            body = f"async def {fn_name}():\n{code}"
-
-            parsed = ast.parse(body)
-            body = parsed.body[0].body
-
-            insert_returns(body)
-            from eggbot import hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, colors, \
-                insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, \
-                flagFields, mmyes, scores
-
-            env = {
-                'client': self.bot,
-                'bot': self.bot,
-                'discord': discord,
-                'commands': commands,
-                'ctx': ctx,
-                'hosts': hosts,
-                # 'token': token,
-                'Bee': Bee,
-                'kirilist': kirilist,
-                'eggs': eggs,
-                'eggTrigger': eggTrigger,
-                'spic': spic,
-                'simp': simp,
-                'ohno': ohno,
-                'roles': self.bot.roles,
-                'colors': colors,
-                'stonks': self.bot.stonks,
-                'warehouse': self.bot.warehouse,
-                'joinRoles': self.bot.joinRoles,
-                'insults': insults,
-                'beeEmbed': beeEmbed,
-                'logging': logging,
-                'dmLog': dmLog,
-                'audit': audit,
-                'deleteLog': deleteLog,
-                'times': times,
-                'activityTypes': activityTypes,
-                'flagFields': flagFields,
-                'mmyes': mmyes,
-                'scores': scores
-            }
-            exec(compile(parsed, filename="<ast>", mode="exec"), env)
-            result = (await eval(f"{fn_name}()", env))
-            if len(str(result)) > 2048:
-                embed = discord.Embed(title="Result too long",
-                                      description=f"The result was too long, so it was printed in terminal.",
-                                      color=0x00ff00)
-                embed.set_footer(text="Executed successfully.")
-                await ctx.send(embed=embed)
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=60, check=confirm)
+        except asyncio.TimeoutError:  # timeout cancel
+            await ctx.send(f"The owner didn't respond in time. Ask them to actually care about me for once.")
+            await ask.edit(content="Code execution cancelled.")
+            for i in ['✅', '❌']:
+                await ask.remove_reaction(i, self.bot.user)
+        else:
+            if reaction.emoji == '✅':
+                await ask.edit(content=f"Executing ```py\n{code}```")
+                await pp.edit(content=f"Executing code...")
+                for i in ['✅', '❌']:
+                    await ask.remove_reaction(i, self.bot.user)
+                return True
             else:
-                embed = discord.Embed(description=f"```python\n{str(result)}\n```", color=0x00ff00)
-                embed.set_footer(text="Executed successfully.")
-                await ctx.send(embed=embed)
-        except Exception as exception:
-            if len(str(exception)) > 2048:  # I doubt this is needed, but just in case
-                embed = discord.Embed(title="Error too long",
-                                      description=f"The error was too long, so it was printed in terminal",
-                                      color=0xff0000)
-                embed.set_footer(text="Error occurred while executing.")
-                await ctx.send(embed=embed)
-            else:
-                embed = discord.Embed(description=f"```python\n{str(exception)}\n```", color=0xff0000)
-                embed.set_footer(text="Error occurred while executing.")
-                await ctx.send(embed=embed)
+                await ask.edit(content=f"Code execution cancelled.")
+                await pp.edit(content=f"Your code was denied. :(")
+                for i in ['✅', '❌']:
+                    await ask.remove_reaction(i, self.bot.user)
 
     @commands.command(aliases=["print", "printEmoji"], hidden=True, brief='{emoji}')
     @commands.check(host_check)
