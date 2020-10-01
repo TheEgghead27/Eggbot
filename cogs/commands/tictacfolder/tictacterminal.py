@@ -26,9 +26,9 @@ class ticTacToe:
     # noinspection PyMethodMayBeStatic
     def IDtoMark(self, num: int):
         if num == 0:
-            return 'O'
-        else:
             return 'X'
+        else:
+            return 'O'
 
     def announceWin(self, winner):
         print(f'Player {self.player} ({self.IDtoMark(winner)}) wins!')
@@ -174,21 +174,19 @@ directionShuffle = {
 }
 
 
-class DiscordPlayer:
-    """Data-class for a player in a discordTicTac game."""
-    def __init__(self, user: discord.User, ID: int, mark: str):
-        self.user = user
-        self.id = ID
-        self.mark = mark
-
-
 # noinspection PyAttributeOutsideInit,PyPropertyAccess,PyMethodOverriding
 class discordTicTac(ticTacToe):
     def __init__(self, ctx: commands.Context, p2: discord.user):
         super(discordTicTac, self).__init__()
         self.ctx = ctx
-        self.p1 = DiscordPlayer(ctx.author, 1, 'X')
-        self.p2 = DiscordPlayer(p2, 2, 'O')
+
+        # randomize players
+        if random.randrange(0, 2):
+            self.p1 = ctx.author
+            self.p2 = p2
+        else:
+            self.p1 = p2
+            self.p2 = ctx.author
 
     async def run(self):
         embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...', color=0x00ff00)
@@ -238,7 +236,7 @@ class discordTicTac(ticTacToe):
         return False
 
     def renderBoard(self, board: dict, playerName: str):
-        embed = discord.Embed(title=f'TicTacToe: {self.ctx.author} VS {self.p2.user}', color=0x00ff00)
+        embed = discord.Embed(title=f'TicTacToe: {self.p1} VS {self.p2}', color=0x00ff00)
         if playerName:
             embed.set_author(name=f'{playerName}\'s turn. ({self.IDtoMark(self.currentPlayerID)})')
 
@@ -255,18 +253,18 @@ class discordTicTac(ticTacToe):
     async def userInput(self, p):
         waiting = True
         selection, temp = selectInit(self.pieces)
-        await self.confirmMess.edit(embed=self.renderBoard(temp, p.user.name))
+        await self.confirmMess.edit(embed=self.renderBoard(temp, p.name))
         while waiting:
             # wait_for stolen from docs example
             def confirm(react, reactor):
-                return reactor == p.user and str(react.emoji) in ('⬆', '⬇', '⬅', '➡', '✅') \
+                return reactor == p and str(react.emoji) in ('⬆', '⬇', '⬅', '➡', '✅') \
                        and self.confirmMess.id == react.message.id
 
             try:
                 reaction, user = await self.ctx.bot.wait_for('reaction_add', timeout=90, check=confirm)
             except asyncio.TimeoutError:  # timeout cancel
-                await self.ctx.send(f'{p.user.mention}\'s game timed-out. Be quicker bro!!!')
-                return p.user
+                await self.ctx.send(f'{p.mention}\'s game timed-out. Be quicker bro!!!')
+                return p
             else:
                 if reaction.emoji == '✅':
                     waitingTemp = await self.processInput(selection)
@@ -275,7 +273,7 @@ class discordTicTac(ticTacToe):
 
                 else:
                     selection, temp = directionShuffle[reaction.emoji](selection, self.pieces)
-                    await self.confirmMess.edit(embed=self.renderBoard(temp, p.user.name))
+                    await self.confirmMess.edit(embed=self.renderBoard(temp, p.name))
                     asyncio.ensure_future(self.removeReactions([reaction.emoji, '✅'], user))
 
     async def removeReactions(self, emojis: list, user: discord.User):
@@ -303,8 +301,8 @@ class discordTicTac(ticTacToe):
             return False
         return True
 
-    async def announceWin(self, winner: DiscordPlayer):
-        await self.ctx.send(f'Player {winner.user.mention} ({winner.mark}) wins!')
+    async def announceWin(self, winner: discord.User):
+        await self.ctx.send(f'Player {winner.mention} ({self.IDtoMark(self.currentPlayerID)}) wins!')
 
     async def cleanBoard(self):
         asyncio.ensure_future(self.removeReactions(['⬆', '⬇', '⬅', '➡', '✅'], self.ctx.bot.user))
