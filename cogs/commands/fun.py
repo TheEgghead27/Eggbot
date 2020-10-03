@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults
 from cogs.listeners.pagination import Pagination
-from cogs.commands.tictacfolder.tictacterminal import discordTicTac
+from cogs.commands.tictacfolder.tictacdiscord import discordTicTac
 
 
 class Fun(commands.Cog):
