@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import random
 
+from cogs.commands.tictacfolder.DInput import DInput
 from cogs.commands.tictacfolder.tictacterminal import ticTacToe
 
 
@@ -61,7 +62,7 @@ directionShuffle = {
 # noinspection PyAttributeOutsideInit,PyPropertyAccess,PyMethodOverriding
 class discordTicTac(ticTacToe):
     def __init__(self, ctx: commands.Context, p2: discord.user):
-        super(discordTicTac, self).__init__()
+        ticTacToe.__init__(self)
         self.ctx = ctx
 
         # randomize players
@@ -72,14 +73,15 @@ class discordTicTac(ticTacToe):
             self.p1 = p2
             self.p2 = ctx.author
 
-    async def run(self):
         embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...', color=0x00ff00)
         embed.description = f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛"
 
         self.confirmMess = await self.ctx.send(embed=embed)
-        for i in ['⬆', '⬇', '⬅', '➡', '✅']:
-            await self.confirmMess.add_reaction(i)
 
+        self.p1In = DInput(ctx.bot, self.confirmMess, self.p1)
+        self.p2In = DInput(ctx.bot, self.confirmMess, self.p2)
+
+    async def run(self):
         for i in range(9):
             self.currentPlayerID = i % 2
 
@@ -139,34 +141,21 @@ class discordTicTac(ticTacToe):
         selection, temp = selectInit(self.pieces)
         await self.confirmMess.edit(embed=self.renderBoard(temp, p.name))
         while waiting:
-            # wait_for stolen from docs example
-            def confirm(react, reactor):
-                return reactor == p and str(react.emoji) in ('⬆', '⬇', '⬅', '➡', '✅') \
-                       and self.confirmMess.id == react.message.id
-
-            try:
-                reaction, user = await self.ctx.bot.wait_for('reaction_add', timeout=90, check=confirm)
-            except asyncio.TimeoutError:  # timeout cancel
+            if p == self.p1:
+                thing = await self.p1In.awaitInput()
+            else:
+                thing = await self.p2In.awaitInput()
+            if type(thing) == Exception:  # if theres a timeout
                 await self.ctx.send(f'{p.mention}\'s game timed-out. Be quicker bro!!!')
                 return p
             else:
-                if reaction.emoji == '✅':
+                if thing == '✅':
                     waitingTemp = await self.processInput(selection)
-                    asyncio.ensure_future(self.removeReactions(['⬆', '⬇', '⬅', '➡', '✅'], user))
                     waiting = waitingTemp
 
                 else:
-                    selection, temp = directionShuffle[reaction.emoji](selection, self.pieces)
+                    selection, temp = directionShuffle[thing](selection, self.pieces)
                     await self.confirmMess.edit(embed=self.renderBoard(temp, p.name))
-                    asyncio.ensure_future(self.removeReactions([reaction.emoji], user))
-
-    async def removeReactions(self, emojis: list, user: discord.User):
-        """I made this a function for *blast-processing* and also efficiency"""
-        for i in emojis:
-            try:
-                await self.confirmMess.remove_reaction(i, user)
-            except (discord.Forbidden, discord.NotFound):
-                pass
 
     async def processInput(self, Input):
         if self.pieces[Input] is not None:
@@ -189,5 +178,5 @@ class discordTicTac(ticTacToe):
         await self.ctx.send(f'Player {winner.mention} ({self.IDtoMark(self.currentPlayerID)}) wins!')
 
     async def cleanBoard(self):
-        asyncio.ensure_future(self.removeReactions(['⬆', '⬇', '⬅', '➡', '✅'], self.ctx.bot.user))
+        asyncio.ensure_future(self.p1In.removeReactions(('⬆', '⬇', '⬅', '➡', '✅'), self.ctx.bot.user))
         await self.confirmMess.edit(embed=self.renderBoard(self.pieces, ''))

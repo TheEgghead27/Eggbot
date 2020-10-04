@@ -7,6 +7,7 @@ from discord.ext import commands
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults
 from cogs.listeners.pagination import Pagination
 from cogs.commands.tictacfolder.tictacdiscord import discordTicTac
+from cogs.commands.tictacfolder.ttd2 import discordTicTac as dTTBeta
 
 
 class Fun(commands.Cog):
@@ -140,11 +141,10 @@ class Fun(commands.Cog):
             victim = ctx.message.mentions[0]
             if not victim.bot:
                 if victim.id != ctx.author.id:
-                    game = discordTicTac(ctx, ctx.message.mentions[0])
+                    game = dTTBeta(ctx, ctx.message.mentions[0])
                     await game.run()
                 else:
-                    await ctx.send('damn youre lonely, but dont worry, '
-                                   'im gonna learn how to play the game for you soon™')
+                    await ctx.send('damn youre lonely, but dont worry, im gonna learn how to play the game for you')
             else:
                 await ctx.send('mention a *human* to play dumb')
         else:
