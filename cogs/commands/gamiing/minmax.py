@@ -1,5 +1,5 @@
 from sys import maxsize as inf
-from cogs.commands.tictacfolder.tictacterminal import *
+from cogs.commands.gamiing.tictacterminal import *
 
 
 # ======================================================================================================================

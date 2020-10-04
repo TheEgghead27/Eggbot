@@ -6,8 +6,8 @@ from discord.ext import commands
 
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults
 from cogs.listeners.pagination import Pagination
-from cogs.commands.tictacfolder.tictacdiscord import discordTicTac
-from cogs.commands.tictacfolder.ttd2 import discordTicTac as dTTBeta
+from cogs.commands.gamiing.tictacdiscord import discordTicTac
+from cogs.commands.gamiing.ttd2 import discordTicTac as dTTBeta
 
 
 class Fun(commands.Cog):
@@ -165,6 +165,12 @@ class Fun(commands.Cog):
                 await ctx.send('mention a *human* to play dumb')
         else:
             await ctx.send('mention a human to play dumb')
+
+    @commands.command(hidden=True)
+    @commands.check(host_check)
+    async def life(self, ctx):
+        """life"""
+        pass
 
 
 def setup(bot):
