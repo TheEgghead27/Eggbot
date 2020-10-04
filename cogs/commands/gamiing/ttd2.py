@@ -1,10 +1,10 @@
 import asyncio
-import discord
+# import discord (DiscordX already has discord)
 from discord.ext import commands
 import random
 
 from cogs.commands.gamiing.DInput import DInput
-from cogs.commands.gamiing.DiscordX import DiscordX
+from cogs.commands.gamiing.DiscordX import *
 from cogs.commands.gamiing.tictacterminal import ticTacToe
 
 
@@ -83,11 +83,8 @@ class discordTicTac(ticTacToe):
         self.p1In = DInput(self.ctx.bot, self.confirmMess, self.p1)
         self.p2In = DInput(self.ctx.bot, self.confirmMess, self.p2)
 
-        icons = []
-        for i in self.pieces.values():
-            icons.append(i)
-
-        self.gfx = DiscordX(target_message=self.confirmMess, data=icons, resolution=[3, 3], embed=self.embed,
+        self.gfx = DiscordX(target_message=self.confirmMess, data=dictToScanLines(self.pieces), resolution=[3, 3],
+                            embed=self.embed,
                             conversionTable={'None': '⬛', 'X': '❌', 'O': '⭕',
                                              'oS': '<:oS:757696246755622923>', 'xS': '<:xS:757697702216597604>',
                                              'noneS': '<:noneS:757697725906026547>'})
@@ -135,15 +132,12 @@ class discordTicTac(ticTacToe):
 
     async def renderBoard(self, board: dict, playerName: str):
         self.embed.title = f'TicTacToe: {self.p1} VS {self.p2}'
-        icons = []
-        for i in board.values():
-            icons.append(i)
         if playerName:
             self.embed.set_author(name=f'{playerName}\'s turn. ({self.IDtoMark(self.currentPlayerID)})')
         else:
             self.embed.remove_author()
 
-        self.gfx.syncData(icons)
+        self.gfx.syncData(dictToScanLines(board))
         self.gfx.syncEmbed(self.embed)
         await self.gfx.blit()
 

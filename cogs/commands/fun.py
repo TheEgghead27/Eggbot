@@ -8,6 +8,7 @@ from eggbot import kirilist, beeEmbed, host_check, Bee, insults
 from cogs.listeners.pagination import Pagination
 from cogs.commands.gamiing.tictacdiscord import discordTicTac
 from cogs.commands.gamiing.ttd2 import discordTicTac as dTTBeta
+from cogs.commands.gamiing.life import life
 
 
 class Fun(commands.Cog):
@@ -170,7 +171,8 @@ class Fun(commands.Cog):
     @commands.check(host_check)
     async def life(self, ctx):
         """life"""
-        pass
+        live = life()
+        await ctx.send(str(live))
 
 
 def setup(bot):

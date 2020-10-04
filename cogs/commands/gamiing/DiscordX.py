@@ -64,3 +64,10 @@ class DiscordX:
         print(temp)
         self.embed.description = temp
         await self.mess.edit(embed=self.embed)
+
+
+def dictToScanLines(pieces: dict):
+    icons = []
+    for i in pieces.values():
+        icons.append(i)
+    return icons
