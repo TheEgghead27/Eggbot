@@ -11,7 +11,9 @@ class DInput:
         self.player = target_user
         self.mess = target_message
         self.registered = target_controls
-        asyncio.ensure_future(self.addReactions(self.registered))
+
+    async def initReactions(self):
+        await self.addReactions(self.registered)
 
     async def awaitInput(self):
         # wait_for stolen from docs example
