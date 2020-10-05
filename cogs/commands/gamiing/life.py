@@ -32,13 +32,13 @@ class life:
                 fuck[(x, y)] = randint(0, 1)
         return fuck
 
-    async def run(self):
+    async def run(self, owner):
         genNumber = 0
         try:
             confirmMess = await self.ctx.send(embed=self.embed)
 
-            self.gfx = DiscordX(target_message=confirmMess, data=dictToScanLines(self.pieces), resolution=self.resolution,
-                                embed=self.embed, noWarn=True,
+            self.gfx = DiscordX(target_message=confirmMess, data=dictToScanLines(self.pieces),
+                                resolution=self.resolution, embed=self.embed, noWarn=True,
                                 conversionTable={'0': '⬛', '1': '⬜', 'None': '⬛'})
 
             self.embed.title = f"{self.ctx.author}\'s game of Life..."
@@ -46,6 +46,15 @@ class life:
 
             while True:
                 genNumber += 1
+
+                self.gfx.embed.set_footer(text=f'Generation: {genNumber}')
+
+                self.gfx.syncData(dictToScanLines(self.pieces))
+                await asyncio.sleep(1)
+                await self.gfx.blit()
+                if 1 not in self.pieces.values():
+                    raise asyncio.CancelledError
+
                 new = self.pieces.copy()
                 for i in self.pieces:
                     neighbors = self.getNeighbors(i)
@@ -67,17 +76,13 @@ class life:
                         new[i] = 0
 
                 self.pieces = new
-
-                self.gfx.embed.set_footer(text=f'Generation: {genNumber}')
-
-                self.gfx.syncData(dictToScanLines(self.pieces))
-                await asyncio.sleep(1)
-                await self.gfx.blit()
         except asyncio.CancelledError:
             self.gfx.embed.title = f"{self.ctx.author}\'s game of Life"
+            # noinspection PyDunderSlots, PyUnresolvedReferences
             self.gfx.embed.color = 0xff0000
             self.gfx.embed.set_footer(text=f'Ended at generation {genNumber}.')
             await self.gfx.blit()
+            owner.live = None
             raise
 
     def getNeighbors(self, target: tuple):

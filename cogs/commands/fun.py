@@ -178,7 +178,7 @@ class Fun(commands.Cog):
         if width * height <= 169:
             if width <= 25:
                 live = life(ctx, [width, height])
-                self.live = ensure_future(live.run())
+                self.live = ensure_future(live.run(owner=self))
             else:
                 await ctx.send('Sorry, the maximum width is 25.')
         else:
@@ -189,7 +189,6 @@ class Fun(commands.Cog):
     async def fuckLife(self, ctx):
         try:
             self.live.cancel()
-            self.live = None
             await ctx.send('pulled a 2020 on life 😎')
         except AttributeError:
             await ctx.send('i have no life 😔')
