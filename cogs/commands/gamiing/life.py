@@ -33,45 +33,52 @@ class life:
         return fuck
 
     async def run(self):
-        confirmMess = await self.ctx.send(embed=self.embed)
-
-        self.gfx = DiscordX(target_message=confirmMess, data=dictToScanLines(self.pieces), resolution=self.resolution,
-                            embed=self.embed, noWarn=True,
-                            conversionTable={'0': '⬛', '1': '⬜', 'None': '⬛'})
-
-        self.embed.title = f"{self.ctx.author}\'s game of Life..."
-        self.gfx.syncEmbed(self.embed)
-
         genNumber = 0
-        while True:
-            genNumber += 1
-            new = self.pieces.copy()
-            for i in self.pieces:
-                neighbors = self.getNeighbors(i)
+        try:
+            confirmMess = await self.ctx.send(embed=self.embed)
 
-                # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-                if neighbors < 2:
-                    new[i] = 0
+            self.gfx = DiscordX(target_message=confirmMess, data=dictToScanLines(self.pieces), resolution=self.resolution,
+                                embed=self.embed, noWarn=True,
+                                conversionTable={'0': '⬛', '1': '⬜', 'None': '⬛'})
 
-                # Any live cell with two or three live neighbours survives.
-                # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-                elif neighbors == 3:
-                    new[i] = 1
-                # Any live cell with two or three live neighbours lives on to the next generation.
-                elif neighbors in (2, 3) and self.pieces[i] == 1:
-                    pass
+            self.embed.title = f"{self.ctx.author}\'s game of Life..."
+            self.gfx.syncEmbed(self.embed)
 
-                # All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-                else:
-                    new[i] = 0
+            while True:
+                genNumber += 1
+                new = self.pieces.copy()
+                for i in self.pieces:
+                    neighbors = self.getNeighbors(i)
 
-            self.pieces = new
+                    # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+                    if neighbors < 2:
+                        new[i] = 0
 
-            self.gfx.embed.set_footer(text=f'Generation: {genNumber}')
+                    # Any live cell with two or three live neighbours survives.
+                    # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+                    elif neighbors == 3:
+                        new[i] = 1
+                    # Any live cell with two or three live neighbours lives on to the next generation.
+                    elif neighbors in (2, 3) and self.pieces[i] == 1:
+                        pass
 
-            self.gfx.syncData(dictToScanLines(self.pieces))
-            await asyncio.sleep(1)
+                    # All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+                    else:
+                        new[i] = 0
+
+                self.pieces = new
+
+                self.gfx.embed.set_footer(text=f'Generation: {genNumber}')
+
+                self.gfx.syncData(dictToScanLines(self.pieces))
+                await asyncio.sleep(1)
+                await self.gfx.blit()
+        except asyncio.CancelledError:
+            self.gfx.embed.title = f"{self.ctx.author}\'s game of Life"
+            self.gfx.embed.color = 0xff0000
+            self.gfx.embed.set_footer(text=f'Ended at generation {genNumber}.')
             await self.gfx.blit()
+            raise
 
     def getNeighbors(self, target: tuple):
         """Returns the number of neighboring live cells."""
