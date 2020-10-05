@@ -38,30 +38,44 @@ class DiscordX:
         temp = ''
         counter = 0
         for i in self.data:
-            print('fucc')
             interlaced.append(i)
             if counter == self.width - 1:
-                print(interlaced)
                 temp += '\n'
                 for item in interlaced:
                     try:
                         temp += self.conversionTable[str(item)]
                     except KeyError:
-                        temp += self.conversionTable['None']
+                        try:
+                            temp += self.conversionTable['None']
+                        except KeyError:
+                            temp += self.conversionTable[str(item)]
                 interlaced = []
                 counter = 0
             else:
                 counter += 1
-        if interlaced:
+        if interlaced:  # if theres leftovers, just slap it into some extra rows lol
             temp += '\n'
             for item in interlaced:
                 try:
                     temp += self.conversionTable[str(item)]
                 except KeyError:
-                    temp += self.conversionTable['None']
+                    try:
+                        temp += self.conversionTable['None']
+                    except KeyError:
+                        temp += "⬛"
             for _ in range(0, self.width - len(interlaced)):
-                temp += self.conversionTable['None']
-        print(temp)
+                try:
+                    temp += self.conversionTable['None']
+                except KeyError:
+                    temp += "⬛"
+
+        if len(temp.split('\n')) - 1 < self.height:  # if we don't have enough data
+            temp += '\n'
+            for _ in range(0, self.width):  # fill in blank rows to meet resolution minimum
+                try:
+                    temp += self.conversionTable['None']
+                except KeyError:
+                    temp += "⬛"
         self.embed.description = temp
         await self.mess.edit(embed=self.embed)
 

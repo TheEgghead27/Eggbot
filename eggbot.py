@@ -51,6 +51,19 @@ async def host_check(ctx):
         return False
 
 
+async def owner_check(ctx):
+    """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
+    if ctx.author.id == hosts[0]:
+        if audit:
+            try:
+                print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")
+            except OSError:
+                pass
+        return True
+    else:
+        return False
+
+
 def joinArgs(args):
     echo = " ".join(args)
     echo = echo.strip(' ')

@@ -1,10 +1,10 @@
-from asyncio import sleep
+from asyncio import ensure_future, sleep
 from random import randrange
 
 import discord
 from discord.ext import commands
 
-from eggbot import kirilist, beeEmbed, host_check, Bee, insults
+from eggbot import kirilist, beeEmbed, host_check, Bee, insults, owner_check
 from cogs.listeners.pagination import Pagination
 from cogs.commands.gamiing.tictacdiscord import discordTicTac
 from cogs.commands.gamiing.ttd2 import discordTicTac as dTTBeta
@@ -15,6 +15,7 @@ class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.pagination = Pagination(self.bot)
+        self.live = None
 
     @commands.command(brief="{optional: page number}")
     @commands.cooldown(1, 7.5, commands.BucketType.user)
@@ -169,10 +170,46 @@ class Fun(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.check(host_check)
-    async def life(self, ctx):
+    async def life(self, ctx, width: int = 10, height: int = 10):
         """life"""
-        live = life()
-        await ctx.send(str(live))
+        if self.live:
+            await ctx.send('Life is running somewhere else...')
+            return
+        if width * height <= 169:
+            if width <= 25:
+                live = life(ctx, [width, height])
+                self.live = ensure_future(live.run())
+            else:
+                await ctx.send('Sorry, the maximum width is 25.')
+        else:
+            await ctx.send('Sorry, the maximum cell count is 13^2.')
+
+    @commands.command(hidden=True)
+    @commands.check(owner_check)
+    async def fuckLife(self, ctx):
+        try:
+            self.live.cancel()
+            self.live = None
+            await ctx.send('pulled a 2020 on life 😎')
+        except AttributeError:
+            await ctx.send('i have no life 😔')
+
+    @commands.command(hidden=True)
+    @commands.check(host_check)
+    async def techDemo(self, ctx):
+        """Thing to gauge the embed edit rate-limits"""
+        embed = discord.Embed(title=f'Starting {ctx.author}\' game of Life...',
+                              description="⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛",
+                              color=0x00ff00)
+
+        embed.title = f"{ctx.author}\'s game of Life..."
+        mess = await ctx.send(embed=embed)
+        fuck = True
+        a = 0
+        while fuck:
+            embed.description = str(a)
+            a += 1
+            await mess.edit(embed=embed)
 
 
 def setup(bot):
