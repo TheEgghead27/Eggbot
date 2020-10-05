@@ -7,21 +7,21 @@ coordinateTypeIThink = List[int]
 
 class DiscordX:
     def __init__(self, target_message: discord.Message, data: list, resolution: coordinateTypeIThink,
-                 conversionTable: dict = None, embed: discord.Embed = None):
+                 embed: discord.Embed, conversionTable: dict = None, noWarn: bool = False):
         if conversionTable is not None:
             self.conversionTable = conversionTable
         else:  # NOTE: 'None' is pretty much required as a placeholder or else I will fucking crucify you
             self.conversionTable = {'1': '⬜', 'None': '⬛'}
 
         self.mess = target_message
-        if embed:
-            self.embed = embed
-        else:
-            try:
-                self.embed = self.mess.embeds[0]
-            except IndexError:
-                print('The "Graphics API" can\'t find an Embed!')
+        self.embed = embed
         self.data = data
+        if not noWarn and (resolution[0] > 25):
+            print('The specified width is greater than the recommended 25 units!\n'
+                  'Set noWarn=True to suppress this warning.')
+        if not noWarn and ((resolution[0] * resolution[1]) > 150):
+            print('The resolution is greater than the recommended "150 pixels"!\n'
+                  'Set noWarn=True to suppress this warning.')
         self.width = resolution[0]
         self.height = resolution[1]
 

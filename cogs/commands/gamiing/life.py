@@ -36,7 +36,7 @@ class life:
         confirmMess = await self.ctx.send(embed=self.embed)
 
         self.gfx = DiscordX(target_message=confirmMess, data=dictToScanLines(self.pieces), resolution=self.resolution,
-                            embed=self.embed,
+                            embed=self.embed, noWarn=True,
                             conversionTable={'0': '⬛', '1': '⬜', 'None': '⬛'})
 
         self.embed.title = f"{self.ctx.author}\'s game of Life..."

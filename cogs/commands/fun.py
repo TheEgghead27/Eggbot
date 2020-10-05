@@ -184,7 +184,7 @@ class Fun(commands.Cog):
         else:
             await ctx.send('Sorry, the maximum cell count is 13^2.')
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=['endLife', 'cancelLife', '2020'])
     @commands.check(owner_check)
     async def fuckLife(self, ctx):
         try:
