@@ -67,8 +67,7 @@ class life:
 
             self.pieces = new
 
-            self.embed.set_footer(text=f'Generation: {genNumber}')
-            self.gfx.syncEmbed(self.embed)
+            self.gfx.embed.set_footer(text=f'Generation: {genNumber}')
 
             self.gfx.syncData(dictToScanLines(self.pieces))
             await asyncio.sleep(1)
