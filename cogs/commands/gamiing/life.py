@@ -53,6 +53,7 @@ class life:
                 await asyncio.sleep(1)
                 await self.gfx.blit()
                 if 1 not in self.pieces.values():
+                    await self.ctx.send('All cells have died. Ending game...')
                     raise asyncio.CancelledError
 
                 new = self.pieces.copy()
@@ -75,7 +76,12 @@ class life:
                     else:
                         new[i] = 0
 
-                self.pieces = new
+                if self.pieces != new:
+                    self.pieces = new
+                else:
+                    await self.ctx.send('No change between generations detected. Ending game...')
+                    raise asyncio.CancelledError
+
         except asyncio.CancelledError:
             self.gfx.embed.title = f"{self.ctx.author}\'s game of Life"
             # noinspection PyDunderSlots, PyUnresolvedReferences
