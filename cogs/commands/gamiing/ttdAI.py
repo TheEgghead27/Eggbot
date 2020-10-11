@@ -1,6 +1,7 @@
 import datetime
 
 import asyncio
+from asyncio.exceptions import TimeoutError
 # import discord (DiscordX already has discord)
 from discord.ext import commands
 import random
@@ -186,7 +187,7 @@ class discordTicTac(ticTacToe):
         while waiting:
             print(f'wait ing {hek}')
             thing = await self.p1In.awaitInput()
-            if type(thing) == asyncio.exceptions.TimeoutError:  # if theres a timeout
+            if type(thing) == TimeoutError:  # if theres a timeout
                 await self.ctx.send(f'{p.mention}\'s game timed-out. Be quicker bro!!!')
                 return p
             else:
