@@ -1,11 +1,17 @@
+import threading  # actual blast processing so things don't run like shit
 from sys import maxsize as inf
 from cogs.commands.gamiing.tictacterminal import *
+
+
+fuckingHell = 0
 
 
 # ======================================================================================================================
 # TREE BUILDER
 class Node:
-    def __init__(self, i_depth, i_playerNum, board, mark, winCheck, i_value=0):
+    def __init__(self, i_depth, i_playerNum, board, mark, winCheck, i_value=0, parent=None, done=False):
+        global fuckingHell
+        fuckingHell += 1
         self.i_depth = i_depth
         self.i_playerNum = i_playerNum
         self.board = board
@@ -13,30 +19,90 @@ class Node:
         self.winCheck = winCheck
         self.i_value = i_value
         self.children = []
+        self.parent = parent
+        self.done = (abs(i_value) == inf) or done
         self.CreateChildren()
 
     def CreateChildren(self):
-        if self.i_depth >= 0:  # if we're supposed to make more childs
+        threads = []
+        if (self.i_depth >= 0) and (self.i_value == 0):  # if we're supposed to make more childs and we didn't reach end
             for i in self.board:  # make children that remove either 1 or 2 sticks
                 if self.board[i] is None:  # if that space is empty
-                    v = self.board[i].copy()
+                    v = self.board.copy()
                     v[i] = self.mark
                     # make more childs
-                    self.children.append(Node(self.i_depth - 1, -self.i_playerNum, v, self.mark, self.winCheck,
-                                              self.RealVal(v)))
+                    threads.append(threading.Thread(target=Node, args=(self.i_depth - 1, -self.i_playerNum, v,
+                                                                       self.mark, self.winCheck,
+                                                                       self.RealVal(v, self.mark), self, self.done)))
+            for i in threads:
+                i.start()
+                i.join()
+        if self.parent:
+            self.parent.children.append(self)
+        else:
+            print('alive')
 
-    def RealVal(self, value):
-        if value == 0:  # if win, award yourself infinity
-            return inf * self.i_playerNum
-        elif value < 0:  # if lose, award yourself negative infinity
-            return inf * -self.i_playerNum
-        return 0  # if nothing happened, award nothing
+    # noinspection PyMethodMayBeStatic
+    def RealVal(self, board: dict, mark: str):
+        """
+        if win, award yourself infinity; if lose, award yourself negative infinity; if nothing happened, award nothing
+        """
+        XList = ['X..X..X', 'X...X...X', '..X.X.X..']  # columns and diagonals
+        OList = ['O..O..O', 'O...O...O', '..O.O.O..']
+
+        # stringify the data for column and diagonals
+        data = ''
+        for i in board.values():
+            if i is not None:
+                data += i
+            else:
+                data += ' '
+        for i in XList:
+            for _ in re.findall(i, data):
+                if 'X' == mark.upper():
+                    return inf * self.i_playerNum
+                else:
+                    return inf * -self.i_playerNum
+        for i in OList:
+            for _ in re.findall(i, data):
+                if 'O' == mark.upper():
+                    return inf * self.i_playerNum
+                else:
+                    return inf * -self.i_playerNum
+
+        # row check
+        for rowLetter in ['a', 'b', 'c']:
+            data = ''
+            for piece in board:
+                if piece.lower()[0] == rowLetter:
+                    i = board[piece]
+                    if i is not None:
+                        data += i
+                    else:
+                        data += ' '
+            if data == 'XXX':
+                if 'X' == mark.upper():
+                    return inf * self.i_playerNum
+                else:
+                    return inf * -self.i_playerNum
+            elif data == 'OOO':
+                if 'O' == mark.upper():
+                    return inf * self.i_playerNum
+                else:
+                    return inf * -self.i_playerNum
+        return 0
 
 
 # ======================================================================================================================
 # ALGORITHM
 def MinMax(node, i_depth, i_playerNum):
+    global fuckingHell
+    if fuckingHell:
+        print(fuckingHell)
+        fuckingHell = 0
     if (i_depth == 0) or (abs(node.i_value) == inf):  # we either went as deep as we were supposed to, or someone won
+        if node.done:
+            return (node.i_value / 9) * 8
         return node.i_value
 
     i_bestValue = inf * -i_playerNum  # playerNum *should be the enemy, so opposite it (why did you not do that before)
@@ -49,34 +115,3 @@ def MinMax(node, i_depth, i_playerNum):
             i_bestValue = i_val
 
     return i_bestValue
-
-
-class minMaxTicTac(ticTacToe):
-    def __init__(self):
-        super(minMaxTicTac, self).__init__()
-
-    def awaitP2Input(self):
-        print(f'AI\'s turn. ({self.IDtoMark(self.currentPlayerID)})')
-        self.userInput()
-        if True:
-            if self.currentPlayerID == 0:
-                i_curPlayer = -1
-            else:
-                i_curPlayer = self.currentPlayerID
-            depth = 0
-            for i in self.pieces:
-                if self.pieces[i] is None:  # if that space is empty
-                    depth += 1
-            # make some childrens with the current info
-            node = Node(depth, i_curPlayer, self.IDtoMark(self.currentPlayerID), self.pieces, self.winCheck)
-            bestChoice = -100  # placeholder
-            i_bestValue = -i_curPlayer * inf  # placeholder of enemy win (worst value)
-            for i in range(len(node.children)):  # search all the childrens
-                n_child = node.children[i]
-                i_val = MinMax(n_child, depth, -i_curPlayer)  # get the best value from those childs
-                if abs(i_curPlayer * inf - i_val) <= abs(i_curPlayer * inf - i_bestValue):  # if this value is best
-                    # it gets Chosen
-                    i_bestValue = i_val
-                    bestChoice = i
-            print(f'Comp chooses: {str(bestChoice)}\tBased on value: {str(i_bestValue)}')
-            self.processInput(bestChoice)  # choose the choice

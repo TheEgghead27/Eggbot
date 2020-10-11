@@ -76,10 +76,10 @@ class ticTacToe:
                 data += ' '
         for i in XList:
             for _ in re.findall(i, data):
-                return '1'
+                return True
         for i in OList:
             for _ in re.findall(i, data):
-                return '0'
+                return True
 
         # row check
         for rowLetter in ['a', 'b', 'c']:
@@ -92,9 +92,9 @@ class ticTacToe:
                     else:
                         data += ' '
             if data == 'XXX':
-                return '1'
+                return True
             elif data == 'OOO':
-                return '1'
+                return True
 
     # noinspection PyAttributeOutsideInit
     def run(self):

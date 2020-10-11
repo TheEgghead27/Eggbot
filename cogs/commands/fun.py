@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults, owner_check
 from cogs.listeners.pagination import Pagination
-from cogs.commands.gamiing.tictacdiscord import discordTicTac
+from cogs.commands.gamiing.ttdAI import discordTicTac as Calm4
 from cogs.commands.gamiing.ttd2 import discordTicTac as dTTBeta
 from cogs.commands.gamiing.life import life
 
@@ -137,36 +137,34 @@ class Fun(commands.Cog):
 
     @commands.command(hidden=True, aliases=['tttB', "tic_tac_toe_beta"])
     @commands.check(host_check)
-    async def tictactoeBeta(self, ctx):
+    async def tictactoeBeta(self, ctx, victim: discord.Member):
         """Beta tic tac toe thing"""
-        if ctx.message.mentions:
-            victim = ctx.message.mentions[0]
-            if not victim.bot:
-                if victim.id != ctx.author.id:
-                    game = dTTBeta(ctx, ctx.message.mentions[0])
+        if not victim.bot:
+            if victim.id != ctx.author.id:
+                if victim.permissions_in(ctx.channel).read_messages:
+                    game = Calm4(ctx)
                     await game.run()
                 else:
-                    await ctx.send('damn youre lonely, but dont worry, im gonna learn how to play the game for you')
+                    await ctx.send('hey if you cant see the game, is it even fair?')
             else:
-                await ctx.send('mention a *human* to play dumb')
+                await ctx.send('you cant play tictactoe against yourself lol')
         else:
-            await ctx.send('mention a human to play dumb')
+            await ctx.send('mention a *human* to play dumb')
 
     @commands.command(aliases=['ttt', "tic_tac_toe"], brief='{@user}')
-    async def ticTacToe(self, ctx):
+    async def ticTacToe(self, ctx, victim: discord.Member):
         """Starts a game of tic-tac-toe against the mentioned user."""
-        if ctx.message.mentions:
-            victim = ctx.message.mentions[0]
-            if not victim.bot:
-                if victim.id != ctx.author.id:
-                    game = discordTicTac(ctx, ctx.message.mentions[0])
+        if not victim.bot:
+            if victim.id != ctx.author.id:
+                if victim.permissions_in(ctx.channel).read_messages:
+                    game = dTTBeta(ctx, victim)
                     await game.run()
                 else:
-                    await ctx.send('damn youre lonely, but dont worry, im gonna learn how to play the game for you')
+                    await ctx.send('hey if you cant see the game, is it even fair?')
             else:
-                await ctx.send('mention a *human* to play dumb')
+                await ctx.send('you cant play tictactoe against yourself lol')
         else:
-            await ctx.send('mention a human to play dumb')
+            await ctx.send('mention a *human* to play dumb')
 
     @commands.command(hidden=True)
     @commands.check(host_check)
