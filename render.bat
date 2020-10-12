@@ -1,0 +1,1 @@
+gource -1280x720 -e 2 --seconds-per-day 1 --title "Eggbot" -o gource.ppm C:\\Users\\mcytf\\Documents\\GitHub\\Eggbot | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 10000K gource.webm
