@@ -9,17 +9,46 @@ marks = {
 }
 
 
+def flipFlop(mark):
+    return marks[mark]
+
 # ======================================================================================================================
 # TREE BUILDER
 class Node:
-    def __init__(self, playerNum: int, board: dict, mark: str, parent=None):
+    def __init__(self, i_depth, i_playerNum, board, mark, winCheck, i_value=0, parent=None, done=False):
         global fuckingHell
         fuckingHell += 1
+        self.i_depth = i_depth
+        self.i_playerNum = i_playerNum
         self.board = board
         self.mark = mark
+        self.winCheck = winCheck
+        self.i_value = i_value
+        self.children = []
         self.parent = parent
-        self.playerNum = playerNum
+        self.done = (abs(i_value) == inf)
+        self.CreateChildren()
 
+    def CreateChildren(self):
+        threads = []
+        if (self.i_depth >= 0) and (self.i_value == 0):  # if we're supposed to make more childs and we didn't reach end
+            for i in self.board:  # make children that remove either 1 or 2 sticks
+                if self.board[i] is None:  # if that space is empty
+                    v = self.board.copy()
+                    v[i] = self.mark
+                    # make more childs
+                    threads.append(threading.Thread(target=Node, args=(self.i_depth - 1, -self.i_playerNum, v,
+                                                                       flipFlop(self.mark), self.winCheck,
+                                                                       self.RealVal(v, self.mark), self, self.done)))
+            for i in threads:
+                i.start()
+                i.join()
+        if self.parent:
+            self.parent.children.append(self)
+        else:
+            print('alive')
+
+    # noinspection PyMethodMayBeStatic
     def RealVal(self, board: dict, mark: str):
         """
         if win, award yourself infinity; if lose, award yourself negative infinity; if nothing happened, award nothing
@@ -68,14 +97,6 @@ class Node:
                 else:
                     return inf * -self.i_playerNum
         return 0
-
-
-def genNodes(playerNum=0, board=None, mark='X'):
-    """Generates an initial node based on default settings."""
-    if board is None:
-        board = {'a1': None, 'a2': None, 'a3': None, 'b1': None, 'b2': None, 'b3': None, 'c1': None, 'c2': None,
-                 'c3': None}
-    return Node(playerNum=playerNum, board=board, mark=mark)
 
 
 # ======================================================================================================================

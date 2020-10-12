@@ -6,8 +6,8 @@ from discord.ext import commands
 
 from eggbot import kirilist, beeEmbed, host_check, Bee, insults, owner_check
 from cogs.listeners.pagination import Pagination
-from cogs.commands.gamiing.ttdAI import discordTicTac as Calm4
-from cogs.commands.gamiing.ttd2 import discordTicTac as dTTBeta
+from cogs.commands.gamiing.ttdAI import discordTicTacAI as Calm4
+from cogs.commands.gamiing.ttd2 import discordTicTac as dTTv2
 from cogs.commands.gamiing.life import life
 
 
@@ -142,7 +142,7 @@ class Fun(commands.Cog):
         if not victim.bot:
             if victim.id != ctx.author.id:
                 if victim.permissions_in(ctx.channel).read_messages:
-                    game = Calm4(ctx)
+                    game = Calm4(ctx, ctx.bot.user)
                     await game.run()
                 else:
                     await ctx.send('hey if you cant see the game, is it even fair?')
@@ -157,7 +157,7 @@ class Fun(commands.Cog):
         if not victim.bot:
             if victim.id != ctx.author.id:
                 if victim.permissions_in(ctx.channel).read_messages:
-                    game = dTTBeta(ctx, victim)
+                    game = dTTv2(ctx, victim)
                     await game.run()
                 else:
                     await ctx.send('hey if you cant see the game, is it even fair?')

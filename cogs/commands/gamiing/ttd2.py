@@ -62,7 +62,7 @@ directionShuffle = {
 
 # noinspection PyAttributeOutsideInit,PyPropertyAccess,PyMethodOverriding
 class discordTicTac(ticTacToe):
-    def __init__(self, ctx: commands.Context, p2: discord.user):
+    def __init__(self, ctx: commands.Context, p2: discord.abc.User):
         ticTacToe.__init__(self)
         self.ctx = ctx
 
@@ -100,12 +100,13 @@ class discordTicTac(ticTacToe):
 
             if self.player == '1':
                 curPlayer = self.p1
-                if await self.awaitP1Input():
-                    await self.cleanBoard()
-                    return
+                curOp = self.p2
             else:
                 curPlayer = self.p2
-                if await self.awaitP2Input():
+                curOp = self.p1
+
+            if not curPlayer.bot:
+                if await self.awaitInput(curPlayer, curOp):
                     await self.cleanBoard()
                     return
 
@@ -117,16 +118,10 @@ class discordTicTac(ticTacToe):
         await self.ctx.send('wow a tie amazing')
 
     # noinspection PyTypeChecker
-    async def awaitP1Input(self):
-        if await self.userInput(self.p1):
-            await(self.announceWin(self.p2, abs(self.currentPlayerID - 1)))
-            return True
-        return False
-
-    # noinspection PyTypeChecker
-    async def awaitP2Input(self):
-        if await self.userInput(self.p2):
-            await(self.announceWin(self.p1, abs(self.currentPlayerID - 1)))
+    async def awaitInput(self, player: discord.User, opponent: discord.User):
+        await self.ctx.send(f"{player.mention}'s turn.", delete_after=0)
+        if await self.userInput(player):
+            await(self.announceWin(opponent, abs(self.currentPlayerID - 1)))
             return True
         return False
 
