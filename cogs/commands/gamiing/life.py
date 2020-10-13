@@ -6,7 +6,8 @@ import asyncio
 
 
 class life:
-    def __init__(self, ctx: commands.Context, resolution: coordinateTypeIThink):
+    def __init__(self, ctx: commands.Context, resolution: coordinateTypeIThink,
+                 born: list = None, survive: list = None):
         self.blocks = []
         self.ctx = ctx
         self.resolution = resolution
@@ -17,6 +18,13 @@ class life:
                                    description=self.generateBlankScreen(),
                                    color=0x00ff00)
         self.gfx = None
+
+        if not born:
+            born = [3]
+        self.born = born
+        if not survive:
+            survive = [2, 3]
+        self.survive = survive
 
     def generateBlankScreen(self):
         rowTemplate = '\n'
@@ -60,18 +68,12 @@ class life:
                 for i in self.pieces:
                     neighbors = self.getNeighbors(i)
 
-                    # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-                    if neighbors < 2:
-                        new[i] = 0
-
-                    # Any live cell with two or three live neighbours survives.
-                    # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-                    elif neighbors == 3:
+                    # birth
+                    if neighbors in self.born:
                         new[i] = 1
-                    # Any live cell with two or three live neighbours lives on to the next generation.
-                    elif neighbors in (2, 3) and self.pieces[i] == 1:
+                    # survive
+                    elif neighbors in self.survive and self.pieces[i] == 1:
                         pass
-
                     # All other live cells die in the next generation. Similarly, all other dead cells stay dead.
                     else:
                         new[i] = 0

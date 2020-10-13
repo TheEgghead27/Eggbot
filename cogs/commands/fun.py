@@ -137,19 +137,78 @@ class Fun(commands.Cog):
 
     @commands.command(hidden=True, aliases=['tttB', "tic_tac_toe_beta"])
     @commands.check(host_check)
-    async def tictactoeBeta(self, ctx, victim: discord.Member):
+    async def tictactoeBeta(self, ctx):
         """Beta tic tac toe thing"""
-        if not victim.bot:
-            if victim.id != ctx.author.id:
-                if victim.permissions_in(ctx.channel).read_messages:
-                    game = Calm4(ctx, ctx.bot.user)
-                    await game.run()
-                else:
-                    await ctx.send('hey if you cant see the game, is it even fair?')
+        game = Calm4(ctx, ctx.bot.user)
+        await game.run()
+        self.tttB = game
+
+    # Code partially used from https://gist.github.com/nitros12/2c3c265813121492655bc95aa54da6b9
+    # Code 100% yoinked from CatLamp
+    @commands.command(name="evalTTT", hidden=True, brief='{code (use newlines for multi-line code)}')
+    @commands.check(owner_check)
+    async def evaluate(self, ctx, *, code):
+        """Executes the specified code (command stolen from CatLamp)"""
+        import ast
+
+        def insert_returns(body):
+            # insert return stmt if the last expression is a expression statement
+            if isinstance(body[-1], ast.Expr):
+                body[-1] = ast.Return(body[-1].value)
+                ast.fix_missing_locations(body[-1])
+        try:
+            fn_name = "_eval_expr"
+
+            code = code.strip("` ")
+            if code.startswith("py"):
+                code = code[2:]
+
+            # add a layer of indentation
+            code = "\n".join(f"    {i}" for i in code.splitlines())
+
+            # wrap in async def body
+            body = f"async def {fn_name}():\n{code}"
+
+            parsed = ast.parse(body)
+            body = parsed.body[0].body
+
+            insert_returns(body)
+            from eggbot import hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, colors, \
+                insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, \
+                flagFields, mmyes, scores
+
+            env = {
+                'client': self.bot,
+                'bot': self.bot,
+                'discord': discord,
+                'commands': commands,
+                'ctx': ctx,
+                'hosts': hosts,
+                'game': self.tttB,
+            }
+            exec(compile(parsed, filename="<ast>", mode="exec"), env)
+            result = (await eval(f"{fn_name}()", env))
+            if len(str(result)) > 2048:
+                embed = discord.Embed(title="Result too long",
+                                      description=f"The result was too long, so it was printed in terminal.",
+                                      color=0x00ff00)
+                embed.set_footer(text="Executed successfully.")
+                await ctx.send(embed=embed)
             else:
-                await ctx.send('you cant play tictactoe against yourself lol')
-        else:
-            await ctx.send('mention a *human* to play dumb')
+                embed = discord.Embed(description=f"```python\n{str(result)}\n```", color=0x00ff00)
+                embed.set_footer(text="Executed successfully.")
+                await ctx.send(embed=embed)
+        except Exception as exception:
+            if len(str(exception)) > 2048:  # I doubt this is needed, but just in case
+                embed = discord.Embed(title="Error too long",
+                                      description=f"The error was too long, so it was printed in terminal",
+                                      color=0xff0000)
+                embed.set_footer(text="Error occurred while executing.")
+                await ctx.send(embed=embed)
+            else:
+                embed = discord.Embed(description=f"```python\n{str(exception)}\n```", color=0xff0000)
+                embed.set_footer(text="Error occurred while executing.")
+                await ctx.send(embed=embed)
 
     @commands.command(aliases=['ttt', "tic_tac_toe"], brief='{@user}')
     async def ticTacToe(self, ctx, victim: discord.Member):
@@ -168,19 +227,52 @@ class Fun(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.check(host_check)
-    async def life(self, ctx, width: int = 10, height: int = 10):
+    async def life(self, ctx, *args):
         """life"""
         if self.live:
             await ctx.send('Life is running somewhere else...')
             return
+        width, height, born, survive = self.processLifeArgs(args)
         if width * height <= 169:
             if width <= 25:
-                live = life(ctx, [width, height])
+                live = life(ctx, [width, height], born=born, survive=survive)
                 self.live = ensure_future(live.run(owner=self))
             else:
                 await ctx.send('Sorry, the maximum width is 25.')
         else:
             await ctx.send('Sorry, the maximum cell count is 13^2.')
+
+    # noinspection PyMethodMayBeStatic
+    def processLifeArgs(self, args: tuple):
+        width = 0
+        height = 0
+        born = []
+        survive = []
+        for i in args:
+            try:
+                tempInt = int(i)
+                if not width:
+                    width = tempInt
+                elif not height:
+                    height = tempInt
+            except ValueError:
+                if i.lower()[0] == 'b':  # born argument
+                    for character in list(i[1:]):
+                        try:
+                            born.append(int(character))
+                        except ValueError:
+                            pass
+                elif i.lower()[0] == 's':  # survive argument
+                    for character in list(i[1:]):
+                        try:
+                            survive.append(int(character))
+                        except ValueError:
+                            pass
+        if not width:
+            width = 10
+        if not height:
+            height = 10
+        return width, height, born, survive
 
     @commands.command(hidden=True, aliases=['endLife', 'cancelLife', '2020'])
     @commands.check(owner_check)
