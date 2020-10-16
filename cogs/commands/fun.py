@@ -17,9 +17,12 @@ class Fun(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
         self.live = None
-        with open('cogs\\commands\\egg recipes.txt', 'r', encoding='utf-8') as fuck:
-            self.cookbook = fuck.read()
-            del fuck
+        try:
+            fuck = open('cogs\\commands\\egg recipes.txt', 'r', encoding='utf-8')
+        except FileNotFoundError:
+            fuck = open('egg recipes.txt', 'r', encoding='utf-8')
+        self.cookbook = fuck.read()
+        del fuck
 
     @commands.command(brief="{optional: page number}")
     @commands.cooldown(1, 7.5, commands.BucketType.user)
