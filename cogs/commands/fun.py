@@ -17,10 +17,7 @@ class Fun(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
         self.live = None
-        try:
-            fuck = open('cogs\\commands\\egg recipes.txt', 'r', encoding='utf-8')
-        except FileNotFoundError:
-            fuck = open('egg recipes.txt', 'r', encoding='utf-8')
+        fuck = open('cogs/commands/egg recipes.txt', 'r', encoding='utf-8')
         self.cookbook = fuck.read()
         del fuck
 
