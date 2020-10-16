@@ -9,6 +9,7 @@ from cogs.listeners.pagination import Pagination
 from cogs.commands.gamiing.ttdAI import discordTicTacAI as Calm4
 from cogs.commands.gamiing.ttd2 import discordTicTac as dTTv2
 from cogs.commands.gamiing.life import life
+from cogs.misc.confirm import confirm
 
 
 class Fun(commands.Cog):
@@ -16,6 +17,9 @@ class Fun(commands.Cog):
         self.bot = bot
         self.pagination = Pagination(self.bot)
         self.live = None
+        with open('cogs\\commands\\egg recipes.txt', 'r', encoding='utf-8') as fuck:
+            self.cookbook = fuck.read()
+            del fuck
 
     @commands.command(brief="{optional: page number}")
     @commands.cooldown(1, 7.5, commands.BucketType.user)
@@ -118,6 +122,14 @@ class Fun(commands.Cog):
             await ctx.send("The damned get only one vessel per server. Try again when this one expires.")
         else:
             raise error
+
+    @commands.command(aliases=['recipe', 'recipie', 'recipies'])
+    @commands.cooldown(1, 3600, commands.BucketType.user)
+    async def recipes(self, ctx):
+        if await confirm(ctx=ctx, prompt='There are a lot of recipes, are you sure you want to send all of them?',
+                         cancelMess="`e!recipes` cancelled."):
+            await ctx.send(self.cookbook[:1987])
+            await ctx.send(self.cookbook[1987:])
 
     @commands.command()
     async def rateFood(self, ctx):
