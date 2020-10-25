@@ -2,6 +2,9 @@ import random
 import re
 
 
+idMarkDict = {0: 'X', 1: 'O'}
+
+
 class ticTacToe:
     def __init__(self):
         self.pieces = {
@@ -20,10 +23,7 @@ class ticTacToe:
 
     # noinspection PyMethodMayBeStatic
     def IDtoMark(self, num: int):
-        if num == 0:
-            return 'X'
-        else:
-            return 'O'
+        return idMarkDict[num]
 
     def announceWin(self, winner):
         print(f'Player {self.player} ({self.IDtoMark(winner)}) wins!')

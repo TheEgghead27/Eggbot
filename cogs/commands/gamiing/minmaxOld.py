@@ -121,3 +121,48 @@ def MinMax(node, i_depth, i_playerNum):
             i_bestValue = i_val
 
     return (i_bestValue / 9) * 8
+
+
+if __name__ == '__main__':
+    import datetime
+
+    # noinspection PyShadowingNames
+    def fuckMe(node):
+        for i in node.children:
+            fuckMe(i)
+        print(node.board)
+        print(node.i_value)
+
+
+    print('do')
+    startTime = datetime.datetime.now()
+    # make curPlayer correspond to positive or negative
+    i_curPlayer = -1
+
+    depth = 0
+    board = {'a1': None, 'a2': None, 'a3': None, 'b1': None, 'b2': None, 'b3': None, 'c1': None, 'c2': None,
+             'c3': None}
+    for i in board.values():
+        if i is None:  # if that space is empty
+            depth += 1  # queue a depth
+
+    # make some childrens with the current info
+    node = Node(depth, i_curPlayer, board, 'O', None)
+    print(f'Nodes have been generated in: {datetime.datetime.now() - startTime}')
+    i_bestValue = -i_curPlayer * inf  # placeholder of enemy win (worst value)
+    i_bestNode = node
+    for n_child in node.children:  # search all the childrens
+        i_val = MinMax(n_child, depth, -i_curPlayer)  # get the best value from those childs
+        if abs(i_curPlayer * inf - abs(i_val)) < abs(i_curPlayer * inf - i_bestValue):  # if this value is best
+            print('a Chosen one')
+            print(i_val, i_bestValue)
+            print(abs(i_curPlayer * inf - i_val), abs(i_curPlayer * inf - i_bestValue))
+            # it gets Chosen
+            i_bestNode = n_child
+            print(i_bestNode.i_value)
+            i_bestValue = abs(i_val)
+    print(f'Best Node: {i_bestNode.board}')
+    print(f'Best Node Child: {i_bestNode.children[0].i_value}')
+    fuckMe(node=i_bestNode)
+    print(datetime.datetime.now() - startTime)
+    # self.fuckMe(i_bestNode)

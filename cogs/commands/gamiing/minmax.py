@@ -1,31 +1,45 @@
-import threading  # actual blast processing so things don't run like shit
 from sys import maxsize as inf
-from cogs.commands.gamiing.tictacterminal import *
+import re
 
 
-fuckingHell = 0
 marks = {
     'X': 'O', 'O': 'X',
 }
+XList = ['X..X..X', 'X...X...X', '..X.X.X..']  # columns and diagonals
+OList = ['O..O..O', 'O...O...O', '..O.O.O..']
 
 
 # ======================================================================================================================
 # TREE BUILDER
-class Node:
-    def __init__(self, playerNum: int, board: dict, mark: str, parent=None):
-        global fuckingHell
-        fuckingHell += 1
+class DataNode:
+    def __init__(self, board: dict, curMark: str, playerNum: int, value: int = 0, depth: int = 0):
         self.board = board
-        self.mark = mark
-        self.parent = parent
+        self.curMark = curMark
         self.playerNum = playerNum
+        self.value = value
+        self.children = []
+        self.depth = depth
 
-    def RealVal(self, board: dict, mark: str):
+
+class ActiveNode(DataNode):
+    def __init__(self, board: dict, curMark: str, playerNum: int, value: int = 0, depth: int = 0):
+        super(ActiveNode, self).__init__(board=board, curMark=curMark, value=value, playerNum=playerNum, depth=depth)
+        self.CreateChildren()
+
+    def CreateChildren(self):
+        if self.value == 0 and None in self.board.values():
+            for i in self.board:  # search board
+                if self.board[i] is None:  # if that space is empty
+                    v = self.board.copy()  # make temp copy
+                    v[i] = self.curMark  # slap current turn onto the board
+                    # watch as polarity shit was the problem in tttAI the whole fucking time
+                    self.children.append(ActiveNode(board=v, curMark=marks[self.curMark], value=self.RealVal(v),
+                                                    playerNum=-self.playerNum, depth=self.depth + 1))
+
+    def RealVal(self, board: dict):
         """
         if win, award yourself infinity; if lose, award yourself negative infinity; if nothing happened, award nothing
         """
-        XList = ['X..X..X', 'X...X...X', '..X.X.X..']  # columns and diagonals
-        OList = ['O..O..O', 'O...O...O', '..O.O.O..']
 
         # stringify the data for column and diagonals
         data = ''
@@ -36,16 +50,10 @@ class Node:
                 data += ' '
         for i in XList:
             for _ in re.findall(i, data):
-                if 'X' == mark.upper():
-                    return inf * self.i_playerNum
-                else:
-                    return inf * -self.i_playerNum
+                return self.returnWin('X')
         for i in OList:
             for _ in re.findall(i, data):
-                if 'O' == mark.upper():
-                    return inf * self.i_playerNum
-                else:
-                    return inf * -self.i_playerNum
+                return self.returnWin('O')
 
         # row check
         for rowLetter in ['a', 'b', 'c']:
@@ -58,45 +66,38 @@ class Node:
                     else:
                         data += ' '
             if data == 'XXX':
-                if 'X' == mark.upper():
-                    return inf * self.i_playerNum
-                else:
-                    return inf * -self.i_playerNum
+                return self.returnWin('X')
             elif data == 'OOO':
-                if 'O' == mark.upper():
-                    return inf * self.i_playerNum
-                else:
-                    return inf * -self.i_playerNum
+                return self.returnWin('O')
         return 0
 
-
-def genNodes(playerNum=0, board=None, mark='X'):
-    """Generates an initial node based on default settings."""
-    if board is None:
-        board = {'a1': None, 'a2': None, 'a3': None, 'b1': None, 'b2': None, 'b3': None, 'c1': None, 'c2': None,
-                 'c3': None}
-    return Node(playerNum=playerNum, board=board, mark=mark)
+    def returnWin(self, winningMark: str):
+        if winningMark == self.curMark:
+            return inf * self.playerNum
+        else:
+            return inf * -self.playerNum
 
 
 # ======================================================================================================================
 # ALGORITHM
-def MinMax(node, i_depth, i_playerNum):
-    global fuckingHell
-    if fuckingHell:
-        print(fuckingHell)
-        fuckingHell = 0
-    if (i_depth == 0) or (abs(node.i_value) == inf):  # we either went as deep as we were supposed to, or someone won
-        if node.done:
-            return node.i_value / 9
-        return node.i_value
+def MinMax(node: ActiveNode, playerNum: int):
+    """hmmm what could this be"""
+    if abs(node.value) > 0:
+        return node.value - fuck(node.value, node.depth)
 
-    i_bestValue = inf * i_playerNum  # playerNum *should be the enemy, so opposite it (why did you not do that before)
+    bestValue = inf * -playerNum
 
-    for child in node.children:  # vibe check all the children to see if they meet the above
-        i_val = MinMax(child, i_depth - 1, -i_playerNum)  # address the depth change, reverse the player number
+    for child in node.children:
+        val = MinMax(child, -playerNum)
+        if (abs(inf * playerNum - val)) < (abs(inf * playerNum - bestValue)):
+            bestValue = val
 
-        # if the current value is better than the best, make it king
-        if abs(inf * i_playerNum - i_val) < (abs(inf * i_playerNum - i_bestValue)):
-            i_bestValue = i_val
+    return bestValue - fuck(node.value, node.depth)
 
-    return (i_bestValue / 9) * 8
+
+def fuck(target: int, depth: int):
+    """Returns the depth times the polarity of the target"""
+    try:
+        return (target / abs(target)) * depth
+    except ZeroDivisionError:
+        return depth
