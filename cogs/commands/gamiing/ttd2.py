@@ -74,8 +74,10 @@ class discordTicTac(ticTacToe):
             self.p1 = p2
             self.p2 = ctx.author
 
+        self.fuckeringers = None
+
     async def run(self):
-        self.embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...',
+        self.embed = discord.Embed(title=f'Starting {self.ctx.author}\'s game of TicTacToe...',
                                    description=f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛", color=0x00ff00)
 
         self.confirmMess = await self.ctx.send(embed=self.embed)
@@ -104,11 +106,10 @@ class discordTicTac(ticTacToe):
             else:
                 curPlayer = self.p2
                 curOp = self.p1
-
-            if not curPlayer.bot:
-                if await self.awaitInput(curPlayer, curOp):
-                    await self.cleanBoard()
-                    return
+            # who's bright idea was it to put an anti-bot lock here
+            if await self.awaitInput(curPlayer, curOp):
+                await self.cleanBoard()
+                return
 
             if self.winCheck(self.pieces):
                 await self.cleanBoard()
@@ -119,10 +120,10 @@ class discordTicTac(ticTacToe):
 
     # noinspection PyTypeChecker
     async def awaitInput(self, player: discord.User, opponent: discord.User):
-        await self.ctx.send(f"{player.mention}'s turn.", delete_after=0)
         if await self.userInput(player):
             await(self.announceWin(opponent, abs(self.currentPlayerID - 1)))
             return True
+        await self.fuckeringers.delete()
         return False
 
     async def renderBoard(self, board: dict, playerName: str):
@@ -140,6 +141,7 @@ class discordTicTac(ticTacToe):
         waiting = True
         selection, temp = selectInit(self.pieces)
         await self.renderBoard(temp, p.name)
+        self.fuckeringers = await self.ctx.send(f"{p.mention}'s turn.")
         while waiting:
             if p == self.p1:
                 thing = await self.p1In.awaitInput()

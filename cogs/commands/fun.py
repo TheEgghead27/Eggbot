@@ -151,7 +151,7 @@ class Fun(commands.Cog):
     @commands.check(host_check)
     async def tictactoeBeta(self, ctx):
         """Beta tic tac toe thing"""
-        game = Calm4(ctx, ctx.bot.user)
+        game = Calm4(ctx)
         await game.run()
         self.tttB = game
 

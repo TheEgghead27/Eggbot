@@ -1,9 +1,9 @@
+import concurrent.futures
+
 import datetime
-import threading
 
 from cogs.commands.gamiing.ttd2 import *
-# from cogs.commands.gamiing.minmax import inf, Node, MinMax
-from cogs.commands.gamiing.minmaxNewOld import genNodes, inf, fuckingHell, EmptyNode
+from cogs.commands.gamiing.tttAI import *
 
 
 chode = {}
@@ -11,104 +11,77 @@ chode = {}
 
 # noinspection PyAttributeOutsideInit,PyPropertyAccess,PyMethodOverriding
 class discordTicTacAI(discordTicTac):
-    def __init__(self, ctx: commands.Context, p2: discord.abc.User):
-        super(discordTicTacAI, self).__init__(ctx, p2)
-        self.Node = None
-        self.waitig = None
+    def __init__(self, ctx: commands.Context):
+        """fuck subclassing tttAI overwriting it all here makes much more sense"""
+        discordTicTac.__init__(self, ctx, ctx.bot.user)
+        # I AM PROFESSOR COPY PASTE
+        self.aiConditional = lambda i_curPlayer, i_val, bestValue: \
+            (abs(inf * i_curPlayer - i_val)) < (abs(inf * i_curPlayer - bestValue))
 
     # noinspection PyTypeChecker
-    async def run(self):
-        self.embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...',
-                                   description=f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛", color=0x00ff00)
+    async def awaitInput(self, player: discord.User, opponent: discord.User):
+        if player.id != self.ctx.bot.user.id:
+            if await self.userInput(player):
+                await(self.announceWin(opponent, abs(self.currentPlayerID - 1)))
+                return True
+        else:
+            await self.renderBoard(self.pieces, player.name)
+            self.fuckeringers = await self.ctx.send(f"My turn.")
+            await self.aiTurn()
+        await self.fuckeringers.delete()
+        return False
 
-        self.confirmMess = await self.ctx.send(embed=self.embed)
-
-        self.p1In = DInput(self.ctx.bot, self.confirmMess, self.p1)
-        self.p2In = DInput(self.ctx.bot, self.confirmMess, self.p2)
-
-        self.gfx = DiscordX(target_message=self.confirmMess, data=dictToScanLines(self.pieces), resolution=[3, 3],
-                            embed=self.embed,
-                            conversionTable={'None': '⬛', 'X': '❌', 'O': '⭕',
-                                             'oS': '<:oS:757696246755622923>', 'xS': '<:xS:757697702216597604>',
-                                             'noneS': '<:noneS:757697725906026547>'})
-
-        await self.p1In.initReactions()
-        self.waitig = await self.ctx.send("Initializing the AI Core...")
-
-        for i in range(9):
-            self.currentPlayerID = i % 2
-            print(self.currentPlayerID, self.IDtoMark(self.currentPlayerID))
-
-            for self.player in self.players:  # figure out which player to use
-                if self.players[self.player] == self.currentPlayerID:
-                    break
-
-            if self.player == '1':
-                curPlayer = self.p1
-                curOp = self.p2
-            else:
-                curPlayer = self.p2
-                curOp = self.p1
-
-            if not curPlayer.bot:
-                if await self.awaitInput(curPlayer, curOp):
-                    await self.cleanBoard()
-                    return
-            else:
-                await self.aiMove()
-
-            if self.winCheck(self.pieces):
-                await self.cleanBoard()
-                await self.announceWin(curPlayer, self.currentPlayerID)
-                return
-        await self.cleanBoard()
-        await self.ctx.send('wow a tie amazing')
-
-    def checkForUpdates(self):
-        """Set self.Node to be equal to current state, if there's nothing, assume current node is up to date."""
-        if not self.Node:
-            global chode
-            if chode and self.currentPlayerID == 0:  # save bot making first turn as a default Node
-                self.Node = chode
-            else:
-                startTime = datetime.datetime.now()
-                print('Generating!')
-                #fuck = threading.Thread(target=genNodes, args=(self.currentPlayerID, self.pieces,
-                #                                               self.IDtoMark(self.currentPlayerID)))
-                #fuck.run()
-                #fuck.join()
-
-                #self.Node = fuck.
-                self.Node = genNodes(playerNum=self.currentPlayerID, board=self.pieces,
-                                     mark=self.IDtoMark(self.currentPlayerID))
-                if self.currentPlayerID == 0:
-                    chode = self.Node
-                print(f'Generated {fuckingHell} Nodes in {datetime.datetime.now() - startTime}.')
-            if self.waitig:
-                asyncio.ensure_future(self.waitig.delete())
-                self.waitig = None
-
-        for i in self.Node.children:
-            if i.board == self.pieces:
-                self.Node = i
-
-    idPolarityDict = {0: -1, 1: 1}
-
-    def IDToPolarity(self, ID: int):
-        return self.idPolarityDict[ID]
-
-    async def aiMove(self):
+    # noinspection PyShadowingNames
+    async def aiTurn(self):
         """Use a variant of the MinMax algorithm to make a move."""
-        fuck = threading.Thread(target=self.checkForUpdates)
+        i_curPlayer = fuckers[self.currentPlayerID]
+        aaaaaaa = datetime.datetime.now()
+        # 3. Run in a custom process pool:
+        loop = asyncio.get_running_loop()
+        with concurrent.futures.ProcessPoolExecutor() as pool:
+            node = await loop.run_in_executor(
+                pool, ActiveNode, self.pieces, self.IDtoMark(self.currentPlayerID), fuckers[self.currentPlayerID])
+        print(f'Completed in {datetime.datetime.now() - aaaaaaa}')
+        bestChoice = self.search(node, i_curPlayer)
+        if self.pieces != bestChoice:
+            self.pieces = bestChoice
+        else:
+            # switch to the secondary conditional because fuck you
+            # a new class is inited for every game, so this is fine
+            self.aiConditional = lambda i_curPlayer, i_val, bestValue: \
+                (abs(inf * i_curPlayer - i_val)) > (abs(inf * i_curPlayer - bestValue))
+            bestChoice = self.search(node, i_curPlayer)
+            if self.pieces != bestChoice:
+                self.pieces = bestChoice
+            else:
+                # exit plan 😎
+                print('shite')
+                exit()
 
-        fuck.run()
+    def search(self, node: ActiveNode, i_curPlayer: int):
+        bestChoice = self.pieces
+        bestValue = -i_curPlayer * inf
+        for n_child in node.children:
+            i_val = MinMax(n_child, -i_curPlayer)  # negative to the user???
+            if self.aiConditional(i_curPlayer, i_val, bestValue):
+                bestValue = i_val
+                bestChoice = n_child.board
+        return bestChoice
 
-        # self.checkForUpdates()
-        bestNode = EmptyNode()
-        bestNode.value = -self.IDToPolarity(self.currentPlayerID) * inf  # use the enemy win next turn as worst move
-        for i in self.Node.children:  # check every child
-            # Closer to winning gives a lower result [(win - win)[∞ - ∞] = 0 / (win - lose)[∞ -- ∞] = 2∞]
-            if abs(self.IDToPolarity(self.currentPlayerID) * inf - bestNode.value) > \
-                    abs(self.IDToPolarity(self.currentPlayerID) * inf - i.value):
-                bestNode = i
-        self.pieces = bestNode.board
+    # noinspection PyUnresolvedReferences
+    async def renderBoard(self, board: dict, playerName: str):
+        if self.p1.bot:
+            mario = 'Me'
+            loogi = self.p2.name
+        else:
+            mario = self.p1.name
+            loogi = 'Me'
+        self.embed.title = f'TicTacToe: {mario} VS {loogi}'
+        if playerName:
+            self.embed.set_author(name=f'{playerName}\'s turn. ({self.IDtoMark(self.currentPlayerID)})')
+        else:
+            self.embed.remove_author()
+
+        self.gfx.syncData(dictToScanLines(board))
+        self.gfx.syncEmbed(self.embed)
+        await self.gfx.blit()
