@@ -45,6 +45,16 @@ class discordTicTacAI(discordTicTac):
         bestChoice = self.search(node, i_curPlayer)
         if self.pieces != bestChoice:
             self.pieces = bestChoice
+            # TODO figure out how to fix this
+            # https://stackoverflow.com/questions/19500530/compress-python-object-in-memory
+            # import pickle
+            # import zlib
+#
+            # # Compress:
+            # compressed = zlib.compress(pickle.dumps(node))
+#
+            # # Get it back:
+            # node = pickle.loads(zlib.decompress(compressed))
         else:
             # switch to the secondary conditional because fuck you
             # a new class is inited for every game, so this is fine
