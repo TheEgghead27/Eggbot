@@ -1,5 +1,6 @@
 import random
-from cogs.commands.gamiing.minmax import MinMax, ActiveNode, inf
+from cogs.commands.gamiing.minmax import MinMax, inf
+from cogs.commands.gamiing.minmax import conduncedMainNode as ActiveNode
 from cogs.commands.gamiing.tictacterminal import ticTacToe
 
 fuckers = {0: -1, 1: 1}

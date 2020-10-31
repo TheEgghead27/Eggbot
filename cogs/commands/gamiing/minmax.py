@@ -77,6 +77,25 @@ class ActiveNode(DataNode):
         else:
             return inf * -self.playerNum
 
+    def __str__(self):
+        return f'Player Mark: {self.curMark}, Player ID: {self.playerNum}, Board: {self.board}'
+
+
+class conduncedMainNode(ActiveNode):
+    def __init__(self, board: dict, curMark: str, playerNum: int):
+        super(conduncedMainNode, self).__init__(board, curMark, playerNum)
+
+    def CreateChildren(self):
+        if self.value == 0 and None in self.board.values():
+            for i in self.board:  # search board
+                if self.board[i] is None:  # if that space is empty
+                    v = self.board.copy()  # make temp copy
+                    v[i] = self.curMark  # slap current turn onto the board
+                    # watch as polarity shit was the problem in tttAI the whole fucking time
+                    self.children.append(ActiveNode(board=v, curMark=marks[self.curMark], value=self.RealVal(v),
+                                                    playerNum=-self.playerNum, depth=self.depth + 1))
+                    self.children = [MiniMiniMax(self, self.playerNum)]
+
 
 # ======================================================================================================================
 # ALGORITHM
@@ -93,6 +112,27 @@ def MinMax(node: ActiveNode, playerNum: int):
             bestValue = val
 
     return bestValue - fuck(node.value, node.depth)
+
+
+# noinspection PyShadowingNames
+def MiniMiniMax(node: ActiveNode, playerNum: int,
+                aiConditional=lambda i_curPlayer, i_val, bestValue: (abs(inf * i_curPlayer - i_val)) <
+                                                                    (abs(inf * i_curPlayer - bestValue))):
+    bestValue = -playerNum * inf
+    bestChoice = node
+    if len(node.children) != 2:
+        return node.children[0]
+    for n_child in node.children:
+        i_val = MinMax(n_child, -playerNum)  # negative to the user???
+        if aiConditional(playerNum, i_val, bestValue):
+            bestValue = i_val
+            bestChoice = n_child
+    if node != bestChoice:
+        return bestChoice
+    else:
+        return MiniMiniMax(node, playerNum,
+                           aiConditional=lambda i_curPlayer, i_val, bestValue: (abs(inf * i_curPlayer - i_val)) >
+                                                                               (abs(inf * i_curPlayer - bestValue)))
 
 
 def fuck(target: int, depth: int):
