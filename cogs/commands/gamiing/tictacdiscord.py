@@ -73,37 +73,43 @@ class discordTicTac(ticTacToe):
             self.p2 = ctx.author
 
     async def run(self):
-        embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...', color=0x00ff00)
-        embed.description = f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛"
+        try:
+            embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...', color=0x00ff00)
+            embed.description = f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛"
 
-        self.confirmMess = await self.ctx.send(embed=embed)
-        for i in ['⬆', '⬇', '⬅', '➡', '✅']:
-            await self.confirmMess.add_reaction(i)
+            self.confirmMess = await self.ctx.send(embed=embed)
+            for i in ['⬆', '⬇', '⬅', '➡', '✅']:
+                await self.confirmMess.add_reaction(i)
 
-        for i in range(9):
-            self.currentPlayerID = i % 2
+            for i in range(9):
+                self.currentPlayerID = i % 2
 
-            for self.player in self.players:  # figure out which player to use
-                if self.players[self.player] == self.currentPlayerID:
-                    break
+                for self.player in self.players:  # figure out which player to use
+                    if self.players[self.player] == self.currentPlayerID:
+                        break
 
-            if self.player == '1':
-                curPlayer = self.p1
-                if await self.awaitP1Input():
+                if self.player == '1':
+                    curPlayer = self.p1
+                    if await self.awaitP1Input():
+                        await self.cleanBoard()
+                        return
+                else:
+                    curPlayer = self.p2
+                    if await self.awaitP2Input():
+                        await self.cleanBoard()
+                        return
+
+                if self.winCheck(self.pieces):
                     await self.cleanBoard()
+                    await self.announceWin(curPlayer)
                     return
-            else:
-                curPlayer = self.p2
-                if await self.awaitP2Input():
-                    await self.cleanBoard()
-                    return
-
-            if self.winCheck(self.pieces):
-                await self.cleanBoard()
-                await self.announceWin(curPlayer)
-                return
-        await self.cleanBoard()
-        await self.ctx.send('wow a tie amazing')
+            await self.cleanBoard()
+            await self.ctx.send('wow a tie amazing')
+        except asyncio.CancelledError:
+            cancelEmb = self.renderBoard(self.pieces, '')
+            # noinspection PyDunderSlots,PyUnresolvedReferences
+            cancelEmb.color = 0xff0000
+            cancelEmb.set_footer(text="The bot has been shut down mid-game. Sorry for that.")
 
     # noinspection PyTypeChecker
     async def awaitP1Input(self):
