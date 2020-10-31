@@ -110,6 +110,7 @@ class discordTicTac(ticTacToe):
             # noinspection PyDunderSlots,PyUnresolvedReferences
             cancelEmb.color = 0xff0000
             cancelEmb.set_footer(text="The bot has been shut down mid-game. Sorry for that.")
+            await self.confirmMess.edit(embed=cancelEmb)
 
     # noinspection PyTypeChecker
     async def awaitP1Input(self):
