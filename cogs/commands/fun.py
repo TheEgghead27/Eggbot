@@ -147,16 +147,11 @@ class Fun(commands.Cog):
         else:
             await ctx.send("This content is NSFW, ya dingus!")
 
-    @commands.command(hidden=True, aliases=['tttB', "tic_tac_toe_beta"])
-    @commands.check(host_check)
-    async def tictactoeBeta(self, ctx):
-        """Beta tic tac toe thing"""
-        game = Calm4(ctx)
-        await game.run()
-
     @commands.command(aliases=['ttt', "tic_tac_toe"], brief='{@user}')
-    async def ticTacToe(self, ctx, victim: discord.Member):
+    async def ticTacToe(self, ctx, victim: discord.Member = None):
         """Starts a game of tic-tac-toe against the mentioned user."""
+        if victim is None:
+            victim = self.bot.user
         if not victim.bot:
             if victim.id != ctx.author.id:
                 if victim.permissions_in(ctx.channel).read_messages:
@@ -167,7 +162,12 @@ class Fun(commands.Cog):
             else:
                 await ctx.send('you cant play tictactoe against yourself lol')
         else:
-            await ctx.send('mention a *human* to play dumb')
+            if victim.id != self.bot.user.id:
+                await ctx.send('bruh dont bully my brothers, '
+                               'either fight me head on or get some other nerd to fight you')
+            else:
+                game = Calm4(ctx)
+                await game.run()
 
     @commands.command(hidden=True)
     @commands.check(host_check)
