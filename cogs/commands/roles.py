@@ -13,11 +13,11 @@ class Roles(commands.Cog):
 
     @commands.command(hidden=True, brief="{@role/role id} {emoji} {color name}")
     @commands.check(host_check)
-    async def roleGiver(self, ctx, *args):
-        """Sets up an automatic role-giving message"""
+    async def roleGiver(self, ctx, role: discord.Role, *args):
+        """Sets up an automatic role-giving message."""
         args = list(args)
         try:
-            role, emoji, colo = await self.roleProcess(ctx, args)
+            emoji, colo = await self.roleProcess(ctx, args)
         except TypeError:
             return
         emb = discord.Embed(title=ctx.guild.name + " Roles", description="Read below for details.", color=colo)
@@ -47,7 +47,7 @@ class Roles(commands.Cog):
 
     @commands.command(hidden=True, brief="{@role/role id} {emoji}")
     @commands.check(host_check)
-    async def addRole(self, ctx, *args):
+    async def addRole(self, ctx, role: discord.Role, *args):
         """Adds a role to a recently created role-giver"""
         args = list(args)
         try:
@@ -57,7 +57,7 @@ class Roles(commands.Cog):
                            "the bot reboot?")
             return
         try:
-            role, emoji, colo = await self.roleProcess(ctx, args)
+            emoji, colo = await self.roleProcess(ctx, args)
         except TypeError:
             return
         if str(emoji) in info:
@@ -82,24 +82,6 @@ class Roles(commands.Cog):
 
     async def roleProcess(self, ctx, args):
         args = list(args)
-        try:
-            role = args[0]
-            if len(role) == 18:
-                role = ctx.guild.get_role(int(role))
-            elif len(role) == 22:
-                role = ctx.guild.get_role(int(role[-19:-1]))
-            else:
-                raise ValueError
-            del args[0]
-        except ValueError:
-            await ctx.send("Invalid role was passed.")  # maybe change this
-            return
-        except IndexError:
-            await ctx.send("Role was not given.")  # maybe change this
-            return
-        if role is None:
-            await ctx.send("Invalid role was passed.")  # maybe change this
-            return
         try:
             emoji = args[0]
             if len(emoji) == 1:
@@ -130,26 +112,15 @@ class Roles(commands.Cog):
             await ctx.send("Invalid color name was passed.")  # maybe change this
             return
         await ctx.message.delete()
-        return role, emoji, colo
+        return emoji, colo
 
     @commands.command(hidden=True, brief="{@role}")
-    async def joinRole(self, ctx):
+    async def joinRole(self, ctx, role: discord.Role):
         """Command to set role for new server members"""
         if ctx.guild:
             if ctx.author.guild_permissions.administrator:
-                if ctx.message.role_mentions:
-                    role = ctx.message.role_mentions[0]
-                    self.bot.joinRoles[str(ctx.guild.id)] = role.id
-                    await ctx.send('@{r} was set as the role for new members.'.format(r=role.name))
-                else:
-                    try:
-                        role = int(ctx.message.content.split(' ')[1])
-                        if not len(str(role)) == 18:
-                            await ctx.send('Role ID machine broken :(')
-                            return
-                    except (ValueError, IndexError):
-                        return
-                    await ctx.send('There was no role mentioned?')
+                self.bot.joinRoles[str(ctx.guild.id)] = role.id
+                await ctx.send('@{r} was set as the role for new members.'.format(r=role.name))
             else:
                 await ctx.send("You're not an admin, so no.")
         else:
