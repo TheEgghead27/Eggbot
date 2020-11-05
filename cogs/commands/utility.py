@@ -1,4 +1,5 @@
 from asyncio import sleep
+from typing import Union
 
 import discord
 from discord.ext import commands
@@ -40,32 +41,18 @@ class Utility(commands.Cog):
         self.pagination = Pagination(self.bot)
 
     @commands.command(aliases=['user', 'aboutUser'], brief="{optional: @user/user id}")
-    async def about(self, ctx):
+    async def about(self, ctx, user: Union[discord.Member, discord.User, int] = None):
         """Displays the user info for the specified user"""
         message = ctx.message
         async with ctx.typing():
-            if message.mentions:
-                user = message.mentions
-                user = user[0]
-            else:
-                args = ctx.message.content.split(' ')
+            if isinstance(user, int) and len(str(user)) == 18:
                 try:
-                    if len(args[1]) == 18:
-                        try:
-                            user = ctx.guild.get_member(int(args[1]))
-                        except AttributeError:
-                            user = self.bot.get_user(int(args[1]))
-                        if not user:
-                            try:
-                                user = self.bot.get_user(int(args[1]))
-                            except AttributeError:
-                                user = message.author
-                            if not user:
-                                user = message.author
-                    else:
-                        user = message.author
-                except IndexError:
-                    user = message.author
+                    user = await self.bot.fetch_user(user)
+                except discord.NotFound:
+                    await ctx.send('User not found.')
+                    return
+            if not (isinstance(user, discord.Member) or isinstance(user, discord.User)):
+                user = ctx.author
 
             userColor = user.color
             embeds = []
