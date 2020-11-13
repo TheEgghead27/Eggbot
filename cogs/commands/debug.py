@@ -106,6 +106,7 @@ class Debug(commands.Cog):
                 exec(compile(parsed, filename="<ast>", mode="exec"), env)
                 result = (await eval(f"{fn_name}()", env))
                 if len(str(result)) > 2048:
+                    print(result)
                     embed = discord.Embed(title="Result too long",
                                           description=f"The result was too long, so it was printed in terminal.",
                                           color=0x00ff00)
@@ -117,12 +118,14 @@ class Debug(commands.Cog):
                     await ctx.send(embed=embed)
             except Exception as exception:
                 if len(str(exception)) > 2048:  # I doubt this is needed, but just in case
+                    print(exception)
                     embed = discord.Embed(title="Error too long",
                                           description=f"The error was too long, so it was printed in terminal",
                                           color=0xff0000)
                     embed.set_footer(text="Error occurred while executing.")
                     await ctx.send(embed=embed)
                 else:
+                    print(exception)
                     embed = discord.Embed(description=f"```python\n{str(exception)}\n```", color=0xff0000)
                     embed.set_footer(text="Error occurred while executing.")
                     await ctx.send(embed=embed)
