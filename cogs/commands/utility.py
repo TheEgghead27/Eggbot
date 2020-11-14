@@ -156,7 +156,16 @@ class Utility(commands.Cog):
 
     @commands.command(aliases=['reminder'], brief="{optional: timer name} {number} {unit} (repeat number + unit as "
                                                   "needed)")
-    async def timer(self, ctx, *args):
+    async def timer(self, ctx):
+        embed = discord.Embed(title="e!timer is depreciated.", description="Check out `+remind` on my owner's favorite "
+                                                                           "child, [Catlamp]"
+                                                                           "(https://top.gg/bot/712394747548794950/).",
+                              color=0xff0000)
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['oldReminder'], brief="{optional: timer name} {number} {unit} (repeat number + unit as "
+                                                     "needed)", hidden=True)
+    async def oldTimer(self, ctx, *args):
         """Sets a reminder that pings you after the specified time"""
         try:
             a = []
