@@ -241,8 +241,8 @@ if __name__ == '__main__':
                         a[0].startswith(('moyai', '🗿', ':moyai:', 'mooyai')):
                     await message.add_reaction('🗿')
                 else:
-                    await bot.customMessage(message)
                     await bot.process_commands(message)
+                    await bot.customMessage(message)
             except IndexError:
                 return
 
