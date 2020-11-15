@@ -30,6 +30,10 @@ bot = commands.AutoShardedBot(command_prefix=prefix, case_insensitive=True, desc
                               help_command=EmbedHelpCommand(verify_checks=False, show_hidden=False), intents=intents)
 bot.safeguard = True
 bot.botSafeguard = True
+async def customMessage(message):
+    """placeholder function for custom fuckery"""
+    return message
+bot.customMessage = customMessage
 bot.status = status
 del status
 bot.timerUsers = []
@@ -237,6 +241,7 @@ if __name__ == '__main__':
                         a[0].startswith(('moyai', '🗿', ':moyai:', 'mooyai')):
                     await message.add_reaction('🗿')
                 else:
+                    await bot.customMessage(message)
                     await bot.process_commands(message)
             except IndexError:
                 return
