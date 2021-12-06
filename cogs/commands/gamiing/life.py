@@ -28,15 +28,15 @@ class life:
 
     def generateBlankScreen(self):
         rowTemplate = '\n'
-        for i in range(0, self.width):
+        for _ in range(self.width):
             rowTemplate += '⬛'
         rowTemplate *= self.height
         return rowTemplate
 
     def generateData(self):
         fuck = {}
-        for x in range(0, self.width):
-            for y in range(0, self.height):
+        for x in range(self.width):
+            for y in range(self.height):
                 fuck[(x, y)] = randint(0, 1)
         return fuck
 
@@ -71,11 +71,7 @@ class life:
                     # birth
                     if neighbors in self.born:
                         new[i] = 1
-                    # survive
-                    elif neighbors in self.survive and self.pieces[i] == 1:
-                        pass
-                    # All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-                    else:
+                    elif neighbors not in self.survive or self.pieces[i] != 1:
                         new[i] = 0
 
                 if self.pieces != new:

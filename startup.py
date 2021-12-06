@@ -17,9 +17,7 @@ def load(blacklist):
             with open(file, "r") as config:
                 config = json.load(config)
                 hostsTemp = config['hosts']
-                hosts = []
-                for i in hostsTemp:
-                    hosts.append(int(i))
+                hosts = [int(i) for i in hostsTemp]
                 del hostsTemp
                 token = config['token']
                 if 'logging' in config:
@@ -78,7 +76,7 @@ def load(blacklist):
                 stonks = stonks["moneys"]
 
     except FileNotFoundError:
-        if file in ['roles.json', 'bee.txt', 'data.json']:
+        if file in {'roles.json', 'bee.txt', 'data.json'}:
             input("It looks like {} is missing! \nYou will have to reinstall Eggbot.".format(file))
             print("Oh, you're one of those risk takers? Welp, guess I have to load the placeholders.")
             blacklist.append(file)
@@ -105,15 +103,19 @@ def load(blacklist):
             hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
                 joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, \
                 mmyes, scores = load(blacklist)
-        elif file in ['roles.json', 'bee.txt', 'stonks.json']:
-            if input(f"It looks like a non-essential file, {file}, is corrupted! \nYou can safely press enter to ignore"
-                     f" this if you wish to reset {file}.").lower() != 'n':
-                blacklist.append(file)
-                hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
-                    joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, \
-                    mmyes, scores = load(blacklist)
-            else:
+        elif file in {'roles.json', 'bee.txt', 'stonks.json'}:
+            if (
+                input(
+                    f"It looks like a non-essential file, {file}, is corrupted! \nYou can safely press enter to ignore"
+                    f" this if you wish to reset {file}."
+                ).lower()
+                == 'n'
+            ):
                 raise hm
+            blacklist.append(file)
+            hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
+                joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, \
+                mmyes, scores = load(blacklist)
     return hosts, token, Bee, kirilist, eggs, eggTrigger, spic, simp, ohno, roles, colors, stonks, warehouse, \
         joinRoles, insults, beeEmbed, logging, dmLog, audit, deleteLog, times, activityTypes, flagFields, mmyes, scores
 
@@ -121,7 +123,7 @@ def load(blacklist):
 def loadColors():
     """use discord module to form a colors dictionary"""
     import discord
-    colors = {
+    return {
         "teal": discord.Colour.teal(),
         "dark teal": discord.Colour.teal(),
         "green": discord.Colour.from_rgb(0, 255, 0),
@@ -156,7 +158,6 @@ def loadColors():
         "black": discord.Colour.from_rgb(0, 0, 0),
         "light pink": discord.Colour.from_rgb(255, 182, 193)
     }
-    return colors
 
 
 def setup():
@@ -228,11 +229,11 @@ def manualSetup(hosts, token):
     import simplejson as json
     if token == "Improper token":
         token = input("Paste your token here.\n").strip(' ')
-        if not len(token) >= 50:
+        if len(token) < 50:
             token = "Improper token"
             print(token)
             manualSetup(hosts, token)
-    if not len(hosts) > 0:
+    if len(hosts) <= 0:
         print(token)
         a = input("Input your user ID.\n")
         if len(a) == 18:
@@ -247,8 +248,6 @@ def manualSetup(hosts, token):
             hosts.append(a)
         elif len(a) in [0, 1]:
             hostInput = False
-        else:
-            pass
     data = {"hosts": hosts, "token": token}
     with open("config.json", "w") as config:
         json.dump(data, config)
@@ -312,9 +311,7 @@ def getOwners():
         with open(file, "r") as config:
             config = json.load(config)
             hostsTemp = config['hosts']
-            hosts = []
-            for i in hostsTemp:
-                hosts.append(int(i))
+            hosts = [int(i) for i in hostsTemp]
     except Exception as e:
         # I never expected this to happen because getOwners() only happens after configuring, but heroku dumb
         import os
@@ -324,9 +321,7 @@ def getOwners():
             input('The "hosts" environment variable was not found!\n Press enter to exit.')
             exit(0)
         hostsTemp = literal_eval(hostsTemp)
-        hosts = []
-        for i in hostsTemp:
-            hosts.append(int(i))
+        hosts = [int(i) for i in hostsTemp]
         del hostsTemp
     return hosts
 

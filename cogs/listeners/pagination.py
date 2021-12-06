@@ -15,37 +15,31 @@ class Pagination(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.id in self.bot.paginated:
-            if user.id != self.bot.user.id:
-                data = self.bot.paginated[reaction.message.id]
-                if reaction.emoji == '▶':
-                    try:
-                        await reaction.remove(user)
-                    except (discord.Forbidden, discord.NotFound):
-                        pass
-                    if data[1] == 'bee':  # bee gets special metadata treatment because it's static
-                        embeds = beeEmbed
-                    else:
-                        embeds = data[1]
-                    data[2] += 1
-                    if data[2] >= len(embeds):
-                        data[2] = 0
-                    await data[0].edit(embed=discord.Embed.from_dict(embeds[data[2]]))
-                if reaction.emoji == '◀':
-                    try:
-                        await reaction.remove(user)
-                    except (discord.Forbidden, discord.NotFound):
-                        pass
-                    if data[1] == 'bee':
-                        embeds = beeEmbed
-                    else:
-                        embeds = data[1]
-                    data[2] -= 1
-                    if data[2] < 0:
-                        data[2] = len(embeds) - 1
-                    await data[0].edit(embed=discord.Embed.from_dict(embeds[data[2]]))
-            else:
-                return
+        if reaction.message.id not in self.bot.paginated:
+            return
+        if user.id == self.bot.user.id:
+            return
+        data = self.bot.paginated[reaction.message.id]
+        if reaction.emoji == '▶':
+            try:
+                await reaction.remove(user)
+            except (discord.Forbidden, discord.NotFound):
+                pass
+            embeds = beeEmbed if data[1] == 'bee' else data[1]
+            data[2] += 1
+            if data[2] >= len(embeds):
+                data[2] = 0
+            await data[0].edit(embed=discord.Embed.from_dict(embeds[data[2]]))
+        if reaction.emoji == '◀':
+            try:
+                await reaction.remove(user)
+            except (discord.Forbidden, discord.NotFound):
+                pass
+            embeds = beeEmbed if data[1] == 'bee' else data[1]
+            data[2] -= 1
+            if data[2] < 0:
+                data[2] = len(embeds) - 1
+            await data[0].edit(embed=discord.Embed.from_dict(embeds[data[2]]))
 
     async def paginate(self, message, embeds, number, timeout):
         self.bot.paginated[message.id] = [message, embeds, number]

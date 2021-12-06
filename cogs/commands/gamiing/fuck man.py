@@ -42,21 +42,20 @@ def MinMax(node, i_depth, i_playerNum):
 
 
 def WinCheck(i_sticks, i_playerNum):
-    if i_sticks <= 0:
-        print("*" * 30)
-        if i_playerNum > 0:
-            if i_sticks == 0:
-                print("\tHuman won!")
-            else:
-                print("\tToo many chosen, you lost!")
+    if i_sticks > 0:
+        return 1
+    print("*" * 30)
+    if i_playerNum > 0:
+        if i_sticks == 0:
+            print("\tHuman won!")
         else:
-            if i_sticks == 0:
-                print("\tComputer won!")
-            else:
-                print("\tComputer done did fucked up..")
-        print("*" * 30)
-        return 0
-    return 1
+            print("\tToo many chosen, you lost!")
+    elif i_sticks == 0:
+        print("\tComputer won!")
+    else:
+        print("\tComputer done did fucked up..")
+    print("*" * 30)
+    return 0
 
 
 if __name__ == '__main__':

@@ -136,17 +136,13 @@ class Info(commands.Cog, name="Bot Info"):
     @commands.command(aliases=['eggCharts', 'eC'])
     async def highScores(self, ctx):
         save.sortScores(self.bot)
-        scoresSorted = []
         scores = self.bot.scores
-        for i in scores:
-            scoresSorted.append(int(i))
+        scoresSorted = [int(i) for i in scores]
         scoresSorted.sort()
         scoresSorted = scoresSorted[::-1]
         emb = discord.Embed(title="Highest Egg Counts of All Times:")
-        number = 0
-        while number < 5:
+        for number in range(5):
             emb.add_field(name=f"#{number + 1}", value=str(scoresSorted[number]), inline=False)
-            number += 1
         emb.set_footer(text='The record for most eggs in one session was set')
         try:
             date = scores[str(scoresSorted[0])]

@@ -68,12 +68,7 @@ class ticTacToe:
         OList = ['O..O..O', 'O...O...O', '..O.O.O..']
 
         # stringify the data for column and diagonals
-        data = ''
-        for i in board.values():
-            if i is not None:
-                data += i
-            else:
-                data += ' '
+        data = ''.join(i if i is not None else ' ' for i in board.values())
         for i in XList:
             for _ in re.findall(i, data):
                 return True
@@ -87,13 +82,8 @@ class ticTacToe:
             for piece in board:
                 if piece.lower()[0] == rowLetter:
                     i = board[piece]
-                    if i is not None:
-                        data += i
-                    else:
-                        data += ' '
-            if data == 'XXX':
-                return True
-            elif data == 'OOO':
+                    data += i if i is not None else ' '
+            if data in {'XXX', 'OOO'}:
                 return True
 
     # noinspection PyAttributeOutsideInit

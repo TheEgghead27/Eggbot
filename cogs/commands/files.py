@@ -12,10 +12,7 @@ from eggbot import host_check, hosts
 
 def getFiles(targets: list):
     """Gets a list of discord.Files objects based on the passed in file paths"""
-    files = []
-    for i in targets:
-        files.append(discord.File(filename=i, fp=i))
-    return files
+    return [discord.File(filename=i, fp=i) for i in targets]
 
 
 class Files(commands.Cog, name="File Management"):

@@ -62,10 +62,7 @@ def purgeDuplicates(dic: dict):
 
 
 def jsonSanitize(dic: dict):
-    queued = []
-    for i in dic:
-        if type(i) != str:
-            queued.append(i)
+    queued = [i for i in dic if type(i) != str]
     for i in queued:
         dic[str(i)] = dic[i]
         del dic[i]

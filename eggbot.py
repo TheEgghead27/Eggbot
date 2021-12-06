@@ -44,28 +44,26 @@ del roles, stonks, warehouse
 # create functions imported by cogs
 async def host_check(ctx):
     """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
-    if await bot.is_owner(ctx.author):
-        if audit:
-            try:
-                print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")
-            except OSError:
-                pass
-        return True
-    else:
+    if not await bot.is_owner(ctx.author):
         return False
+    if audit:
+        try:
+            print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")
+        except OSError:
+            pass
+    return True
 
 
 async def owner_check(ctx):
     """verify that Eggbot admin exclusive commands *only* work for those privileged people"""
-    if ctx.author.id == hosts[0]:
-        if audit:
-            try:
-                print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")
-            except OSError:
-                pass
-        return True
-    else:
+    if ctx.author.id != hosts[0]:
         return False
+    if audit:
+        try:
+            print(f"{ctx.message.author} used e!{str(ctx.command).lower()}!")
+        except OSError:
+            pass
+    return True
 
 
 def joinArgs(args):
@@ -75,22 +73,14 @@ def joinArgs(args):
 
 
 def reverseBool(boolean):
-    if boolean:
-        state = 'on'
-    else:
-        state = 'off'
+    state = 'on' if boolean else 'off'
     boolean = not boolean
     return boolean, state
 
 
 def markdown(textList):
     # 2/7 chance of being codeBlock or empty, then 50/50
-    divisor = 0
-    for i in spic:
-        # I don't want the last list's full girth to be considered,
-        # but since it would raise the randrange cap to intended levels, it stays like this with no edits
-        divisor += len(i) + 1
-
+    divisor = sum(len(i) + 1 for i in spic)
     if random.randrange(1, divisor + 1) <= 2:  # codeBlock and empty have to stay by themselves
         markedDown = pickRandomListObject(spic[-1])
     else:
@@ -174,18 +164,23 @@ if __name__ == '__main__':
     @bot.event
     async def on_message(message):
         """Core function of the bot"""
-        if str(message.channel.type) == "private" and dmLog or logging:
-            if not message.author.id == bot.user.id:  # don't let the bot echo itself
-                if len(message.content) > 0:
-                    content = "\n" + message.content
-                else:
-                    content = message.content
-                print(str('{a} says:'.format(a=str(message.author)) + content))
-                if len(message.attachments) > 0:
-                    print("Attachments: {}".format(str(message.attachments)))
+        if (
+            str(message.channel.type) == "private" and dmLog or logging
+        ) and message.author.id != bot.user.id:  # don't let the bot echo itself
+            if len(message.content) > 0:
+                content = "\n" + message.content
+            else:
+                content = message.content
+            print(str('{a} says:'.format(a=str(message.author)) + content))
+            if len(message.attachments) > 0:
+                print("Attachments: {}".format(str(message.attachments)))
         if message.author.id == bot.user.id and bot.safeguard:
             return
-        if bot.botSafeguard and message.author.bot and not message.author.id == bot.user.id:
+        if (
+            bot.botSafeguard
+            and message.author.bot
+            and message.author.id != bot.user.id
+        ):
             return
         global stonks  # make economy things happen
         # new markdown parser utilizing replace()
@@ -201,9 +196,7 @@ if __name__ == '__main__':
             if bot.user.mentioned_in(message):
                 await on_client_mention(message)
             oval = random.randrange(0, 6)
-            if oval <= 2:
-                pass
-            else:
+            if oval > 2:
                 oval = random.randrange(1, 3)
                 await addServerEgg(message, oval, bot)
             try:
@@ -213,9 +206,7 @@ if __name__ == '__main__':
                     save.sortScores(bot, edit=True)
                     try:
                         oval = random.randrange(0, 10)
-                        if oval >= 8:
-                            pass
-                        else:
+                        if oval < 8:
                             bot.stonks["users"][str(message.author.id)]["global"] += 1
                     except KeyError:
                         bot.stonks["users"][str(message.author.id)] = {"global": 1, str(message.guild.id): 0,
@@ -282,7 +273,7 @@ if __name__ == '__main__':
         finally:
             echo = joinArgs(arghs)
             if echo == "" or echo is None:
-                if not ctx.message.content[len(prefix) + 4:] == "":
+                if ctx.message.content[len(prefix) + 4 :] != "":
                     await ctx.send(ctx.message.content[len(prefix) + 4:])
                 else:
                     await ctx.author.send("you idot, you can't just have me say nothing")
@@ -296,7 +287,7 @@ if __name__ == '__main__':
     @bot.event  # this is here because fuck you on_error doesn't get to be in a cog
     async def on_error(event, *args):
         owner = bot.get_user(int(hosts[0]))
-        if not str(event) == 'on_command_error':
+        if str(event) != 'on_command_error':
             title = 'Error in event "{e}":'.format(e=event)
             emb = discord.Embed(title=title, description=str(system.exc_info()[1]), color=0xbc1a00)
             emb.set_footer(text='Please tell {o} "hey idiot, bot broken" if you think this '.format(o=owner) +

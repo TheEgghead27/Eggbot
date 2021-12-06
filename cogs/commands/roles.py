@@ -84,9 +84,7 @@ class Roles(commands.Cog):
         args = list(args)
         try:
             emoji = args[0]
-            if len(emoji) == 1:
-                pass
-            else:
+            if len(emoji) != 1:
                 emoji = self.bot.get_emoji(int(emoji[-19:-1]))
             del args[0]
         except ValueError:
@@ -99,10 +97,7 @@ class Roles(commands.Cog):
             await ctx.send("Invalid role was passed.")  # maybe change this
             return
         try:
-            if len(args) >= 2:
-                colo = args[0] + ' ' + args[1]
-            else:
-                colo = args[0]
+            colo = args[0] + ' ' + args[1] if len(args) >= 2 else args[0]
             if colo in colors:
                 colo = colors[colo]
             else:

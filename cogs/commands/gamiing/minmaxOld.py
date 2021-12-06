@@ -30,8 +30,8 @@ class Node:
         self.CreateChildren()
 
     def CreateChildren(self):
-        threads = []
         if (self.i_depth >= 0) and (self.i_value == 0):  # if we're supposed to make more childs and we didn't reach end
+            threads = []
             for i in self.board:  # make children that remove either 1 or 2 sticks
                 if self.board[i] is None:  # if that space is empty
                     v = self.board.copy()
@@ -57,21 +57,16 @@ class Node:
         OList = ['O..O..O', 'O...O...O', '..O.O.O..']
 
         # stringify the data for column and diagonals
-        data = ''
-        for i in board.values():
-            if i is not None:
-                data += i
-            else:
-                data += ' '
+        data = ''.join(i if i is not None else ' ' for i in board.values())
         for i in XList:
             for _ in re.findall(i, data):
-                if 'X' == mark.upper():
+                if mark.upper() == 'X':
                     return inf * self.i_playerNum
                 else:
                     return inf * -self.i_playerNum
         for i in OList:
             for _ in re.findall(i, data):
-                if 'O' == mark.upper():
+                if mark.upper() == 'O':
                     return inf * self.i_playerNum
                 else:
                     return inf * -self.i_playerNum
@@ -82,20 +77,17 @@ class Node:
             for piece in board:
                 if piece.lower()[0] == rowLetter:
                     i = board[piece]
-                    if i is not None:
-                        data += i
-                    else:
-                        data += ' '
-            if data == 'XXX':
-                if 'X' == mark.upper():
-                    return inf * self.i_playerNum
-                else:
-                    return inf * -self.i_playerNum
-            elif data == 'OOO':
-                if 'O' == mark.upper():
-                    return inf * self.i_playerNum
-                else:
-                    return inf * -self.i_playerNum
+                    data += i if i is not None else ' '
+            if (
+                data == 'OOO'
+                and mark.upper() == 'O'
+                or data != 'OOO'
+                and data == 'XXX'
+                and mark.upper() == 'X'
+            ):
+                return inf * self.i_playerNum
+            elif data in {'OOO', 'XXX'}:
+                return inf * -self.i_playerNum
         return 0
 
 
