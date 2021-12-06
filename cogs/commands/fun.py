@@ -28,12 +28,11 @@ class Fun(commands.Cog):
         args = ctx.message.content.split(' ')
         try:
             page = int(args[1]) - 1
-            if 0 <= page < len(beeEmbed):
-                emb = discord.Embed.from_dict(beeEmbed[page])
-                beeMess = await ctx.send(embed=emb)
-                await self.pagination.paginate(beeMess, 'bee', page, 1200)
-            else:
+            if not 0 <= page < len(beeEmbed):
                 raise ValueError
+            emb = discord.Embed.from_dict(beeEmbed[page])
+            beeMess = await ctx.send(embed=emb)
+            await self.pagination.paginate(beeMess, 'bee', page, 1200)
         except (ValueError, IndexError):
             emb = discord.Embed.from_dict(beeEmbed[0])
             beeMess = await ctx.send(embed=emb)
@@ -62,13 +61,13 @@ class Fun(commands.Cog):
                 # alternate colors
                 color_list.append(color_list[0])
                 del color_list[0]
-                messNo = messNo + 1  # keep the message numbers rising
+                messNo += 1
                 async with ctx.typing():
                     beeTime = True
                     await sleep(1)
             emb.add_field(name=script[0], value=script[1], inline=False)  # add the name and dialogue
             del script[0], script[0]  # delete the used dialogue (replace with increment read number, coz i wanna)
-            limitCheck = limitCheck + 1
+            limitCheck += 1
         bs.append(emb.to_dict())
         await ctx.send("Done, check terminal!")
         print(bs)
@@ -88,7 +87,7 @@ class Fun(commands.Cog):
             while send_amount > 0:
                 await self.kiriContent(ctx)
                 await sleep(1)
-                send_amount = send_amount - 1
+                send_amount -= 1
         except (ValueError, IndexError):
             await self.kiriContent(ctx)
 
@@ -153,21 +152,19 @@ class Fun(commands.Cog):
         if victim is None:
             victim = self.bot.user
         if not victim.bot:
-            if victim.id != ctx.author.id:
-                if victim.permissions_in(ctx.channel).read_messages:
-                    game = dTTv2(ctx, victim)
-                    await game.run()
-                else:
-                    await ctx.send('hey if you cant see the game, is it even fair?')
-            else:
+            if victim.id == ctx.author.id:
                 await ctx.send('you cant play tictactoe against yourself lol')
-        else:
-            if victim.id != self.bot.user.id:
-                await ctx.send('bruh dont bully my brothers, '
-                               'either fight me head on or get some other nerd to fight you')
-            else:
-                game = Calm4(ctx)
+            elif victim.permissions_in(ctx.channel).read_messages:
+                game = dTTv2(ctx, victim)
                 await game.run()
+            else:
+                await ctx.send('hey if you cant see the game, is it even fair?')
+        elif victim.id != self.bot.user.id:
+            await ctx.send('bruh dont bully my brothers, '
+                           'either fight me head on or get some other nerd to fight you')
+        else:
+            game = Calm4(ctx)
+            await game.run()
 
     @commands.command(hidden=True)
     @commands.check(host_check)

@@ -31,8 +31,7 @@ async def parseTimeText(args):
     if unit == 0:
         return "No."
     number = float(args[0])
-    time = number * unit
-    return time
+    return number * unit
 
 
 class Utility(commands.Cog):
@@ -51,7 +50,7 @@ class Utility(commands.Cog):
                 except discord.NotFound:
                     await ctx.send('User not found.')
                     return
-            if not (isinstance(user, discord.Member) or isinstance(user, discord.User)):
+            if not isinstance(user, (discord.Member, discord.User)):
                 user = ctx.author
 
             userColor = user.color
@@ -86,22 +85,24 @@ class Utility(commands.Cog):
                     pass
             if user.bot and not flags.verified_bot:
                 userIs += "A bot" + '\n'
-            if len(userIs) > 0:
+            if userIs != '':
                 emb.add_field(name='User is', value=userIs)
 
             emb.add_field(name="User Avatar URL", value=user.avatar_url, inline=False)
             embeds.append(emb.to_dict())
 
             if type(message.author) == discord.member.Member:
-                emb = discord.Embed(title=f"About {str(user)}", description=f"Member info for {user.name}",
-                                    color=0x03f4fc)
+                emb = discord.Embed(
+                    title=f'About {user}',
+                    description=f"Member info for {user.name}",
+                    color=0x03F4FC,
+                )
+
                 emb.set_thumbnail(url=user.avatar_url)
 
                 try:
                     emb.add_field(name="Server Join Date", value=user.joined_at, inline=False)
-                    name_roles = ''
-                    for role in user.roles:  # i don't know why, but the for loop does not log all roles
-                        name_roles += f'{role.name}, '
+                    name_roles = ''.join(f'{role.name}, ' for role in user.roles)
                     emb.add_field(name="User's Roles", value=name_roles.rstrip(', '), inline=False)
                     if name_roles != "@everyone":
                         emb.add_field(name="User's Highest Role", value=user.top_role, inline=False)
@@ -187,7 +188,6 @@ class Utility(commands.Cog):
                             timeAmount += float(timeOutput)
                 elif i.lower().strip(' ') in ("and", "&"):
                     time.append(i)
-                    pass
                 else:
                     name.append(i)
             name = joinArgs(name)
@@ -204,11 +204,7 @@ class Utility(commands.Cog):
                     await sleep(2)
                     await ctx.send("What are you thinking bro, that's not even an amount of time I can time?!?")
                 return
-            if len(name) == 0:
-                default = True
-            else:
-                default = False
-
+            default = len(name) == 0
             # wait fuck we need to create a time thing coz args[0] and [1] wont do fuck fuck
             if default:
                 await ctx.send(f"Timer set for {time}.")

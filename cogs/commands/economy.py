@@ -103,10 +103,7 @@ class Economy(commands.Cog):
                 b = 0
                 c = 1
                 while i > 0:
-                    if a[c] == 1:
-                        v = "1 egg"
-                    else:
-                        v = "{e} eggs".format(e=str(a[c]))
+                    v = "1 egg" if a[c] == 1 else "{e} eggs".format(e=str(a[c]))
                     emb.add_field(name=a[b], value=v, inline=False)
                     b += 2
                     c += 2
@@ -271,10 +268,9 @@ class Economy(commands.Cog):
                                             del self.bot.warehouse[str(ctx.guild.id)][a]
                                             del self.bot.warehouse[str(ctx.guild.id)][a]
                                             await ctx.send("Confirmed the `{g}` goal transaction.".format(g=name))
-                                            return
                                         else:
                                             await ctx.send("The server bank doesn't that many eggs!?!")
-                                            return
+                                        return
                                     except KeyError:
                                         self.bot.stonks["servers"][str(ctx.guild.id)] = 0
                                         await ctx.send("There are no eggs to spend.")
@@ -303,10 +299,7 @@ class Economy(commands.Cog):
             i = len(a) // 3
             b = 0
             while i > 0:
-                if a[b + 1] == 1:
-                    v = "1 egg"
-                else:
-                    v = "{e} eggs".format(e=str(a[b + 1]))
+                v = "1 egg" if a[b + 1] == 1 else "{e} eggs".format(e=str(a[b + 1]))
                 emb.add_field(name='{item} - {price}'.format(item=a[b], price=v), value=a[b + 2], inline=False)
                 b += 3
                 i -= 1
@@ -376,7 +369,7 @@ class Economy(commands.Cog):
             a += 1
         if name in ("4 eggs", "four eggs"):
             try:
-                if 5 <= self.bot.stonks["users"][str(ctx.author.id)]["global"]:
+                if self.bot.stonks["users"][str(ctx.author.id)]["global"] >= 5:
                     self.bot.stonks["users"][str(ctx.author.id)]["global"] -= 1
                     await ctx.send("Bought `{g}` for `5 eggs`.".format(g=name))
                 else:
@@ -390,27 +383,22 @@ class Economy(commands.Cog):
     @commands.Cog.listener()
     async def on_command(self, ctx):
         try:
-            if str(ctx.author.id) in self.bot.stonks["users"]:
-                args = ctx.message.content.split(' ')[0]
-                args = args[2:]
-                if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
+            if str(ctx.author.id) not in self.bot.stonks["users"]:
+                raise KeyError
+            args = ctx.message.content.split(' ')[0]
+            args = args[2:]
+            if args not in ("help", "invite", "server", "github", "admins", "test_args", "fridge", "bank", "notifs",
                                 "save", "say", "rolegiver", "addroles", "backuproles", "save", "reloadroles", 'log',
                                 'auditlog', 'spam', 'botspam', 'shutdown', 'print_emoji', 'economyhelp', 'donate',
                                 'goals',
                                 'setgoal', 'deletegoal', 'addeggs', 'removeeggs', 'confirmgoal', 'buy', 'inv', 'shop',
                                 'save', 'notifs'):
-                    oval = randrange(0, 10)
-                    if oval >= 8:
-                        pass
-                    else:
-                        oval = randrange(1, 3)
-                        self.bot.stonks["users"][str(ctx.author.id)]["global"] += oval
-                        if self.bot.stonks["users"][str(ctx.author.id)]["notif"] == "True":
-                            await ctx.send("You got {e} eggs!".format(e=str(oval)))
-                        else:
-                            pass
-            else:
-                raise KeyError
+                oval = randrange(0, 10)
+                if oval < 8:
+                    oval = randrange(1, 3)
+                    self.bot.stonks["users"][str(ctx.author.id)]["global"] += oval
+                    if self.bot.stonks["users"][str(ctx.author.id)]["notif"] == "True":
+                        await ctx.send("You got {e} eggs!".format(e=str(oval)))
         except KeyError:
             self.bot.stonks["users"][str(ctx.author.id)] = {"global": 0, str(ctx.guild.id): 0, "notif": "False",
                                                             "inv": "None"}
@@ -427,8 +415,6 @@ async def addServerEgg(message, eggs, bot):
             userData[str(message.guild.id)] = eggs
         if userData["notif"] == "True":
             await message.channel.send("You got {e} {s} eggs!".format(e=str(eggs), s=str(message.guild)))
-        else:
-            pass
     except KeyError:
         try:
             bot.stonks["users"][str(message.author.id)] = {"global": 0, str(message.guild.id): eggs,

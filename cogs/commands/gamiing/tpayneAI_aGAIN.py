@@ -55,21 +55,20 @@ def MinMax(node: Node, depth: int, playerNum: int):
 # IMPLEMENTATION
 def winCheck(sticks, playerNum):
     """Guess what? Chicken butt^2"""
-    if sticks <= 0:
-        print('*' * 30)
-        if playerNum > 0:
-            if sticks == 0:
-                print("\tYOU WIN!")
-            else:
-                print('\tTOO MANY! You lose...')
+    if sticks > 0:
+        return 1
+    print('*' * 30)
+    if playerNum > 0:
+        if sticks == 0:
+            print("\tYOU WIN!")
         else:
-            if sticks == 0:
-                print("\tComp Wins... Better luck next time.")
-            else:
-                print('fuck')
-        print('*' * 30)
-        return 0
-    return 1
+            print('\tTOO MANY! You lose...')
+    elif sticks == 0:
+        print("\tComp Wins... Better luck next time.")
+    else:
+        print('fuck')
+    print('*' * 30)
+    return 0
 
 
 if __name__ == '__main__':

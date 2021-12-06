@@ -47,34 +47,36 @@ class InstanceManagement(commands.Cog, name="Instance Management"):
     @commands.check(host_check)
     async def reload(self, ctx):
         """Reloads the bot commands and listeners. Only runnable by admins."""
-        if await self.check(ctx, "reload", "Reload"):
-            await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=False)
-            # *reload commands and listeners
-            cogDirectories = ['cogs/commands/',
-                              'cogs/listeners/']  # bot will look for python files in these directories
-            for cogDir in cogDirectories:
-                loadDir = cogDir.replace('/', '.')
-                for cog in os.listdir(cogDir):
-                    if cog.endswith('.py'):  # tries to reload all .py files in the folders, use cogs/misc instead
+        if not await self.check(ctx, "reload", "Reload"):
+            return
+
+        await self.papate(ctx, embedColor=0xffff00, phrase="reloading", timer=False)
+        # *reload commands and listeners
+        cogDirectories = ['cogs/commands/',
+                          'cogs/listeners/']  # bot will look for python files in these directories
+        for cogDir in cogDirectories:
+            loadDir = cogDir.replace('/', '.')
+            for cog in os.listdir(cogDir):
+                if cog.endswith('.py'):  # tries to reload all .py files in the folders, use cogs/misc instead
+                    try:
+                        self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
+                    except commands.ExtensionNotLoaded:
                         try:
-                            self.bot.reload_extension(loadDir + cog[:-3])  # from load_extension to reload_extension xD
-                        except commands.ExtensionNotLoaded:
-                            try:
-                                self.bot.load_extension(loadDir + cog[:-3])
-                            except commands.NoEntryPointError:
-                                print(f"{loadDir + cog[:-3]} is not a proper cog!")
-                            except commands.ExtensionAlreadyLoaded:
-                                print('you should not be seeing this\n if you do, youre screwed')
-                            except commands.ExtensionFailed as failure:
-                                print(f'{failure.name} failed! booooo')
+                            self.bot.load_extension(loadDir + cog[:-3])
+                        except commands.NoEntryPointError:
+                            print(f"{loadDir + cog[:-3]} is not a proper cog!")
+                        except commands.ExtensionAlreadyLoaded:
+                            print('you should not be seeing this\n if you do, youre screwed')
                         except commands.ExtensionFailed as failure:
                             print(f'{failure.name} failed! booooo')
+                    except commands.ExtensionFailed as failure:
+                        print(f'{failure.name} failed! booooo')
 
-            # reload help command
-            from cogs.commands.help import EmbedHelpCommand
-            self.bot.help_command = EmbedHelpCommand()
+        # reload help command
+        from cogs.commands.help import EmbedHelpCommand
+        self.bot.help_command = EmbedHelpCommand()
 
-            await self.bot.change_presence(activity=discord.Game(self.bot.status))
+        await self.bot.change_presence(activity=discord.Game(self.bot.status))
 
     @commands.command(name="papate", hidden=True)
     @commands.check(host_check)

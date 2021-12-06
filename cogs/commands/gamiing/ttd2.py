@@ -77,8 +77,12 @@ class discordTicTac(ticTacToe):
         self.fuckeringers = None
 
     async def run(self):
-        self.embed = discord.Embed(title=f'Starting {self.ctx.author}\'s game of TicTacToe...',
-                                   description=f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛", color=0x00ff00)
+        self.embed = discord.Embed(
+            title=f'Starting {self.ctx.author}\'s game of TicTacToe...',
+            description='⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛',
+            color=0x00FF00,
+        )
+
 
         self.confirmMess = await self.ctx.send(embed=self.embed)
 

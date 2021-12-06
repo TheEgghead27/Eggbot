@@ -22,9 +22,7 @@ class EmbedHelpCommand(commands.HelpCommand):
 
     def get_ending_note(self, main):
         if main and str(self.context.channel.type) == "text":
-            memberIDs = []
-            for i in self.context.guild.members:
-                memberIDs.append(i.id)
+            memberIDs = [i.id for i in self.context.guild.members]
             if 472714545723342848 in tuple(memberIDs):
                 return "Use e!help [command] for more info on a command. || This help command's format was stolen " \
                        "from Ear Tensifier".format(self.clean_prefix.lower().strip(" "))
@@ -74,20 +72,14 @@ class EmbedHelpCommand(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, Command):
-        if Command.brief is None:
-            syntax = ""
-        else:
-            syntax = Command.brief
+        syntax = "" if Command.brief is None else Command.brief
         embed = discord.Embed(title=f'e!{Command.qualified_name} {syntax}', colour=self.COLOUR)
         if Command.qualified_name == 'help':
             embed.description = "Displays the documentation for Eggbot."
         elif Command.help:
             embed.description = Command.help
         if Command.aliases:
-            value = ''
-            for a in Command.aliases:
-                if a != "help":
-                    value += f'`{a}`, '
+            value = ''.join(f'`{a}`, ' for a in Command.aliases if a != "help")
             value = value.rstrip(", ")
             embed.add_field(name='Aliases', value=value)
 

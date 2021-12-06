@@ -75,7 +75,7 @@ class discordTicTac(ticTacToe):
     async def run(self):
         try:
             embed = discord.Embed(title=f'Starting {self.ctx.author}\' game of TicTacToe...', color=0x00ff00)
-            embed.description = f"⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛"
+            embed.description = '⬛⬛⬛\n⬛⬛⬛\n⬛⬛⬛'
 
             self.confirmMess = await self.ctx.send(embed=embed)
             for i in ['⬆', '⬇', '⬅', '➡', '✅']:
@@ -134,9 +134,7 @@ class discordTicTac(ticTacToe):
         pieceEmojiIndex = {'None': '⬛', 'X': '❌', 'O': '⭕',
                            'oS': '<:oS:757696246755622923>', 'xS': '<:xS:757697702216597604>',
                            'noneS': '<:noneS:757697725906026547>'}
-        icons = []
-        for i in board.values():
-            icons.append(pieceEmojiIndex[str(i)])
+        icons = [pieceEmojiIndex[str(i)] for i in board.values()]
         embed.description = f"{icons[0]}{icons[1]}{icons[2]}\n{icons[3]}{icons[4]}{icons[5]}\n" \
                             f"{icons[6]}{icons[7]}{icons[8]}"
         return embed

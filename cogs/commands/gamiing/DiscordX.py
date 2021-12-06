@@ -63,7 +63,7 @@ class DiscordX:
                         temp += self.conversionTable['None']
                     except KeyError:
                         temp += "⬛"
-            for _ in range(0, self.width - len(interlaced)):
+            for _ in range(self.width - len(interlaced)):
                 try:
                     temp += self.conversionTable['None']
                 except KeyError:
@@ -71,7 +71,7 @@ class DiscordX:
 
         if len(temp.split('\n')) - 1 < self.height:  # if we don't have enough data
             temp += '\n'
-            for _ in range(0, self.width):  # fill in blank rows to meet resolution minimum
+            for _ in range(self.width):  # fill in blank rows to meet resolution minimum
                 try:
                     temp += self.conversionTable['None']
                 except KeyError:
@@ -81,7 +81,4 @@ class DiscordX:
 
 
 def dictToScanLines(pieces: dict):
-    icons = []
-    for i in pieces.values():
-        icons.append(i)
-    return icons
+    return list(pieces.values())

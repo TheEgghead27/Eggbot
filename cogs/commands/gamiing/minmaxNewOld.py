@@ -45,34 +45,28 @@ class Node(EmptyNode):
             self.parent.children.append(self)  # devote yourself to mother
 
     def CreateChildren(self):
+        if None not in self.board.values():  # if we didn't fill board
+            return
         nodes = []
-        threads = []
-        if None in self.board.values():  # if we didn't fill board
-            for i in self.board:  # search board
-                if self.board[i] is None:  # if that space is empty
-                    v = self.board.copy()  # make temp copy
-                    v[i] = self.curMark  # slap current turn onto the board
-                    # make more childs
-                    nodes.append((self.playerNum, v, self.mark, marks[self.mark], self))
+        for i in self.board:  # search board
+            if self.board[i] is None:  # if that space is empty
+                v = self.board.copy()  # make temp copy
+                v[i] = self.curMark  # slap current turn onto the board
+                # make more childs
+                nodes.append((self.playerNum, v, self.mark, marks[self.mark], self))
 
-            # 4 thread system
-            # # part 1
-            # p1 = nodes[:int(len(nodes) / 2)]
-            # threads.append(threading.Thread(target=self.runNodeChunk, args=p1[:int(len(p1) / 2)]))
-            # threads.append(threading.Thread(target=self.runNodeChunk, args=p1[int(len(p1) / 2):]))
-            # # part 2
-            # p2 = nodes[:int(len(nodes) / 2)]
-            # threads.append(threading.Thread(target=self.runNodeChunk, args=p2[:int(len(p2) / 2)]))
-            # threads.append(threading.Thread(target=self.runNodeChunk, args=p2[int(len(p2) / 2):]))
+        threads = [
+            threading.Thread(
+                target=self.runNodeChunk, args=nodes[: int(len(nodes) / 2)]
+            )
+        ]
 
-            # 2 thread system
-            threads.append(threading.Thread(target=self.runNodeChunk, args=nodes[:int(len(nodes) / 2)]))
-            threads.append(threading.Thread(target=self.runNodeChunk, args=nodes[int(len(nodes) / 2):]))
+        threads.append(threading.Thread(target=self.runNodeChunk, args=nodes[int(len(nodes) / 2):]))
 
-            for i in threads:  # for all the prepared fetuses
-                i.start()  # birth
-            for i in threads:  # for all the born children
-                i.join()  # wait for the hospital man to overcharge you
+        for i in threads:  # for all the prepared fetuses
+            i.start()  # birth
+        for i in threads:  # for all the born children
+            i.join()  # wait for the hospital man to overcharge you
 
     # noinspection PyMethodMayBeStatic
     def runNodeChunk(self, *args):
@@ -87,12 +81,7 @@ class Node(EmptyNode):
         OList = ['O..O..O', 'O...O...O', '..O.O.O..']
 
         # stringify the data for column and diagonals
-        data = ''
-        for i in board.values():
-            if i is not None:
-                data += i
-            else:
-                data += ' '
+        data = ''.join(i if i is not None else ' ' for i in board.values())
         for i in XList:
             for _ in re.findall(i, data):
                 return self.returnWin('X')
@@ -106,14 +95,11 @@ class Node(EmptyNode):
             for piece in board:
                 if piece.lower()[0] == rowLetter:
                     i = board[piece]
-                    if i is not None:
-                        data += i
-                    else:
-                        data += ' '
-            if data == 'XXX':
-                return self.returnWin('X')
-            elif data == 'OOO':
+                    data += i if i is not None else ' '
+            if data == 'OOO':
                 return self.returnWin('O')
+            elif data == 'XXX':
+                return self.returnWin('X')
         return 0
 
     def returnWin(self, winner: str):

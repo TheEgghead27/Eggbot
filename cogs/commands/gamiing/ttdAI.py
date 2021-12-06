@@ -20,14 +20,13 @@ class discordTicTacAI(discordTicTac):
 
     # noinspection PyTypeChecker
     async def awaitInput(self, player: discord.User, opponent: discord.User):
-        if player.id != self.ctx.bot.user.id:
-            if await self.userInput(player):
-                await(self.announceWin(opponent, abs(self.currentPlayerID - 1)))
-                return True
-        else:
+        if player.id == self.ctx.bot.user.id:
             await self.renderBoard(self.pieces, player.name)
-            self.fuckeringers = await self.ctx.send(f"My turn.")
+            self.fuckeringers = await self.ctx.send('My turn.')
             await self.aiTurn()
+        elif await self.userInput(player):
+            await(self.announceWin(opponent, abs(self.currentPlayerID - 1)))
+            return True
         await self.fuckeringers.delete()
         return False
 

@@ -42,12 +42,7 @@ class ActiveNode(DataNode):
         """
 
         # stringify the data for column and diagonals
-        data = ''
-        for i in board.values():
-            if i is not None:
-                data += i
-            else:
-                data += ' '
+        data = ''.join(i if i is not None else ' ' for i in board.values())
         for i in XList:
             for _ in re.findall(i, data):
                 return self.returnWin('X')
@@ -61,14 +56,11 @@ class ActiveNode(DataNode):
             for piece in board:
                 if piece.lower()[0] == rowLetter:
                     i = board[piece]
-                    if i is not None:
-                        data += i
-                    else:
-                        data += ' '
-            if data == 'XXX':
-                return self.returnWin('X')
-            elif data == 'OOO':
+                    data += i if i is not None else ' '
+            if data == 'OOO':
                 return self.returnWin('O')
+            elif data == 'XXX':
+                return self.returnWin('X')
         return 0
 
     def returnWin(self, winningMark: str):
